@@ -1,0 +1,24 @@
+{
+  "name": "2026-tp-grupo-03",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/ddsw-man/2026-tp-grupo-03#readme",
+  "bugs": {
+    "url": "https://github.com/ddsw-man/2026-tp-grupo-03/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ddsw-man/2026-tp-grupo-03.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "zod": "^4.3.6"
+  }
+}
