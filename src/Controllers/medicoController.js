@@ -1,4 +1,4 @@
-const medicoService = require('../Services/medicoService');
+import medicoService from "../Services/medicoService.js"
 
 const getDisponibilidad = (req, res) => {
     try {
@@ -10,4 +10,4 @@ const getDisponibilidad = (req, res) => {
     }
 };
 
-module.exports = { getDisponibilidad };
+export default {getDisponibilidad};

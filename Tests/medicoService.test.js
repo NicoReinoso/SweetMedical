@@ -1,5 +1,5 @@
 // tests/medicoService.test.js
-const medicoService = require('../src/Services/medicoService');
+import medicoService from '../src/Services/medicoService.js';
 
 test('Debería devolver la disponibilidad si el médico existe', () => {
     const disp = medicoService.obtenerDisponibilidad("med-1");

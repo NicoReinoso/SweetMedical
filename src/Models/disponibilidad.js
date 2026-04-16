@@ -5,5 +5,5 @@ class Disponibilidad {
         this.horaHasta = horaHasta;
     }
 }
-module.exports = Disponibilidad;
+export default Disponibilidad
 

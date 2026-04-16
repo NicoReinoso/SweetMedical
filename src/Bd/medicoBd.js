@@ -11,4 +11,4 @@ const medicosCargados = [
 
 const findById = (id) => medicosCargados.find(m => m.id === id);
 
-module.exports = { findById };
+export default {findById};

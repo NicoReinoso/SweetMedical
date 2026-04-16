@@ -1,8 +1,9 @@
-const express = require('express');
+import express from "express";
+import medicoController from "../Controllers/medicoController.js"
+
 const router = express.Router();
-const medicoController = require('../Controllers/medicoController');
 
 // Ruta: GET /medicos/:id/disponibilidad
 router.get('/:id/disponibilidad', medicoController.getDisponibilidad);
 
-module.exports = router;
+export default router

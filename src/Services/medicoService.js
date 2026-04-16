@@ -1,4 +1,4 @@
-const medicoRepo = require('../Bd/medicoBd');
+import medicoRepo from "../Bd/medicoBd.js" 
 
 const obtenerDisponibilidad = (medicoId) => {
     const medico = medicoRepo.findById(medicoId);
@@ -8,4 +8,4 @@ const obtenerDisponibilidad = (medicoId) => {
     return medico.disponibilidades;
 };
 
-module.exports = { obtenerDisponibilidad };
+export default {obtenerDisponibilidad};
