@@ -30,9 +30,13 @@ const bajaDisponibilidad = (id, horarioABorrar) => {
         throw Error("Medico no encontrado");        
     }
     
-    const disponibilidadActualizada = medico.disponibilidad.filter(h => h!=medico.disponibilidad);
+    const disponibilidadActualizada = medico.disponibilidad.filter(h => 
+        h.diaSemana !== horarioABorrar.diaSemana ||
+        h.horaDesde !== horarioABorrar.horaDesde ||
+        h.horaHasta !== horarioABorrar.horaHasta
+    );
 
-    return medicoRepo.updateDisponibilidad(id,horarioABorrar)
+    return medicoRepo.updateDisponibilidad(id, disponibilidadActualizada);
 }
 
 

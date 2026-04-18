@@ -32,7 +32,7 @@ const deleteDisponibilidad = (req, res) => {
 
         const nuevaDisponibilidad = medicoService.bajaDisponibilidad(id, horariosABorrar);
         
-        res.status(200).json({message:`Disponibilidad actualizada: ${nuevaDisponibilidad}`});
+        res.status(200).json(nuevaDisponibilidad);
     } catch (error) {
         res.status(404).json({message: error.message});
     }
