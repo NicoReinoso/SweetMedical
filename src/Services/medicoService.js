@@ -34,7 +34,11 @@ const bajaDisponibilidad = (id, horarioABorrar) => {
         h.diaSemana !== horarioABorrar.diaSemana ||
         h.horaDesde !== horarioABorrar.horaDesde ||
         h.horaHasta !== horarioABorrar.horaHasta
-    );
+    ); // comparamos campo a campo, pues al comparar objetos con !== en JS siempre obtenemos true
+
+    if (disponibilidadActualizada.length === medico.disponibilidad.length) {
+        throw new Error("Disponibilidad no encontrada, revisar informacion de entrada");
+    } // comparamos longitud, pues no sirve directamente hacer disponibilidadActualizada === medico.disponibilidad por cuestiones de JS
 
     return medicoRepo.updateDisponibilidad(id, disponibilidadActualizada);
 }
