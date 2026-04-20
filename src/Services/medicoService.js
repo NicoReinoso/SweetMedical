@@ -13,9 +13,10 @@ const agregarDisponibilidad = (medicoId, disponibilidad) => {
     if (!medico) {
         throw new Error("Médico no encontrado");
     }
-    if (disponibilidad.horaDesde >= disponibilidad.horaHasta) {
-        throw new Error("Rango horario inválido");
+    if (!medicoRepo.validarFormato(disponibilidad.horaDesde) || !medicoRepo.validarFormato(disponibilidad.horaHasta)) {
+        throw new Error("Formato de hora inválido, el formato de hora es hh:mm");
     }
+    medicoRepo.validarCoherenciaHora(disponibilidad.horaDesde, disponibilidad.horaHasta);
 
     medico.disponibilidad.push(disponibilidad);
 
@@ -42,6 +43,8 @@ const bajaDisponibilidad = (id, horarioABorrar) => {
 
     return medicoRepo.updateDisponibilidad(id, disponibilidadActualizada);
 }
+
+
 
 
 export default {obtenerDisponibilidad, agregarDisponibilidad, bajaDisponibilidad};
