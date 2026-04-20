@@ -1,6 +1,7 @@
 import express from "express";
-import medicoController from "../Controllers/medicoController.js"
+import {MedicoController} from "../Controllers/medicoController.js"
 
+const medicoController = new MedicoController()
 const router = express.Router();
 
 // Ruta: GET /medicos/:id/disponibilidad

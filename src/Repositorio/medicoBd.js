@@ -1,42 +1,41 @@
-const medicosCargados = [
-    {
-        id: "med-1",
-        nombre: "Dr House",
-        disponibilidad: [
-            { diaSemana: "LUNES", horaDesde: "08:00", horaHasta: "12:00" },
-            { diaSemana: "MIERCOLES", horaDesde: "14:00", horaHasta: "18:00" }
-        ]
-    }
-];
+import Disponibilidad from "../Models/disponibilidad.js";
+import { Medico } from "../Models/medico.js";
 
-const findById = (id) => medicosCargados.find(m => m.id === id);
+//Base de datos
+const drHouse = new Medico("med-1", "Dr. House");
+drHouse.agregarDisponibilidad(new Disponibilidad ("Lunes", "08:00", "09:00"));
+drHouse.agregarDisponibilidad(new Disponibilidad ("Lunes", "09:00", "10:00"));
+drHouse.agregarDisponibilidad(new Disponibilidad ("Lunes", "10:00", "11:00"));
+drHouse.agregarDisponibilidad(new Disponibilidad ("Lunes", "11:00", "12:00"));
+drHouse.agregarDisponibilidad(new Disponibilidad ("Miercoles", "14:00", "15:00"));
+drHouse.agregarDisponibilidad(new Disponibilidad ("Miercoles", "15:00", "16:00"));
+drHouse.agregarDisponibilidad(new Disponibilidad ("Miercoles", "16:00", "17:00"));
 
-const updateDisponibilidad = (id, nuevaDisponibilidad) => {
-    const index = medicosCargados.findIndex(m=> m.id == id);
-    
-    if(index !=-1){
-        medicosCargados[index].disponibilidad = nuevaDisponibilidad;
-        return medicosCargados[index].disponibilidad;
+const drOctopus = new Medico("med-2", "Dr. Octavio");
+drOctopus.agregarDisponibilidad(new Disponibilidad ("Martes", "08:00", "09:00"));
+drOctopus.agregarDisponibilidad(new Disponibilidad ("Martes", "09:00", "10:00"));
+drOctopus.agregarDisponibilidad(new Disponibilidad ("Martes", "10:00", "11:00"));
+drOctopus.agregarDisponibilidad(new Disponibilidad ("Martes", "11:00", "12:00"));
+drOctopus.agregarDisponibilidad(new Disponibilidad ("Jueves", "14:00", "15:00"));
+drOctopus.agregarDisponibilidad(new Disponibilidad ("Jueves", "15:00", "16:00"));
+drOctopus.agregarDisponibilidad(new Disponibilidad ("Jueves", "16:00", "17:00"));
+
+const drMario = new Medico("med-3", "Mariano"); //no tiene disponibilidad, esta muy ocupado
+
+//Repo
+export class MedicoRepo{
+
+    medicosCargados = [drHouse, drMario, drOctopus];
+
+    findById = (id) => this.medicosCargados.find(m => m.id === id);
+
+    updateDisponibilidad = (id, nuevaDisponibilidad) => {
+        const index = this.medicosCargados.findIndex(m=> m.id == id);
+        
+        if(index !=-1){
+            this.medicosCargados[index].disponibilidad = nuevaDisponibilidad;
+            return this.medicosCargados[index].disponibilidad;
+        }
     }
 }
 
-const validarFormato = (hora) => {
-    const regex = /^([01]?\d|2[0-3]):[0-5]\d$/; //se acepta en formato hh:mm
-    return regex.test(hora);
-};
-
-const validarCoherenciaHora = (horaDesde, horaHasta) => {
-    const desde = convertirHoraAMinutos(horaDesde);
-    const hasta = convertirHoraAMinutos(horaHasta);
-
-    if (desde >= hasta) {
-        throw new Error("Rango horario inválido");
-    }
-} ;
-
-const convertirHoraAMinutos = (hora) => {
-    const [h, m] = hora.split(":").map(Number);
-    return h * 60 + m;
-};
-
-export default {findById, updateDisponibilidad, validarCoherenciaHora, validarFormato};
