@@ -1,6 +1,7 @@
 import express from "express";
-import {z} from "zod";
-import medicoRoutes from "./Routes/medicoRoutes.js"
+import medicoRoutes from "./Routes/medicoRoutes.js";
+import pacienteRoutes from "./Routes/pacienteRoutes.js";
+import turnoRoutes from "./Routes/turnoRoutes.js";
 
 
 const app = express();
@@ -15,6 +16,8 @@ app.get('/health', (req, res) => {
 });
 
 app.use('/medicos', medicoRoutes);
+app.use('/pacientes', pacienteRoutes);
+app.use('/turnos', turnoRoutes);
 
 const PORT = 3000;
 app.listen(PORT, () => {
