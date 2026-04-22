@@ -9,7 +9,7 @@ export const EstadoTurno = {
 export class Turno {
     id;
     medico;
-    paciente;
+    pacienteId;
     fechaHora;
     sede;
     practica;
@@ -17,10 +17,10 @@ export class Turno {
     historialEstados;
     costo;
 
-    constructor(id, medico, paciente, fechaHora, sede, practica, costo) {
+    constructor(id, medicoId, pacienteId, fechaHora, sede, practica, costo) {
         this.id = id;
-        this.medico = medico;
-        this.paciente = paciente;
+        this.medicoId = medicoId;
+        this.pacienteId = pacienteId;
         this.fechaHora = fechaHora;
         this.sede = sede;
         this.practica = practica;

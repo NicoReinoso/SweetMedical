@@ -18,10 +18,10 @@ export class TurnoController {
 
     reservarTurno = (req, res) => {
         try {
-            const { id } = req.params;
-            const { pacienteId } = req.body;
+            const { pacienteId } = req.params;
+            const { medicoId, fechaHora, sede, practica, costo } = req.body;
 
-            const turno = this.turnoService.reservarTurno(id, pacienteId);
+            const turno = this.turnoService.crearTurno({pacienteId, medicoId, fechaHora, sede, practica, costo});
             res.status(201).json(turno);
         } catch (error) {
             res.status(400).json({ message: error.message });

@@ -48,10 +48,12 @@ export class Medico {
 
         turno.estado = EstadoTurno.CONFIRMADO;
         turno.historialEstados.push(EstadoTurno.CONFIRMADO)
-
+        
         this.turnosAceptados.push(turno);
     }
+    
 
+    //VALIDACIONES
     validarFormato = (hora) => {
         const regex = /^([01]?\d|2[0-3]):[0-5]\d$/; //se acepta en formato hh:mm
         return regex.test(hora);
@@ -76,5 +78,17 @@ export class Medico {
             throw new Error("La disponibilidad ya existe");
         }
     };
+
+    validarSedeSolicitada = (sede) => {
+        if(!this.sedes.includes(sede)){
+            throw new Error("El medico solicitado no opera en esa sede");
+        }
+    }
+
+    validarPracticaSolicitada = (practica) => {
+        if(!this.practicas.includes(practica)){
+            throw new Error("El medico solicitado no realiza esa practica");
+        }
+    }
 
 }

@@ -7,8 +7,8 @@ const router = express.Router();
 // Ruta: GET /turnos/:id
 router.get('/:id', turnoController.getTurno);
 
-// Ruta: PUT /turnos/:id/reservar
-router.put('/:id/reservar', turnoController.reservarTurno);
+// Ruta: POST /turnos/:pacienteId/reservar
+router.post('/:pacienteId/reservar', turnoController.reservarTurno);
 
 // Ruta: PUT /turnos/:id/cancelar
 router.put('/:id/cancelar', turnoController.cancelarTurno);

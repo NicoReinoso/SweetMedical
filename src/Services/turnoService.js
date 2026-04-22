@@ -1,9 +1,10 @@
 import { TurnoRepo } from "../Repositorio/turnoBd.js" 
 import { MedicoRepo } from "../Repositorio/medicoBd.js"
 import { Turno } from "../Models/turno.js"
+import { Medico } from "../Models/medico.js"
 
 export class TurnoService {
-    constructor({turnoRepo = new TurnoRepo(), medicoRepo = new MedicoRepo} = {}) {
+    constructor({turnoRepo = new TurnoRepo(), medicoRepo = new MedicoRepo()} = {}) {
         this.turnoRepo = turnoRepo;
         this.medicoRepo = medicoRepo;
     }
@@ -24,21 +25,22 @@ export class TurnoService {
         //encuentro la disponibilidad del medico solicitada y la valido
         const disponibilidad = medico.disponibilidad.find(d =>
             d.diaSemana === dia &&
-            d.horaDesde === hora
+            d.horaDesde === hora &&
+            !d.ocupado
         );
         if (!disponibilidad) {
             throw new Error("El medico solicitado no tiene disponibilidad para ese horario");
         }
         //validacion de sede
         const sede = data.sede
-        validarSedeSolicitada(sede, medico)
+        medico.validarSedeSolicitada(sede)
 
         //validacion de practica
         const practica = data.practica
-        validarPracticaSolicitada(practica, medico)
+        medico.validarPracticaSolicitada(practica)
 
         const id = this.turnoRepo.generarNuevoId();
-        const nuevoTurno = new Turno(id, medico, data.paciente, data.fechaHora, sede, practica, data.costo);
+        const nuevoTurno = new Turno(id, medico.id, data.pacienteId, fecha, sede, practica, data.costo);
 
         this.turnoRepo.createTurno(nuevoTurno);
 
@@ -61,18 +63,6 @@ export class TurnoService {
         return turno;
     }
 
-    //VALIDACIONES
-    validarSedeSolicitada = (sede, medico) => {
-        if(!medico.sedes.include(sede)){
-            throw new Error("El medico solicitado no opera en esa sede");
-        }
-    }
-
-    validarPracticaSolicitada = (practica, medico) => {
-        if(!medico.practicas.include(practica)){
-            throw new Error("El medico solicitado no realiza esa practica");
-        }
-    }
 }
 
 
