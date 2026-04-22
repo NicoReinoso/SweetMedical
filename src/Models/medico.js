@@ -1,14 +1,29 @@
 import Disponibilidad from "./disponibilidad.js";
+import { EstadoTurno } from "./turno.js";
 
 export class Medico {
     id;
+    usuario;
+    matricula;
     nombre;
+    especialidades;
+    practicas;
+    sedes;
     disponibilidad;
+    turnosSolicitados;
+    turnosAceptados;
 
-    constructor(id, nombre) {
+    constructor(id, usuario, matricula, nombre, especialidades, practicas, sedes) {
         this.id = id
+        this.usuario = usuario
+        this.matricula = matricula
         this.nombre = nombre.trim()
+        this.especialidades = especialidades
+        this.practicas = practicas
+        this.sedes = sedes
         this.disponibilidad = []
+        this.turnosSolicitados = []
+        this.turnosAceptados = []
     }
 
     agregarDisponibilidad(nuevaDisponibilidad) {
@@ -22,6 +37,19 @@ export class Medico {
         this.verificarDisponibilidadIgual(this.disponibilidad, nuevaDisponibilidad);
 
         this.disponibilidad.push(nuevaDisponibilidad);
+    }
+
+    aceptarTurno(idTurno) {
+        const turno = this.turnosSolicitados.find(t => t.id === idTurno);
+
+        if (!turno) {
+            throw new Error("Turno no encontrado");
+        }
+
+        turno.estado = EstadoTurno.CONFIRMADO;
+        turno.historialEstados.push(EstadoTurno.CONFIRMADO)
+
+        this.turnosAceptados.push(turno);
     }
 
     validarFormato = (hora) => {

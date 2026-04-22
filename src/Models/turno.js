@@ -17,15 +17,15 @@ export class Turno {
     historialEstados;
     costo;
 
-    constructor(id, medico, paciente = null, fechaHora, sede, practica, estado = EstadoTurno.DISPONIBLE, historialEstados = [EstadoTurno.DISPONIBLE], costo) {
+    constructor(id, medico, paciente, fechaHora, sede, practica, costo) {
         this.id = id;
         this.medico = medico;
         this.paciente = paciente;
         this.fechaHora = fechaHora;
         this.sede = sede;
         this.practica = practica;
-        this.estado = estado;
-        this.historialEstados = historialEstados;
+        this.estado = EstadoTurno.RESERVADO;
+        this.historialEstados = [EstadoTurno.RESERVADO];
         this.costo = costo;
     }
 
