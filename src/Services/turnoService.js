@@ -84,6 +84,7 @@ export class TurnoService {
             throw new Error("No se puede cancelar el turno con menos de una hora de anticipación");
         }
 
+        const medico = this.medicoRepo.findById(turno.medicoId);
 
         // cambiar estado
         turno.estado = EstadoTurno.CANCELADO;
@@ -101,8 +102,11 @@ export class TurnoService {
         if (disponibilidad) {
             disponibilidad.ocupado = false;
         }
-        //actualizo los datos en el repo
+        // actualizo los datos en el repo
         this.turnoRepo.updateTurno(id, turno);
+
+        // se remueve el turno cancelado de la lista de turnos solicitados del medico
+        medico.removerTurnoCancelado(id);
 
         return turno;
     }
