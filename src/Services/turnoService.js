@@ -49,15 +49,14 @@ export class TurnoService {
         const id = this.turnoRepo.generarNuevoId();
         const nuevoTurno = new Turno(id, medico.id, data.pacienteId, fecha, sede, practica, data.costo);
 
+        //actualizo los repo
         this.turnoRepo.createTurno(nuevoTurno);
-
+        
         //la disponibilidad del medico se ocupa
         disponibilidad.ocupado = true;
+
         //se agrega el nuevo turno a los solicitados del medico, para que pueda aceptarlo
         medico.turnosSolicitados.push(nuevoTurno);
-        
-        //actualizo los repo
-        this.turnoRepo.createTurno(id, nuevoTurno);
 
         return nuevoTurno;
     }
@@ -85,10 +84,6 @@ export class TurnoService {
             throw new Error("No se puede cancelar el turno con menos de una hora de anticipación");
         }
 
-        const medico = this.medicoRepo.findById(turno.medicoId);
-        if (!medico) {
-            throw new Error("Médico no encontrado");
-        }
 
         // cambiar estado
         turno.estado = EstadoTurno.CANCELADO;
