@@ -25,7 +25,7 @@ export class MedicoController{
             const nuevaDisponibilidad = this.medicoService.agregarDisponibilidad(id, disponibilidadAAgregar);
             res.status(201).json(nuevaDisponibilidad);
         } catch (error) {
-            if (res.status === "Médico no encontrado"){
+            if (error.message === "Médico no encontrado"){
                 return res.status(404).json({ message: error.message });
             }
             res.status(400).json({ message: error.message });
