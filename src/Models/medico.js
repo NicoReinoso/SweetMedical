@@ -41,14 +41,17 @@ export class Medico {
 
     aceptarTurno(idTurno) {
         const turno = this.turnosSolicitados.find(t => t.id === idTurno);
+    
 
         if (!turno) {
             throw new Error("Turno no encontrado");
         }
 
         turno.estado = EstadoTurno.CONFIRMADO;
-        turno.historialEstados.push(EstadoTurno.CONFIRMADO)
+        turno.historialEstados.push(EstadoTurno.CONFIRMADO);
         
+        //eliminar de solicitados
+        this.turnosSolicitados = this.turnosSolicitados.filter(t => t.id !== idTurno);
         this.turnosAceptados.push(turno);
     }
     

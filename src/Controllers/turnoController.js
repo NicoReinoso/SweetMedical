@@ -9,7 +9,7 @@ export class TurnoController {
         try {
             const { id } = req.params;
 
-            const turno = this.turnoService.findById(id);
+            const turno = this.turnoService.obtenerTurno(id);
             res.status(200).json(turno);
         } catch (error) {
             res.status(404).json({ message: error.message });

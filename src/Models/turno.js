@@ -29,6 +29,11 @@ export class Turno {
         this.costo = costo;
     }
 
+
+    /*obtenerTurno(id) {
+        turnoRepo.findTurno(id);
+    }*/
+
     crearTurno() {
         turnoRepo.createTurno(this);
     }

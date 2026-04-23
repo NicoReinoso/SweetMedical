@@ -11,6 +11,6 @@ router.get('/:id', turnoController.getTurno);
 router.post('/:pacienteId/reservar', turnoController.reservarTurno);
 
 // Ruta: PUT /turnos/:id/cancelar
-router.put('/:id/cancelar', turnoController.cancelarTurno);
+router.patch('/:id/cancelar', turnoController.cancelarTurno);
 
 export default router
