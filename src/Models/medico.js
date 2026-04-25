@@ -1,5 +1,11 @@
 import Disponibilidad from "./disponibilidad.js";
 import { EstadoTurno } from "./turno.js";
+import {
+    BadRequestError,
+    ConflictError,
+    NotFoundError,
+    UnprocessableEntityError
+} from "../errors/AppError.js"
 
 export class Medico {
     id;
@@ -28,10 +34,10 @@ export class Medico {
 
     agregarDisponibilidad(nuevaDisponibilidad) {
         if (!nuevaDisponibilidad || !(nuevaDisponibilidad instanceof Disponibilidad)) {
-            throw new Error("La disponibilidad es inválida");
+            throw new UnprocessableEntityError("La disponibilidad es inválida");
         }
         if (!this.validarFormato(nuevaDisponibilidad.horaDesde) || !this.validarFormato(nuevaDisponibilidad.horaHasta)) {
-            throw new Error("Formato de hora inválido, el formato de hora es hh:mm");
+            throw new UnprocessableEntityError("Formato de hora inválido, el formato de hora es hh:mm");
         }
         this.validarCoherenciaHora(nuevaDisponibilidad.horaDesde, nuevaDisponibilidad.horaHasta);
         this.verificarDisponibilidadIgual(this.disponibilidad, nuevaDisponibilidad);
@@ -44,7 +50,7 @@ export class Medico {
     
 
         if (!turno) {
-            throw new Error("Turno no encontrado");
+            throw new NotFoundError("Turno no encontrado");
         }
 
         turno.estado = EstadoTurno.CONFIRMADO;
@@ -67,7 +73,7 @@ export class Medico {
         const hasta = this.convertirHoraAMinutos(horaHasta);
 
         if (desde >= hasta) {
-            throw new Error("Rango horario inválido");
+            throw new BadRequestError("Rango horario inválido");
         }
     };
 
@@ -78,19 +84,19 @@ export class Medico {
 
     verificarDisponibilidadIgual = (disponibilidades, nueva) => {
         if (disponibilidades.some(d => d.diaSemana === nueva.diaSemana && d.horaDesde === nueva.horaDesde &&  d.horaHasta === nueva.horaHasta)) {
-            throw new Error("La disponibilidad ya existe");
+            throw new ConflictError("La disponibilidad ya existe");
         }
     };
 
     validarSedeSolicitada = (sede) => {
         if(!this.sedes.includes(sede)){
-            throw new Error("El medico solicitado no opera en esa sede");
+            throw new BadRequestError("El medico solicitado no opera en esa sede");
         }
     }
 
     validarPracticaSolicitada = (practica) => {
         if(!this.practicas.includes(practica)){
-            throw new Error("El medico solicitado no realiza esa practica");
+            throw new BadRequestError("El medico solicitado no realiza esa practica");
         }
     }
 

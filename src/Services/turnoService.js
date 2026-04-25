@@ -2,6 +2,12 @@ import { TurnoRepo } from "../Repositorio/turnoBd.js"
 import { MedicoRepo } from "../Repositorio/medicoBd.js"
 import { EstadoTurno, Turno } from "../Models/turno.js"
 import { Medico } from "../Models/medico.js"
+import {
+    BadRequestError,
+    ConflictError,
+    NotFoundError,
+    UnprocessableEntityError
+} from "../errors/AppError.js"
 
 export class TurnoService {
     constructor({turnoRepo = new TurnoRepo(), medicoRepo = new MedicoRepo()} = {}) {
@@ -13,7 +19,7 @@ export class TurnoService {
     obtenerTurno = (id) =>{
         const turno = this.turnoRepo.findTurno(id);
         if (!turno) {
-            throw new Error("Turno no encontrado");
+            throw new NotFoundError("Turno no encontrado");
         }
 
         return turno;
@@ -24,7 +30,7 @@ export class TurnoService {
         const medico = this.medicoRepo.findById(data.medicoId);
 
         if (!medico) {
-            throw new Error("Médico no encontrado");
+            throw new NotFoundError("Médico no encontrado");
         }
         const fecha = new Date(data.fechaHora);
         const dia = obtenerDiaSemana(fecha);
@@ -36,7 +42,7 @@ export class TurnoService {
             !d.ocupado
         );
         if (!disponibilidad) {
-            throw new Error("El medico solicitado no tiene disponibilidad para ese horario");
+            throw new BadRequestError("El medico solicitado no tiene disponibilidad para ese horario");
         }
         //validacion de sede
         const sede = data.sede
@@ -65,13 +71,13 @@ export class TurnoService {
         const turno = this.turnoRepo.findById(id);
 
         if (!turno) {
-            throw new Error("Turno no encontrado");
+            throw new NotFoundError("Turno no encontrado");
         }
         if (turno.historialEstados.includes(EstadoTurno.REALIZADO)){
-            throw new Error("No se puede cancelar un turno realizado");
+            throw new ConflictError("No se puede cancelar un turno realizado");
         }
         if (turno.historialEstados.includes(EstadoTurno.CANCELADO)){
-            throw new Error("No se puede cancelar un turno cancelado");
+            throw new ConflictError("No se puede cancelar un turno cancelado");
         }
 
         const ahora = new Date();
@@ -81,7 +87,7 @@ export class TurnoService {
         const unaHoraMs = 60 * 60 * 1000;
 
         if (diferenciaMs < unaHoraMs) {
-            throw new Error("No se puede cancelar el turno con menos de una hora de anticipación");
+            throw new BadRequestError("No se puede cancelar el turno con menos de una hora de anticipación");
         }
 
         const medico = this.medicoRepo.findById(turno.medicoId);

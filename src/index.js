@@ -1,21 +1,18 @@
 import express from "express";
-import medicoRoutes from "./Routes/medicoRoutes.js";
-import turnoRoutes from "./Routes/turnoRoutes.js";
-
+import cors from "cors";
+import router from "./Routes/router.js";
+import { notFoundHandler } from "./middlewares/notFoundHandler.js"
+import { errorLogger } from "./middlewares/errorLogger.js"
+import { errorHandler } from "./middlewares/errorHandler.js"
 
 const app = express();
 app.use(express.json());
+app.use(cors());
+app.use(router);
 
-
-app.get('/health', (req, res) => {
-    res.status(200).json({
-        status: "OK",
-        message: "Sweet Medical API operando correctamente"
-    });
-});
-
-app.use('/medicos', medicoRoutes);
-app.use('/turnos', turnoRoutes);
+app.use(notFoundHandler);
+app.use(errorLogger);
+app.use(errorHandler);
 
 const PORT = 3000;
 app.listen(PORT, () => {
@@ -24,3 +21,5 @@ app.listen(PORT, () => {
     console.log(`Probá el health check en Postman usando esa URL`);
     console.log(`==========================================`);
 });
+
+export default app
