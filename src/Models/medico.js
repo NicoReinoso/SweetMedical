@@ -36,9 +36,6 @@ export class Medico {
         if (!nuevaDisponibilidad || !(nuevaDisponibilidad instanceof Disponibilidad)) {
             throw new UnprocessableEntityError("La disponibilidad es inválida");
         }
-        if (!this.validarFormato(nuevaDisponibilidad.horaDesde) || !this.validarFormato(nuevaDisponibilidad.horaHasta)) {
-            throw new UnprocessableEntityError("Formato de hora inválido, el formato de hora es hh:mm");
-        }
         this.validarCoherenciaHora(nuevaDisponibilidad.horaDesde, nuevaDisponibilidad.horaHasta);
         this.verificarDisponibilidadIgual(this.disponibilidad, nuevaDisponibilidad);
 
@@ -63,11 +60,6 @@ export class Medico {
     
 
     //VALIDACIONES
-    validarFormato = (hora) => {
-        const regex = /^([01]?\d|2[0-3]):[0-5]\d$/; //se acepta en formato hh:mm
-        return regex.test(hora);
-    };
-
     validarCoherenciaHora = (horaDesde, horaHasta) => {
         const desde = this.convertirHoraAMinutos(horaDesde);
         const hasta = this.convertirHoraAMinutos(horaHasta);
@@ -101,7 +93,7 @@ export class Medico {
     }
 
     removerTurnoCancelado(idTurno) {
-    this.turnosSolicitados = this.turnosSolicitados.filter(t => t.id !== idTurno);
-}
+        this.turnosSolicitados = this.turnosSolicitados.filter(t => t.id !== idTurno);
+    }
 
 }
