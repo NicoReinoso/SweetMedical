@@ -35,23 +35,30 @@ export class MedicoService{
 
 
     bajaDisponibilidad = (id, horarioABorrar) => {
-        
-        const medico = this.medicoRepo.findById(id);
-        if(!medico){
-            throw NotFoundError("Medico no encontrado");        
-        }
-        
-        const disponibilidadActualizada = medico.disponibilidad.filter(h => 
-            h.diaSemana !== horarioABorrar.diaSemana ||
-            h.horaDesde !== horarioABorrar.horaDesde ||
-            h.horaHasta !== horarioABorrar.horaHasta
-        ); // comparamos campo a campo, pues al comparar objetos con !== en JS siempre obtenemos true
 
-        if (disponibilidadActualizada.length === medico.disponibilidad.length) {
-            throw new ConflictError("Disponibilidad no encontrada, revisar informacion de entrada");
-        } // comparamos longitud, pues no sirve directamente hacer disponibilidadActualizada === medico.disponibilidad por cuestiones de JS
+        const medico = this.medicoRepo.findById(id);
+        if (!medico) {
+            throw new NotFoundError("Medico no encontrado");
+        }
+
+        const disponibilidad = medico.disponibilidad.find(h =>
+            h.diaSemana === horarioABorrar.diaSemana &&
+            h.horaDesde === horarioABorrar.horaDesde &&
+            h.horaHasta === horarioABorrar.horaHasta
+        );
+
+        if (!disponibilidad) {
+            throw new ConflictError("Disponibilidad no encontrada");
+        }
+
+        if (disponibilidad.ocupado) {
+            throw new ConflictError("No se puede eliminar una disponibilidad ocupada");
+        }
+
+        const disponibilidadActualizada = medico.disponibilidad.filter(h =>
+            h !== disponibilidad
+        );
 
         return this.medicoRepo.updateDisponibilidad(id, disponibilidadActualizada);
-    }
-
+    };
 }
