@@ -23,7 +23,7 @@ test("debería lanzar error si el médico no existe", () => {
 test("debería agregar una nueva disponibilidad", () => {
     const service = new MedicoService();
 
-    nueva = new Disponibilidad ("VIERNES", "10:00", "11:00");
+    const nueva = new Disponibilidad ("VIERNES", "10:00", "11:00");
 
 
     service.agregarDisponibilidad("med-1", nueva);
@@ -41,7 +41,7 @@ test("debería agregar una nueva disponibilidad", () => {
 test("no debería permitir agregar una disponibilidad duplicada", () => {
     const service = new MedicoService();
 
-    duplicada = new Disponibilidad("LUNES", "08:00", "09:00");
+    const duplicada = new Disponibilidad("LUNES", "08:00", "09:00");
 
     expect(() => {
         service.agregarDisponibilidad("med-1", duplicada);
@@ -51,7 +51,7 @@ test("no debería permitir agregar una disponibilidad duplicada", () => {
 test("debería lanzar error si la disponibilidad no existe", () => {
     const service = new MedicoService();
 
-    fake = new Disponibilidad("Domingo", "10:00", "11:00");
+    const fake = new Disponibilidad("DOMINGO", "10:00", "11:00");
 
     expect(() => {
         service.bajaDisponibilidad("med-1", fake);
