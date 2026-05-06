@@ -1,6 +1,10 @@
 import { z } from "zod";
 
 export const turnoFormato = z.object({
+    pacienteId: z.string({
+        required_error: "pacienteId es obligatorio"
+    }),
+
     medicoId: z.string({
         required_error: "medicoId es obligatorio"
     }),

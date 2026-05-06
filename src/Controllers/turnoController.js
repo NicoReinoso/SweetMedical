@@ -18,8 +18,7 @@ export class TurnoController {
 
     reservarTurno = (req, res, next) => {
         try {
-            const { pacienteId } = req.params;
-            const { medicoId, fechaHora, sede, practica, costo } = req.body;
+            const { pacienteId, medicoId, fechaHora, sede, practica, costo } = req.body;
 
             const turno = this.turnoService.crearTurno({pacienteId, medicoId, fechaHora, sede, practica, costo});
             res.status(201).json(turno);

@@ -9,11 +9,16 @@ export class MedicoController{
 
     getDisponibilidad = (req, res, next) => {
         try {
-            const { id } = req.params; // Obtenemos el ID de la URL
-            const disponibilidad = this.medicoService.obtenerDisponibilidad(id);
-            res.status(200).json(disponibilidad); // Enviamos JSON con código 200 [cite: 102]
+            const { id } = req.params;
+            const { ocupado } = req.query;
+
+            const soloDisponibles = ocupado === "false";
+
+            const disponibilidad = this.medicoService.obtenerDisponibilidad(id, soloDisponibles);
+
+            res.status(200).json(disponibilidad);
         } catch (error) {
-            return next(error);
+            next(error);
         }
     };
 

@@ -29,21 +29,4 @@ export class Turno {
         this.costo = costo;
     }
 
-
-    /*obtenerTurno(id) {
-        turnoRepo.findTurno(id);
-    }*/
-
-    crearTurno() {
-        turnoRepo.createTurno(this);
-    }
-
-    actualizarTurno(turnoId, turno) {
-        turnoRepo.updateTurno(turnoId, turno);
-    }
-
-    eliminarTurno(turnoId) {
-        turnoRepo.deleteTurno(turnoId);
-    }
-
 }
