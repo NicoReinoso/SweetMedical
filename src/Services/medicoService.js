@@ -14,15 +14,11 @@ export class MedicoService{
         this.medicoRepo = medicoRepo;
     }
 
-    obtenerDisponibilidad = (medicoId, soloDisponibles = false) => {
+    obtenerDisponibilidad = (medicoId) => {
         const medico = this.medicoRepo.findById(medicoId);
 
         if (!medico) {
             throw new NotFoundError("Médico no encontrado");
-        }
-
-        if (soloDisponibles) {
-            return medico.disponibilidad.filter(d => !d.ocupado);
         }
 
         return medico.disponibilidad;

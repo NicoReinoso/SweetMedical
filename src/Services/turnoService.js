@@ -38,11 +38,19 @@ export class TurnoService {
         //encuentro la disponibilidad del medico solicitada y la valido
         const disponibilidad = medico.disponibilidad.find(d =>
             d.diaSemana === dia &&
-            d.horaDesde === hora &&
-            !d.ocupado
+            d.horaDesde === hora
         );
         if (!disponibilidad) {
             throw new BadRequestError("El medico solicitado no tiene disponibilidad para ese horario");
+        }
+        //Valido que no haya un turno para ese dia en especifico
+        const yaExisteTurno = this.turnoRepo.turnosCargados.some(t =>
+        t.medicoId === medico.id &&
+        new Date(t.fechaHora).getTime() === fecha.getTime() &&
+        t.estado !== EstadoTurno.CANCELADO
+        );
+        if (yaExisteTurno) {
+            throw new ConflictError("Ya existe un turno para ese horario");
         }
         //validacion de sede
         const sede = data.sede
@@ -57,9 +65,6 @@ export class TurnoService {
 
         //actualizo los repo
         this.turnoRepo.createTurno(nuevoTurno);
-        
-        //la disponibilidad del medico se ocupa
-        disponibilidad.ocupado = true;
 
         //se agrega el nuevo turno a los solicitados del medico, para que pueda aceptarlo
         medico.turnosSolicitados.push(nuevoTurno);
@@ -96,18 +101,6 @@ export class TurnoService {
         turno.estado = EstadoTurno.CANCELADO;
         turno.historialEstados.push(EstadoTurno.CANCELADO);
 
-        // liberar disponibilidad
-        const dia = obtenerDiaSemana(fechaTurno);
-        const hora = obtenerHora(fechaTurno);
-
-        const disponibilidad = medico.disponibilidad.find(d =>
-            d.diaSemana === dia &&
-            d.horaDesde === hora
-        );
-
-        if (disponibilidad) {
-            disponibilidad.ocupado = false;
-        }
         // actualizo los datos en el repo
         this.turnoRepo.updateTurno(id, turno);
 

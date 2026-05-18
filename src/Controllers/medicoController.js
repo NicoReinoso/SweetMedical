@@ -12,9 +12,7 @@ export class MedicoController{
             const { id } = req.params;
             const { ocupado } = req.query;
 
-            const soloDisponibles = ocupado === "false";
-
-            const disponibilidad = this.medicoService.obtenerDisponibilidad(id, soloDisponibles);
+            const disponibilidad = this.medicoService.obtenerDisponibilidad(id);
 
             res.status(200).json(disponibilidad);
         } catch (error) {
