@@ -1,0 +1,99 @@
+import Disponibilidad from "./disponibilidad.js";
+import { EstadoTurno } from "./turno.js";
+import {
+    BadRequestError,
+    ConflictError,
+    NotFoundError,
+    UnprocessableEntityError
+} from "../errors/AppError.js"
+
+export class Medico {
+    id;
+    usuario;
+    matricula;
+    nombre;
+    especialidades;
+    practicas;
+    sedes;
+    disponibilidad;
+    turnosSolicitados;
+    turnosAceptados;
+
+    constructor(id, usuario, matricula, nombre, especialidades, practicas, sedes) {
+        this.id = id
+        this.usuario = usuario
+        this.matricula = matricula
+        this.nombre = nombre.trim()
+        this.especialidades = especialidades
+        this.practicas = practicas
+        this.sedes = sedes
+        this.disponibilidad = []
+        this.turnosSolicitados = []
+        this.turnosAceptados = []
+    }
+
+    agregarDisponibilidad(nuevaDisponibilidad) {
+        if (!nuevaDisponibilidad || !(nuevaDisponibilidad instanceof Disponibilidad)) {
+            throw new UnprocessableEntityError("La disponibilidad es inválida");
+        }
+        this.validarCoherenciaHora(nuevaDisponibilidad.horaDesde, nuevaDisponibilidad.horaHasta);
+        this.verificarDisponibilidadIgual(this.disponibilidad, nuevaDisponibilidad);
+
+        this.disponibilidad.push(nuevaDisponibilidad);
+    }
+
+    aceptarTurno(idTurno) {
+        const turno = this.turnosSolicitados.find(t => t.id === idTurno);
+    
+
+        if (!turno) {
+            throw new NotFoundError("Turno no encontrado");
+        }
+
+        turno.estado = EstadoTurno.CONFIRMADO;
+        turno.historialEstados.push(EstadoTurno.CONFIRMADO);
+        
+        //eliminar de solicitados
+        this.turnosSolicitados = this.turnosSolicitados.filter(t => t.id !== idTurno);
+        this.turnosAceptados.push(turno);
+    }
+    
+
+    //VALIDACIONES
+    validarCoherenciaHora = (horaDesde, horaHasta) => {
+        const desde = this.convertirHoraAMinutos(horaDesde);
+        const hasta = this.convertirHoraAMinutos(horaHasta);
+
+        if (desde >= hasta) {
+            throw new BadRequestError("Rango horario inválido");
+        }
+    };
+
+    convertirHoraAMinutos = (hora) => {
+        const [h, m] = hora.split(":").map(Number);
+        return h * 60 + m;
+    };
+
+    verificarDisponibilidadIgual = (disponibilidades, nueva) => {
+        if (disponibilidades.some(d => d.diaSemana === nueva.diaSemana && d.horaDesde === nueva.horaDesde &&  d.horaHasta === nueva.horaHasta)) {
+            throw new ConflictError("La disponibilidad ya existe");
+        }
+    };
+
+    validarSedeSolicitada = (sede) => {
+        if(!this.sedes.includes(sede)){
+            throw new BadRequestError("El medico solicitado no opera en esa sede");
+        }
+    }
+
+    validarPracticaSolicitada = (practica) => {
+        if(!this.practicas.includes(practica)){
+            throw new BadRequestError("El medico solicitado no realiza esa practica");
+        }
+    }
+
+    removerTurnoCancelado(idTurno) {
+        this.turnosSolicitados = this.turnosSolicitados.filter(t => t.id !== idTurno);
+    }
+
+}
