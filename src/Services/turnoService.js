@@ -1,7 +1,6 @@
 import { TurnoRepo } from "../Repositorio/turnoBd.js" 
 import { MedicoRepo } from "../Repositorio/medicoBd.js"
 import { EstadoTurno, Turno } from "../Models/turno.js"
-import { Medico } from "../Models/medico.js"
 import {
     BadRequestError,
     ConflictError,
@@ -10,14 +9,14 @@ import {
 } from "../errors/AppError.js"
 
 export class TurnoService {
-    constructor({turnoRepo = new TurnoRepo(), medicoRepo = new MedicoRepo()} = {}) {
+    constructor(turnoRepo, medicoRepo) {
         this.turnoRepo = turnoRepo;
         this.medicoRepo = medicoRepo;
     }
 
 
-    obtenerTurno = (id) =>{
-        const turno = this.turnoRepo.findTurno(id);
+    async obtenerTurno(id) {
+        const turno = await this.turnoRepo.findTurno(id);
         if (!turno) {
             throw new NotFoundError("Turno no encontrado");
         }
@@ -26,8 +25,8 @@ export class TurnoService {
     }
     
     
-    crearTurno = (data) => {
-        const medico = this.medicoRepo.findById(data.medicoId);
+    async crearTurno(data) {
+        const medico = await this.medicoRepo.findById(data.medicoId);
 
         if (!medico) {
             throw new NotFoundError("Médico no encontrado");
@@ -43,15 +42,13 @@ export class TurnoService {
         if (!disponibilidad) {
             throw new BadRequestError("El medico solicitado no tiene disponibilidad para ese horario");
         }
+
         //Valido que no haya un turno para ese dia en especifico
-        const yaExisteTurno = this.turnoRepo.turnosCargados.some(t =>
-        t.medicoId === medico.id &&
-        new Date(t.fechaHora).getTime() === fecha.getTime() &&
-        t.estado !== EstadoTurno.CANCELADO
-        );
+        const yaExisteTurno = await this.turnoRepo.existeTurno(medico._id, fecha);
         if (yaExisteTurno) {
             throw new ConflictError("Ya existe un turno para ese horario");
         }
+
         //validacion de sede
         const sede = data.sede
         medico.validarSedeSolicitada(sede)
@@ -60,20 +57,18 @@ export class TurnoService {
         const practica = data.practica
         medico.validarPracticaSolicitada(practica)
 
-        const id = this.turnoRepo.generarNuevoId();
-        const nuevoTurno = new Turno(id, medico.id, data.pacienteId, fecha, sede, practica, data.costo);
+        const nuevoTurno = new Turno(medico.id, data.pacienteId, fecha, sede, practica, data.costo);
 
         //actualizo los repo
-        this.turnoRepo.createTurno(nuevoTurno);
+        const turnoGuardado = await this.turnoRepo.createTurno(nuevoTurno);
 
         //se agrega el nuevo turno a los solicitados del medico, para que pueda aceptarlo
-        medico.turnosSolicitados.push(nuevoTurno);
-
-        return nuevoTurno;
+        await this.medicoRepo.agregarTurnoSolicitado(medico._id, nuevoTurno._id);
+        return turnoGuardado;
     }
 
-    cancelarTurno = (id) => {
-        const turno = this.turnoRepo.findById(id);
+    async cancelarTurno(id) {
+        const turno = await this.turnoRepo.findTurno(id);
 
         if (!turno) {
             throw new NotFoundError("Turno no encontrado");
@@ -95,17 +90,19 @@ export class TurnoService {
             throw new BadRequestError("No se puede cancelar el turno con menos de una hora de anticipación");
         }
 
-        const medico = this.medicoRepo.findById(turno.medicoId);
+        const medico = await this.medicoRepo.findById(turno.medico);
 
         // cambiar estado
         turno.estado = EstadoTurno.CANCELADO;
         turno.historialEstados.push(EstadoTurno.CANCELADO);
 
         // actualizo los datos en el repo
-        this.turnoRepo.updateTurno(id, turno);
+        await this.turnoRepo.updateTurno(id, turno);
 
         // se remueve el turno cancelado de la lista de turnos solicitados del medico
         medico.removerTurnoCancelado(id);
+
+        await this.medicoRepo.updateMedico(medico.id, medico);
 
         return turno;
     }

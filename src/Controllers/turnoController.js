@@ -5,33 +5,33 @@ export class TurnoController {
         this.turnoService = turnoService;
     }
 
-    getTurno = (req, res, next) => {
+    async getTurno(req, res, next) {
         try {
             const { id } = req.params;
 
-            const turno = this.turnoService.obtenerTurno(id);
+            const turno = await this.turnoService.obtenerTurno(id);
             res.status(200).json(turno);
         } catch (error) {
             return next(error);
         }
     };
 
-    reservarTurno = (req, res, next) => {
+    async reservarTurno(req, res, next) {
         try {
             const { pacienteId, medicoId, fechaHora, sede, practica, costo } = req.body;
 
-            const turno = this.turnoService.crearTurno({pacienteId, medicoId, fechaHora, sede, practica, costo});
+            const turno = await this.turnoService.crearTurno({pacienteId, medicoId, fechaHora, sede, practica, costo});
             res.status(201).json(turno);
         } catch (error) {
             return next(error);
         }
     };
 
-    cancelarTurno = (req, res, next) => {
+    async cancelarTurno(req, res, next) {
         try {
             const { id } = req.params;
 
-            const turno = this.turnoService.cancelarTurno(id);
+            const turno = await this.turnoService.cancelarTurno(id);
             res.status(200).json(turno);
         } catch (error) {
             return next(error);

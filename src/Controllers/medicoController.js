@@ -7,12 +7,12 @@ export class MedicoController{
         this.medicoService = medicoService;
     }
 
-    getDisponibilidad = (req, res, next) => {
+    async getDisponibilidad(req, res, next) {
         try {
             const { id } = req.params;
             const { ocupado } = req.query;
 
-            const disponibilidad = this.medicoService.obtenerDisponibilidad(id);
+            const disponibilidad = await this.medicoService.obtenerDisponibilidad(id);
 
             res.status(200).json(disponibilidad);
         } catch (error) {
@@ -20,7 +20,7 @@ export class MedicoController{
         }
     };
 
-    addDisponibilidad = (req, res, next) => {
+    async addDisponibilidad(req, res, next) {
         try {
             const { id } = req.params; //ID del medico
             const disponibilidadAAgregar = new Disponibilidad(req.body.diaSemana, req.body.horaDesde, req.body.horaHasta); //transformo el body a Disponibilidad
@@ -32,7 +32,7 @@ export class MedicoController{
         }
     };
 
-    deleteDisponibilidad = (req, res, next) => {
+    async deleteDisponibilidad(req, res, next) {
         try{
             const { id } = req.params; // Obtenemos el ID de la URL
             const horariosABorrar = new Disponibilidad(req.body.diaSemana, req.body.horaDesde, req.body.horaHasta);

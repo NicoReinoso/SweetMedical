@@ -8,7 +8,6 @@ import {
 } from "../errors/AppError.js"
 
 export class Medico {
-    id;
     usuario;
     matricula;
     nombre;
@@ -19,8 +18,7 @@ export class Medico {
     turnosSolicitados;
     turnosAceptados;
 
-    constructor(id, usuario, matricula, nombre, especialidades, practicas, sedes) {
-        this.id = id
+    constructor(usuario, matricula, nombre, especialidades, practicas, sedes) {
         this.usuario = usuario
         this.matricula = matricula
         this.nombre = nombre.trim()

@@ -7,7 +7,6 @@ export const EstadoTurno = {
 }
 
 export class Turno {
-    id;
     medico;
     pacienteId;
     fechaHora;
@@ -17,8 +16,7 @@ export class Turno {
     historialEstados;
     costo;
 
-    constructor(id, medicoId, pacienteId, fechaHora, sede, practica, costo) {
-        this.id = id;
+    constructor(medicoId, pacienteId, fechaHora, sede, practica, costo) {
         this.medicoId = medicoId;
         this.pacienteId = pacienteId;
         this.fechaHora = fechaHora;

@@ -10,12 +10,27 @@ import {
 
 export class MedicoService{
 
-    constructor({medicoRepo = new MedicoRepo()} = {}) {
+    constructor(medicoRepo) {
         this.medicoRepo = medicoRepo;
     }
 
-    obtenerDisponibilidad = (medicoId) => {
-        const medico = this.medicoRepo.findById(medicoId);
+    toDTO(medico) {
+        return {
+            id: medico.id || medico._id,
+            usuario: medico.usuario,
+            matricula: medico.matricula,
+            nombre: medico.nombre,
+            especialidades: medico.especialidades,
+            practicas: medico.practicas,
+            sedes: medico.sedes,
+            disponibilidad: medico.disponibilidad,
+            turnosSolicitados: medico.turnosSolicitados,
+            turnosAceptados: medico.turnosAceptados
+        }
+    }
+
+    async obtenerDisponibilidad(medicoId) {
+        const medico = await this.medicoRepo.findById(medicoId);
 
         if (!medico) {
             throw new NotFoundError("Médico no encontrado");
@@ -24,21 +39,22 @@ export class MedicoService{
         return medico.disponibilidad;
     };
 
-    agregarDisponibilidad = (medicoId, disponibilidad) => {
-        const medico = this.medicoRepo.findById(medicoId);
+    async agregarDisponibilidad(medicoId, disponibilidad) {
+        const medico = await this.medicoRepo.findById(medicoId);
         if (!medico) {
             throw new NotFoundError("Médico no encontrado");
         }
 
         medico.agregarDisponibilidad(disponibilidad);
 
+        await this.medicoRepo.updateDisponibilidad(medicoId, medico.disponibilidad);
         return disponibilidad;
     };
 
 
-    bajaDisponibilidad = (id, horarioABorrar) => {
+    async bajaDisponibilidad(id, horarioABorrar) {
 
-        const medico = this.medicoRepo.findById(id);
+        const medico = await this.medicoRepo.findById(id);
         if (!medico) {
             throw new NotFoundError("Medico no encontrado");
         }
@@ -61,6 +77,7 @@ export class MedicoService{
             h !== disponibilidad
         );
 
-        return this.medicoRepo.updateDisponibilidad(id, disponibilidadActualizada);
+        await this.medicoRepo.updateDisponibilidad(id, disponibilidadActualizada);
+        return disponibilidadActualizada;
     };
 }

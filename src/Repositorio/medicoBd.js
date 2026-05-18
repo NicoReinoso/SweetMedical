@@ -1,6 +1,6 @@
 import Disponibilidad from "../Models/disponibilidad.js";
-import { Medico } from "../Models/medico.js";
-
+import { MedicoModel } from "../schemas/medicoSchema.js";
+/*
 //Base de datos
 const drHouse = new Medico("med-1", "Dr. House", "matricula1", "House", ["Carpinteria"], ["Cardio"], ["Medrano"]);
 drHouse.agregarDisponibilidad(new Disponibilidad ("LUNES", "08:00", "09:00"));
@@ -22,20 +22,40 @@ drOctopus.agregarDisponibilidad(new Disponibilidad ("JUEVES", "16:00", "17:00"))
 
 const drMario = new Medico("med-3", "Mariano.04", "matricula3", "Mariano", [], ["Futbol"], ["Campus"]); //no tiene disponibilidad, esta muy ocupado
 
+*/
 //Repo
 export class MedicoRepo{
 
-    medicosCargados = [drHouse, drMario, drOctopus];
-
-    findById = (id) => this.medicosCargados.find(m => m.id === id);
-
-    updateDisponibilidad = (id, nuevaDisponibilidad) => {
-        const index = this.medicosCargados.findIndex(m=> m.id == id);
-        
-        if(index !=-1){
-            this.medicosCargados[index].disponibilidad = nuevaDisponibilidad;
-            return this.medicosCargados[index].disponibilidad;
-        }
+    constructor() {
+        this.model = MedicoModel;
     }
+
+    // medicosCargados = [drHouse, drMario, drOctopus];
+
+    async findById(id) {
+        return await this.model.findById(id)
+    }
+
+    
+    async updateMedico(id, medicoModificado) {
+        return await this.model.findByIdAndUpdate(id, medicoModificado, { new: true } );
+    }
+
+
+    async updateDisponibilidad(id, nuevaDisponibilidad) {
+        return await this.model.findByIdAndUpdate(id, {disponibilidad: nuevaDisponibilidad}, {new: true} );
+    }
+
+    async agregarTurnoSolicitado(medicoId, turnoId) {
+    return await this.model.findByIdAndUpdate(
+        medicoId,
+        {
+            $push: {
+                turnosSolicitados: turnoId
+            }
+        },
+        { new: true }
+    );
+}
 }
 
