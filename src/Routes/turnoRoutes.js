@@ -1,6 +1,7 @@
 import express from "express";
-import { TurnoController } from "../Controllers/turnoController.js"
+import { TurnoController } from "../Controllers/turnoController.js";
 import { validarTurno } from "../middlewares/validarTurno.js";
+import { validarCancelacionTurno } from "../middlewares/validarMotivoCancelacion.js";
 
 const turnoController = new TurnoController()
 const router = express.Router();
@@ -12,7 +13,7 @@ router.get('/:id', turnoController.getTurno);
 router.post('/', validarTurno, turnoController.reservarTurno);
 
 // Ruta: DELETE /turnos/:turnoId
-router.delete('/:id', turnoController.cancelarTurno);
+router.delete('/:id', validarCancelacionTurno, turnoController.cancelarTurno);
 
 // Ruta: PATCH /turnos/:id/realizar
 router.patch('/:id/realizar', turnoController.realizarTurno);

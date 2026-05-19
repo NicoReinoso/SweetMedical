@@ -67,7 +67,7 @@ export class TurnoService {
         return turnoGuardado;
     }
 
-    async cancelarTurno(id) {
+    async cancelarTurno(id, motivo) {
         const turno = await this.turnoRepo.findTurno(id);
 
         if (!turno) {
@@ -98,6 +98,7 @@ export class TurnoService {
         // cambiar estado
         turno.estado = EstadoTurno.CANCELADO;
         turno.historialEstados.push(EstadoTurno.CANCELADO);
+        turno.motivoCancelacion = motivo;
 
         // actualizo los datos en el repo
         await this.turnoRepo.updateTurno(id, turno);
@@ -149,11 +150,30 @@ export class TurnoService {
         if (!turno) {
             throw new NotFoundError("Turno no encontrado");
         }
+        if (turno.EstadoTurno === EstadoTurno.CONFIRMADO){
+            throw new ConflictError("No se puede modificar un turno cancelado");
+        }
+        if (turno.estado === EstadoTurno.CANCELADO || turno.estado === EstadoTurno.REALIZADO){
+            throw new ConflictError("Este turno ya fue finalizado");
+        }
 
         // campos permitidos
         const cambiosPermitidos = {};
 
         if (cambios.fechaHora) {
+            const nuevaFecha = new Date(cambios.fechaHora);
+
+            // fecha inválida
+            if (isNaN(nuevaFecha.getTime())) {
+                throw new BadRequestError("La fecha es inválida");
+            }
+
+            // fecha pasada
+            if (nuevaFecha < new Date()) {
+                throw new BadRequestError(
+                    "La fecha no puede ser anterior a la actual"
+                );
+            }
             cambiosPermitidos.fechaHora = cambios.fechaHora;
         }
 

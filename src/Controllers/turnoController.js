@@ -30,8 +30,9 @@ export class TurnoController {
     async cancelarTurno(req, res, next) {
         try {
             const { id } = req.params;
+            const { motivo } = req.body;
 
-            const turno = await this.turnoService.cancelarTurno(id);
+            const turno = await this.turnoService.cancelarTurno(id, motivo);
             res.status(200).json(turno);
         } catch (error) {
             return next(error);

@@ -56,6 +56,15 @@ export class Medico {
         this.turnosAceptados.push(turno);
     }
     
+    removerTurno(idTurno) {
+        this.turnosSolicitados = this.turnosSolicitados.filter(
+            t => t.id !== idTurno
+        );
+
+        this.turnosAceptados = this.turnosAceptados.filter(
+            t => t.id !== idTurno
+        );
+    }
 
     //VALIDACIONES
     validarCoherenciaHora = (horaDesde, horaHasta) => {
@@ -90,14 +99,5 @@ export class Medico {
         }
     }
 
-    removerTurno(idTurno) {
-        this.turnosSolicitados = this.turnosSolicitados.filter(
-            t => t.id !== idTurno
-        );
-
-        this.turnosAceptados = this.turnosAceptados.filter(
-            t => t.id !== idTurno
-        );
-    }
 
 }

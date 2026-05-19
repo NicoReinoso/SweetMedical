@@ -59,9 +59,13 @@ const turnoSchema = new mongoose.Schema({
         type: Number,
         required: true,
         min: 0
+    },
+
+    motivoCancelacion: {
+    type: String,
+    trim: true,
+    default: null
     }
-
-
 });
 
 turnoSchema.loadClass(Turno);
