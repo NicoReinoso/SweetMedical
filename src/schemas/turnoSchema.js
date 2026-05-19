@@ -3,7 +3,7 @@ import { Turno } from "../Models/turno.js";
 
 const turnoSchema = new mongoose.Schema({
 
-    medico: {
+    medicoId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Medico",
         required: true
@@ -37,7 +37,8 @@ const turnoSchema = new mongoose.Schema({
         "RESERVADO",
         "CONFIRMADO",
         "CANCELADO",
-        "REALIZADO"
+        "REALIZADO",
+        "REPROGRAMADO"
         ],
         required: true
     },
@@ -48,7 +49,8 @@ const turnoSchema = new mongoose.Schema({
         "RESERVADO",
         "CONFIRMADO",
         "CANCELADO",
-        "REALIZADO"
+        "REALIZADO",
+        "REPROGRAMADO"
         ],
         trim: true
         }],
@@ -59,6 +61,12 @@ const turnoSchema = new mongoose.Schema({
         type: Number,
         required: true,
         min: 0
+    },
+
+    motivoCancelacion: {
+        type: String,
+        trim: true,
+        default: null
     }
 
 
