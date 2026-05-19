@@ -90,8 +90,14 @@ export class Medico {
         }
     }
 
-    removerTurnoCancelado(idTurno) {
-        this.turnosSolicitados = this.turnosSolicitados.filter(t => t.id !== idTurno);
+    removerTurno(idTurno) {
+        this.turnosSolicitados = this.turnosSolicitados.filter(
+            t => t.id !== idTurno
+        );
+
+        this.turnosAceptados = this.turnosAceptados.filter(
+            t => t.id !== idTurno
+        );
     }
 
 }

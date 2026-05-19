@@ -91,6 +91,9 @@ export class TurnoService {
         }
 
         const medico = await this.medicoRepo.findById(turno.medico);
+        if (!medico) {
+            throw new NotFoundError("Medico no encontrado (por qué existe un turno con el id de un medico inexistente?!?!)");
+        }
 
         // cambiar estado
         turno.estado = EstadoTurno.CANCELADO;
@@ -99,14 +102,73 @@ export class TurnoService {
         // actualizo los datos en el repo
         await this.turnoRepo.updateTurno(id, turno);
 
-        // se remueve el turno cancelado de la lista de turnos solicitados del medico
-        medico.removerTurnoCancelado(id);
+        // se remueve el turno cancelado de la lista de turnos solicitados/aceptados del medico
+        medico.removerTurno(id);
 
         await this.medicoRepo.updateMedico(medico.id, medico);
 
         return turno;
     }
 
+    async realizarTurno(id) {
+        const turno = await this.turnoRepo.findTurno(id);
+
+        if (!turno) {
+            throw new NotFoundError("Turno no encontrado");
+        }
+        if (turno.historialEstados.includes(EstadoTurno.REALIZADO)){
+            throw new ConflictError("No se puede realizar un turno realizado");
+        }
+        if (turno.historialEstados.includes(EstadoTurno.CANCELADO)){
+            throw new ConflictError("No se puede realizar un turno cancelado");
+        }
+
+        const medico = await this.medicoRepo.findById(turno.medico);
+        if (!medico) {
+            throw new NotFoundError("Medico no encontrado (por qué existe un turno con el id de un medico inexistente?!?!)");
+        }
+
+        // cambiar estado
+        turno.estado = EstadoTurno.REALIZADO;
+        turno.historialEstados.push(EstadoTurno.REALIZADO);
+
+        // actualizo los datos en el repo
+        await this.turnoRepo.updateTurno(id, turno);
+
+        // se remueve el turno finalizado de la lista de turnos solicitados/aceptados del medico
+        medico.removerTurno(id);
+
+        await this.medicoRepo.updateMedico(medico.id, medico);
+
+        return turno;
+    }
+
+    async modificarTurnoPorMedico(id, cambios) {
+        const turno = await this.turnoRepo.findTurno(id);
+
+        if (!turno) {
+            throw new NotFoundError("Turno no encontrado");
+        }
+
+        // campos permitidos
+        const cambiosPermitidos = {};
+
+        if (cambios.fechaHora) {
+            cambiosPermitidos.fechaHora = cambios.fechaHora;
+        }
+
+        if (cambios.sede) {
+            cambiosPermitidos.sede = cambios.sede;
+        }
+
+        if (cambios.practica) {
+            cambiosPermitidos.practica = cambios.practica;
+        }
+
+        Object.assign(turno, cambiosPermitidos);
+
+        return await this.turnoRepo.updateTurno(id, turno);
+    }
 }
 
 

@@ -10,7 +10,6 @@ export class MedicoController{
     async getDisponibilidad(req, res, next) {
         try {
             const { id } = req.params;
-            const { ocupado } = req.query;
 
             const disponibilidad = await this.medicoService.obtenerDisponibilidad(id);
 

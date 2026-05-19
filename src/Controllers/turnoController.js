@@ -37,4 +37,27 @@ export class TurnoController {
             return next(error);
         }
     };
+
+    async realizarTurno(req, res, next) {
+        try {
+            const { id } = req.params;
+
+            const turno = await this.turnoService.realizarTurno(id);
+            res.status(200).json(turno);
+        } catch (error) {
+            return next(error);
+        }
+    }
+
+    async modificarTurno(req, res, next) {
+        try {
+            const { id } = req.params;
+            const cambios = req.body;
+
+            const turno = await this.turnoService.modificarTurnoPorMedico(id, cambios);
+            res.status(200).json(turno);
+        } catch (error) {
+            return next(error);
+        }
+    }
 }
