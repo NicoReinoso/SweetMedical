@@ -1,6 +1,5 @@
 import { ZodError } from "zod";
-import { turnoFormato } from "../formatos/turnoFormato.js";
-import { cancelarTurnoFormato } from "../formatos/cancelarTurnoFormato.js";
+import { turnoFormato, cancelarTurnoFormato } from "../formatos/turnoFormato.js";
 import { BadRequestError, UnprocessableEntityError } from "../errors/AppError.js";
 
 export const validarTurno = (req, res, next) => {
@@ -32,7 +31,7 @@ export const validarCancelacion = (req, res, next) => {
             throw new BadRequestError("El body no puede estar vacío");
         }
 
-        req.body = cancelarTurnoSchema.parse(req.body);
+        req.body = cancelarTurnoFormato.parse(req.body);
 
         next();
 
