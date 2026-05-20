@@ -14,6 +14,4 @@ router.post('/:id/disponibilidad', validarDisponibilidad, medicoController.addDi
 // Ruta: DELETE /medicos/:id/disponibilidad
 router.delete('/:id/disponibilidad', validarDisponibilidad, medicoController.deleteDisponibilidad);
 
-
-
 export default router

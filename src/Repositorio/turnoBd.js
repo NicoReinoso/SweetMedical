@@ -32,5 +32,9 @@ export class TurnoRepo {
             $ne: EstadoTurno.CANCELADO
         }
     });
-}
+    }
+
+    async findByPaciente(pacienteId) {
+        return await this.model.find({ pacienteId });
+    }
 }   

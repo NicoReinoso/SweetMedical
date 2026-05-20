@@ -1,6 +1,7 @@
 import express from "express"
 import medicoRoutes from "./medicoRoutes.js"
 import turnoRoutes from "./turnoRoutes.js"
+import pacienteRoutes from "./pacienteRoutes.js"
 
 const router = express.Router()
 
@@ -15,5 +16,6 @@ router.get('/health', (req, res) => {
 // Configuración de paths bases para cada recurso
 router.use('/medicos', medicoRoutes);
 router.use('/turnos', turnoRoutes);
+router.use('/pacientes', pacienteRoutes);
 
 export default router
