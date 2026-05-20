@@ -21,11 +21,14 @@
   "dependencies": {
     "cors": "^2.8.6",
     "express": "^5.2.1",
+    "joi": "^18.2.1",
     "mongoose": "^9.6.2",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
     "zod": "^4.3.6"
   },
   "keywords": [],
   "devDependencies": {
-    "jest": "^30.3.0"
+    "jest": "^30.4.2"
   }
 }

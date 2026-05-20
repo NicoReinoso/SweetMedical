@@ -36,5 +36,27 @@ export class TurnoRepo {
 
     async findByPaciente(pacienteId) {
         return await this.model.find({ pacienteId });
+        return await this.model.findOne({
+            medicoId,
+            fechaHora,
+            estado: { $ne: EstadoTurno.CANCELADO }
+        });
+    }
+
+
+    // Devuelve todos los turnos de un paciente, del más reciente al más antiguo
+    async findByPacienteId(pacienteId) {
+        return await this.model.find({ pacienteId }).sort({ fechaHora: -1 });
+    }
+
+    // Busca turnos de un médico en una ventana de 2hs alrededor de una fecha
+    async findByMedicoIdEnRango(medicoId, fechaHora) {
+        const desde = new Date(new Date(fechaHora).getTime() - 2 * 60 * 60 * 1000);
+        const hasta = new Date(new Date(fechaHora).getTime() + 2 * 60 * 60 * 1000);
+        return await this.model.find({
+            medicoId,
+            fechaHora: { $gte: desde, $lte: hasta },
+            estado: { $ne: EstadoTurno.CANCELADO }
+        });
     }
 }   

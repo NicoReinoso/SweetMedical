@@ -69,26 +69,12 @@ export class TurnoService {
 
     async cancelarTurno(id, motivo) {
         const turno = await this.turnoRepo.findTurno(id);
-
         if (!turno) {
             throw new NotFoundError("Turno no encontrado");
         }
-        if (turno.historialEstados.includes(EstadoTurno.REALIZADO)){
-            throw new ConflictError("No se puede cancelar un turno realizado");
-        }
-        if (turno.historialEstados.includes(EstadoTurno.CANCELADO)){
-            throw new ConflictError("No se puede cancelar un turno cancelado");
-        }
 
-        const ahora = new Date();
-        const fechaTurno = new Date(turno.fechaHora);
-
-        const diferenciaMs = fechaTurno - ahora;
-        const unaHoraMs = 60 * 60 * 1000;
-
-        if (diferenciaMs < unaHoraMs) {
-            throw new BadRequestError("No se puede cancelar el turno con menos de una hora de anticipación");
-        }
+        this.validaCancelable(turno);
+        this.validaAnticipacion(turno.fechaHora);
 
         const medico = await this.medicoRepo.findById(turno.medico);
         if (!medico) {
@@ -100,7 +86,6 @@ export class TurnoService {
         turno.historialEstados.push(EstadoTurno.CANCELADO);
         turno.motivoCancelacion = motivo;
 
-        // actualizo los datos en el repo
         await this.turnoRepo.updateTurno(id, turno);
 
         // se remueve el turno cancelado de la lista de turnos solicitados/aceptados del medico
@@ -138,7 +123,6 @@ export class TurnoService {
 
         // se remueve el turno finalizado de la lista de turnos solicitados/aceptados del medico
         medico.removerTurno(id);
-
         await this.medicoRepo.updateMedico(medico.id, medico);
 
         return turno;
@@ -189,11 +173,62 @@ export class TurnoService {
 
         return await this.turnoRepo.updateTurno(id, turno);
     }
+
+    async reprogramarTurno(id, nuevaFechaHora) {
+        const turno = await this.turnoRepo.findTurno(id);
+        if (!turno) {
+            throw new NotFoundError("Turno no encontrado");
+        }
+
+        this.validaCancelable(turno);
+        this.validaAnticipacion(turno.fechaHora);
+
+        // Validar disponibilidad del médico en el nuevo horario
+        const medico = await this.medicoRepo.findById(turno.medicoId);
+        const fecha = new Date(nuevaFechaHora);
+        const dia = obtenerDiaSemana(fecha);
+        const hora = obtenerHora(fecha);
+
+        const disponibilidad = medico.disponibilidad.find(d =>
+            d.diaSemana === dia &&
+            d.horaDesde === hora
+        );
+        if (!disponibilidad) {
+            throw new BadRequestError("El médico no tiene disponibilidad para el nuevo horario");
+        }
+
+        // Validar que el nuevo slot no esté ocupado
+        const yaExisteTurno = await this.turnoRepo.existeTurno(turno.medicoId, fecha);
+        if (yaExisteTurno) {
+            throw new ConflictError("Ya existe un turno para el nuevo horario solicitado");
+        }
+
+        turno.fechaHora = fecha;
+        turno.estado = EstadoTurno.REPROGRAMADO;
+        turno.historialEstados.push(EstadoTurno.REPROGRAMADO);
+        
+        return await this.turnoRepo.updateTurno(id, turno);
+    }
+    
 }
 
-
-
 //METODOS AUXILIARES
+const validaCancelable = (turno) => {
+    if (turno.historialEstados.includes(EstadoTurno.REALIZADO)) {
+        throw new ConflictError("No se puede operar sobre un turno realizado");
+    }
+    if (turno.historialEstados.includes(EstadoTurno.CANCELADO)) {
+        throw new ConflictError("No se puede operar sobre un turno cancelado");
+    }
+}
+
+const validaAnticipacion = (fechaHora) => {
+    const diferenciaMs = new Date(fechaHora) - new Date();
+    if (diferenciaMs < 60 * 60 * 1000) {
+        throw new BadRequestError("Se requiere al menos 1 hora de anticipación");
+    }
+}
+
 const obtenerDiaSemana = (fecha) => {
     const dias = ["DOMINGO","LUNES","MARTES","MIERCOLES","JUEVES","VIERNES","SABADO"];
     return dias[fecha.getDay()];
