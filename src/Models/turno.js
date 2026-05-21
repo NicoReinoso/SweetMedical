@@ -8,7 +8,7 @@ export const EstadoTurno = {
 }
 
 export class Turno {
-    medico;
+    medicoId;
     pacienteId;
     fechaHora;
     sede;

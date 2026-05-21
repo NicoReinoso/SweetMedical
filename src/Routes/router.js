@@ -2,6 +2,7 @@ import express from "express"
 import medicoRoutes from "./medicoRoutes.js"
 import turnoRoutes from "./turnoRoutes.js"
 import pacienteRoutes from "./pacienteRoutes.js"
+import notificacionRoutes from "./notificacionRoutes.js"
 
 const router = express.Router()
 
@@ -17,5 +18,6 @@ router.get('/health', (req, res) => {
 router.use('/medicos', medicoRoutes);
 router.use('/turnos', turnoRoutes);
 router.use('/pacientes', pacienteRoutes);
+router.use('/notificaciones', notificacionRoutes);
 
 export default router

@@ -43,3 +43,13 @@ export const cancelarTurnoFormato = z.object({
         .min(1, "El motivo no puede estar vacío")
         .max(200, "El motivo es demasiado largo")
 }).strict();
+
+export const reprogramarTurnoFormato = z.object({
+        fechaHora: z.string({ required_error: "fechaHora es obligatoria" })
+            .refine(val => !isNaN(new Date(val).getTime()), {
+                message: "fechaHora debe ser una fecha válida"
+            })
+            .refine(val => new Date(val) > new Date(), {
+                message: "La nueva fecha debe ser futura"
+            })
+    }).strict();

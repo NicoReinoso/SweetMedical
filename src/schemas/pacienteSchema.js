@@ -28,6 +28,6 @@ const pacienteSchema = new mongoose.Schema({
     }]
 });
 
-medicoSchema.loadClass(Paciente);
+pacienteSchema.loadClass(Paciente);
 
 export const PacienteModel = mongoose.model("Paciente", pacienteSchema);

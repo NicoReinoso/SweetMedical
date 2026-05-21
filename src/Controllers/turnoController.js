@@ -1,16 +1,8 @@
 import { TurnoService } from "../Services/turnoService.js";
 
 export class TurnoController {
-    constructor({turnoService = new TurnoService(new TurnoRepo(), new MedicoRepo())} = {}) {
+    constructor({turnoService = new TurnoService()} = {}) {
         this.turnoService = turnoService;
-
-        // Binding para que Express no pierda el contexto de "this"
-        this.getTurno = this.getTurno.bind(this);
-        this.reservarTurno = this.reservarTurno.bind(this);
-        this.cancelarTurno = this.cancelarTurno.bind(this);
-        this.cancelarTurnoConMotivo = this.cancelarTurnoConMotivo.bind(this);
-        this.reprogramarTurno = this.reprogramarTurno.bind(this);
-        this.getHistorialPaciente = this.getHistorialPaciente.bind(this);
     }
 
 
