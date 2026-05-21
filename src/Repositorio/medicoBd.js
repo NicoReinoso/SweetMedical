@@ -1,4 +1,5 @@
 import Disponibilidad from "../Models/disponibilidad.js";
+import mongoose from "mongoose";
 import { MedicoModel } from "../schemas/medicoSchema.js";
 /*
 //Base de datos
@@ -33,20 +34,32 @@ export class MedicoRepo{
     // medicosCargados = [drHouse, drMario, drOctopus];
 
     async findById(id) {
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+        return null;
+        }
         return await this.model.findById(id)
     }
 
     
     async updateMedico(id, medicoModificado) {
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+        return null;
+        }
         return await this.model.findByIdAndUpdate(id, medicoModificado, { new: true } );
     }
 
 
     async updateDisponibilidad(id, nuevaDisponibilidad) {
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+        return null;
+        }
         return await this.model.findByIdAndUpdate(id, {disponibilidad: nuevaDisponibilidad}, {new: true} );
     }
 
     async agregarTurnoSolicitado(medicoId, turnoId) {
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+        return null;
+        }
     return await this.model.findByIdAndUpdate(
         medicoId,
         {

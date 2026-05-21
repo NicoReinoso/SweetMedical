@@ -10,7 +10,7 @@ import {
 
 export class MedicoService{
 
-    constructor(medicoRepo) {
+    constructor({ medicoRepo = new MedicoRepo() } = {}) {
         this.medicoRepo = medicoRepo;
     }
 

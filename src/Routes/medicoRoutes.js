@@ -25,7 +25,7 @@ const router = express.Router();
  *       404:
  *         description: Médico no encontrado
  */
-router.get('/:id/disponibilidad', medicoController.getDisponibilidad);
+router.get('/:id/disponibilidad', medicoController.getDisponibilidad.bind(medicoController));
 
 /**
  * @swagger
@@ -54,7 +54,7 @@ router.get('/:id/disponibilidad', medicoController.getDisponibilidad);
  *       404:
  *         description: Médico no encontrado
  */
-router.post('/:id/disponibilidad', validarDisponibilidad, medicoController.addDisponibilidad);
+router.post('/:id/disponibilidad', validarDisponibilidad, medicoController.addDisponibilidad.bind(medicoController));
 
 /**
  * @swagger
@@ -83,6 +83,6 @@ router.post('/:id/disponibilidad', validarDisponibilidad, medicoController.addDi
  *       409:
  *         description: Disponibilidad ocupada
  */
-router.delete('/:id/disponibilidad', validarDisponibilidad, medicoController.deleteDisponibilidad);
+router.delete('/:id/disponibilidad', validarDisponibilidad, medicoController.deleteDisponibilidad.bind(medicoController));
 
 export default router

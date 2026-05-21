@@ -9,7 +9,11 @@ import {
 } from "../errors/AppError.js"
 
 export class TurnoService {
-    constructor(turnoRepo, medicoRepo) {
+    constructor({
+        turnoRepo = new TurnoRepo(),
+        medicoRepo = new MedicoRepo()
+    } = {}) {
+
         this.turnoRepo = turnoRepo;
         this.medicoRepo = medicoRepo;
     }
