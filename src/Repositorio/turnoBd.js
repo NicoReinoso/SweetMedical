@@ -1,6 +1,7 @@
 import { Turno } from "../Models/turno.js";
 import { TurnoModel } from "../schemas/turnoSchema.js";
 import { EstadoTurno } from "../Models/turno.js";
+import mongoose from "mongoose";
 
 export class TurnoRepo {
     constructor() {
@@ -8,6 +9,9 @@ export class TurnoRepo {
     }
 
     async findTurno(id) {
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return null;
+        }
         return await this.model.findById(id);
     }
 
@@ -17,15 +21,24 @@ export class TurnoRepo {
     }
 
     async updateTurno(id, turnoModificado) {
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return null;
+        }
         return await this.model.findByIdAndUpdate(id, turnoModificado, { new: true } );
     }
 
     async deleteTurno(id) {
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return null;
+        }
         return await this.model.findByIdAndDelete(id);   
     }
 
     async existeTurno(medicoId, fechaHora) {
-    return await this.model.findOne({
+        if (!mongoose.Types.ObjectId.isValid(medicoId)) {
+            return null;
+        }
+        return await this.model.findOne({
         medico: medicoId,
         fechaHora: fechaHora,
         estado: {
@@ -35,6 +48,9 @@ export class TurnoRepo {
     }
 
     async findByPaciente(pacienteId) {
+        if (!mongoose.Types.ObjectId.isValid(pacienteId)) {
+            return null;
+        }
         return await this.model.find({ pacienteId });
         return await this.model.findOne({
             medicoId,
@@ -46,11 +62,17 @@ export class TurnoRepo {
 
     // Devuelve todos los turnos de un paciente, del más reciente al más antiguo
     async findByPacienteId(pacienteId) {
+        if (!mongoose.Types.ObjectId.isValid(pacienteId)) {
+            return null;
+        }
         return await this.model.find({ pacienteId }).sort({ fechaHora: -1 });
     }
 
     // Busca turnos de un médico en una ventana de 2hs alrededor de una fecha
     async findByMedicoIdEnRango(medicoId, fechaHora) {
+        if (!mongoose.Types.ObjectId.isValid(medicoId)) {
+            return null;
+        }
         const desde = new Date(new Date(fechaHora).getTime() - 2 * 60 * 60 * 1000);
         const hasta = new Date(new Date(fechaHora).getTime() + 2 * 60 * 60 * 1000);
         return await this.model.find({

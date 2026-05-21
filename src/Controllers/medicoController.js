@@ -24,7 +24,7 @@ export class MedicoController{
             const { id } = req.params; //ID del medico
             const disponibilidadAAgregar = new Disponibilidad(req.body.diaSemana, req.body.horaDesde, req.body.horaHasta); //transformo el body a Disponibilidad
             
-            const nuevaDisponibilidad = this.medicoService.agregarDisponibilidad(id, disponibilidadAAgregar);
+            const nuevaDisponibilidad = await this.medicoService.agregarDisponibilidad(id, disponibilidadAAgregar);
             res.status(201).json(nuevaDisponibilidad);
         } catch (error) {
             return next(error);   
@@ -36,7 +36,7 @@ export class MedicoController{
             const { id } = req.params; // Obtenemos el ID de la URL
             const horariosABorrar = new Disponibilidad(req.body.diaSemana, req.body.horaDesde, req.body.horaHasta);
 
-            const nuevaDisponibilidad = this.medicoService.bajaDisponibilidad(id, horariosABorrar);
+            const nuevaDisponibilidad = await this.medicoService.bajaDisponibilidad(id, horariosABorrar);
             
             res.status(200).json(nuevaDisponibilidad);
         } catch (error) {
