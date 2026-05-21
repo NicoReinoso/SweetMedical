@@ -10,7 +10,7 @@ router.get('/:idUsuario/no-leidas', notificacionController.getNoLeidas);
 // Ruta: GET /notificaciones/:idUsuario/leidas
 router.get('/:idUsuario/leidas', notificacionController.getLeidas);
 
-// Ruta: PATCH /notificaciones/:id
+// Ruta: PATCH /notificaciones/:id/leer
 router.patch('/:id', notificacionController.leer);
 
 export default router
