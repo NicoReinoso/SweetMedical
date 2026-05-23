@@ -7,15 +7,18 @@ import {
     NotFoundError,
     UnprocessableEntityError
 } from "../errors/AppError.js"
+import { NotificacionService } from "./notificacionService.js";
 
 export class TurnoService {
     constructor({
         turnoRepo = new TurnoRepo(),
-        medicoRepo = new MedicoRepo()
+        medicoRepo = new MedicoRepo(),
+        notificacionService = new NotificacionService()
     } = {}) {
 
         this.turnoRepo = turnoRepo;
         this.medicoRepo = medicoRepo;
+        this.notificacionService = notificacionService;
     }
 
 
@@ -68,6 +71,10 @@ export class TurnoService {
 
         //se agrega el nuevo turno a los solicitados del medico, para que pueda aceptarlo
         await this.medicoRepo.agregarTurnoSolicitado(medico._id, nuevoTurno._id);
+
+        //se notifica al medico
+        await this.notificacionService.crear(nuevoTurno.medicoId, nuevoTurno.pacienteId, "Nuevo turno solicitado");
+
         return turnoGuardado;
     }
 
@@ -96,6 +103,8 @@ export class TurnoService {
         medico.removerTurno(id);
 
         await this.medicoRepo.updateMedico(medico.id, medico);
+
+        await this.notificacionService.crear(turno.pacienteId, turno.medicoId, "Su turno fue cancelado");
 
         return turno;
     }
@@ -175,6 +184,9 @@ export class TurnoService {
 
         Object.assign(turno, cambiosPermitidos);
 
+        //notifico al paciente del cambio
+        await this.notificacionService.crear(turno.pacienteId, turno.medicoId, "Su turno fue cambiado");
+
         return await this.turnoRepo.updateTurno(id, turno);
     }
 
@@ -210,6 +222,8 @@ export class TurnoService {
         turno.fechaHora = fecha;
         turno.estado = EstadoTurno.REPROGRAMADO;
         turno.historialEstados.push(EstadoTurno.REPROGRAMADO);
+
+        await this.notificacionService.crear(turno.medicoId, turno.pacienteId, "Un turno fue reprogramado");
         
         return await this.turnoRepo.updateTurno(id, turno);
     }
