@@ -1,6 +1,8 @@
 import express from "express";
 import {MedicoController} from "../Controllers/medicoController.js";
 import { validarDisponibilidad } from "../middlewares/validarDisponibilidad.js";
+import { validarEspecialidad } from "../middlewares/validarEspecialidad.js";
+import { validarPractica } from "../middlewares/validarPractica.js";
 
 const medicoController = new MedicoController()
 const router = express.Router();
@@ -84,5 +86,17 @@ router.post('/:id/disponibilidad', validarDisponibilidad, medicoController.addDi
  *         description: Disponibilidad ocupada
  */
 router.delete('/:id/disponibilidad', validarDisponibilidad, medicoController.deleteDisponibilidad.bind(medicoController));
+
+router.post('/:id/especialidad', validarEspecialidad,medicoController.addEspecialidad.bind(medicoController));
+
+router.patch('/:id/especialidad/:especialidadId', medicoController.patchEspecialidad.bind(medicoController));
+
+router.delete('/:id/especialidad/:especialidadId', medicoController.deleteEspecialidad.bind(medicoController));
+
+router.post('/:id/practica', validarPractica,medicoController.addPractica.bind(medicoController));
+
+router.patch('/:id/practica/:practicaId', medicoController.patchPractica.bind(medicoController));
+
+router.delete('/:id/practica/:practicaId', medicoController.deletePractica.bind(medicoController));
 
 export default router
