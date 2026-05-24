@@ -96,8 +96,14 @@ export class Medico {
     }
 
     validarPracticaSolicitada = (practica) => {
-        if(!this.practicas.includes(practica)){
+        if(!this.practicas.some(p => p.nombre === practica.nombre)){
             throw new BadRequestError("El medico solicitado no realiza esa practica");
+        }
+    }
+
+    validarEspecialidadSolicitada = (especialidad) => {
+        if(!this.especialidades.some(e => e.nombre === especialidad.nombre)){
+            throw new BadRequestError("El medico solicitado no tiene esa especialidad");
         }
     }
 
@@ -122,10 +128,6 @@ export class Medico {
 
         if (this.practicas.some(p => p.nombre === nuevaPractica.nombre)) {
             throw new ConflictError("El médico ya tiene esa practica");
-        }
-
-        if (this.practicas.some(p => p.codigo === nuevaPractica.codigo)) {
-            throw new ConflictError("El médico ya tiene una practica con ese codigo");
         }
 
         this.practicas.push(nuevaPractica);

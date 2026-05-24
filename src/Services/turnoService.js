@@ -1,6 +1,7 @@
 import { TurnoRepo } from "../Repositorio/turnoBd.js" 
 import { MedicoRepo } from "../Repositorio/medicoBd.js"
 import { EstadoTurno, Turno } from "../Models/turno.js"
+import { PacienteRepo } from "../Repositorio/pacienteBd.js"
 import {
     BadRequestError,
     ConflictError,
@@ -13,11 +14,13 @@ export class TurnoService {
     constructor({
         turnoRepo = new TurnoRepo(),
         medicoRepo = new MedicoRepo(),
-        notificacionService = new NotificacionService()
+        notificacionService = new NotificacionService(),
+        pacienteRepo = new PacienteRepo()
     } = {}) {
         this.turnoRepo = turnoRepo;
         this.medicoRepo = medicoRepo;
         this.notificacionService = notificacionService;
+        this.pacienteRepo = pacienteRepo;
     }
 
 
@@ -160,14 +163,24 @@ export class TurnoService {
         }
 
         //validacion de sede
-        const sede = data.sede
-        medico.validarSedeSolicitada(sede)
+        const sede = data.sede;
+        medico.validarSedeSolicitada(sede);
 
-        //validacion de practica
-        const practica = data.practica
-        medico.validarPracticaSolicitada(practica)
+        const pacienteSolicitante = await this.pacienteRepo.findById(data.pacienteId);
 
-        const nuevoTurno = new Turno(medico.id, data.pacienteId, fecha, sede, practica, data.costo);
+        //validacion de practica (si se mando)
+        if(data.practica){
+            const practica = data.practica
+            medico.validarPracticaSolicitada(practica)
+            const nuevoTurno = new Turno(medico.id, data.pacienteId, fecha, sede, practica, practica.calcularCostoFinal(pacienteSolicitante));
+        }
+        //validacion de especialidad (si se mando)
+        if(data.especialidad){
+            const especialidad = data.especialidad
+            medico.validarPracticaSolicitada(especialidad)
+            const nuevoTurno = new Turno(medico.id, data.pacienteId, fecha, sede, especialidad, especialidad.calcularCostoFinal(pacienteSolicitante));
+        }
+        
 
         //actualizo los repo
         const turnoGuardado = await this.turnoRepo.createTurno(nuevoTurno);
