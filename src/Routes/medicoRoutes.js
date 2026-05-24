@@ -87,16 +87,204 @@ router.post('/:id/disponibilidad', validarDisponibilidad, medicoController.addDi
  */
 router.delete('/:id/disponibilidad', validarDisponibilidad, medicoController.deleteDisponibilidad.bind(medicoController));
 
+/**
+ * @swagger
+ * /medicos/{id}/especialidad:
+ *   post:
+ *     summary: Agrega una especialidad a un médico
+ *     tags:
+ *       - Médicos
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Especialidad'
+ *     responses:
+ *       201:
+ *         description: Especialidad creada
+ *       400:
+ *         description: Datos inválidos
+ *       404:
+ *         description: Médico no encontrado
+ *       409:
+ *          description: Existencia de especialidad con mismo nombre
+ *       422:
+ *          description: Campo inexistente o demas o faltante en body
+ */
 router.post('/:id/especialidad', validarEspecialidad,medicoController.addEspecialidad.bind(medicoController));
 
+/**
+ * @swagger
+ * /medicos/{id}/especialidad/{especialidadId}:
+ *   patch:
+ *     summary: Modifica una especialidad de un médico
+ *     tags:
+ *       - Médicos
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: especialidadId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               duracionTurnoEnMins:
+ *                 type: number
+ *               costoConsulta:
+ *                 type: number
+ *     responses:
+ *       200:
+ *         description: Especialidad modificada
+ *       400:
+ *         description: Datos inválidos
+ *       404:
+ *         description: Médico o especialidad no encontrado
+ *       422:
+ *         description: Campo inexistente o inválido en body
+ */
 router.patch('/:id/especialidad/:especialidadId', medicoController.patchEspecialidad.bind(medicoController));
 
+/**
+ * @swagger
+ * /medicos/{id}/especialidad/{especialidadId}:
+ *   delete:
+ *     summary: Elimina una especialidad de un médico
+ *     tags:
+ *       - Médicos
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: especialidadId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Especialidad eliminada
+ *       404:
+ *         description: Médico o especialidad no encontrado
+ */
 router.delete('/:id/especialidad/:especialidadId', medicoController.deleteEspecialidad.bind(medicoController));
 
+/**
+ * @swagger
+ * /medicos/{id}/practica:
+ *   post:
+ *     summary: Agrega una practica a un médico
+ *     tags:
+ *       - Médicos
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Practica'
+ *     responses:
+ *       201:
+ *         description: Practica creada
+ *       400:
+ *         description: Datos inválidos
+ *       404:
+ *         description: Médico no encontrado
+ *       409:
+ *          description: Existencia de practica con mismo nombre
+ *       422:
+ *          description: Campo inexistente o demas o faltante en body
+ */
 router.post('/:id/practica', validarPractica,medicoController.addPractica.bind(medicoController));
 
+/**
+ * @swagger
+ * /medicos/{id}/practica/{practicaId}:
+ *   patch:
+ *     summary: Modifica una practica de un médico
+ *     tags:
+ *       - Médicos
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: practicaId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               duracionTurnoEnMins:
+ *                 type: number
+ *               costo:
+ *                 type: number
+ *     responses:
+ *       200:
+ *         description: Practica modificada
+ *       400:
+ *         description: Datos inválidos
+ *       404:
+ *         description: Médico o practica no encontrados
+ *       422:
+ *         description: Campo inexistente o inválido en body
+ */
 router.patch('/:id/practica/:practicaId', medicoController.patchPractica.bind(medicoController));
 
+/**
+ * @swagger
+ * /medicos/{id}/practica/{practicaId}:
+ *   delete:
+ *     summary: Elimina una practica de un médico
+ *     tags:
+ *       - Médicos
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: practicaId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Practica eliminada
+ *       404:
+ *         description: Médico o practica no encontrados
+ */
 router.delete('/:id/practica/:practicaId', medicoController.deletePractica.bind(medicoController));
 
 export default router
