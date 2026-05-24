@@ -1,5 +1,7 @@
 import {MedicoService} from "../Services/medicoService.js"
 import Disponibilidad from "../Models/disponibilidad.js";
+import Especialidad from "../Models/especialidad.js";
+import Practica from "../Models/practica.js";
 
 export class MedicoController{
 
@@ -43,4 +45,93 @@ export class MedicoController{
             return next(error);
         }
     }
+
+    async addEspecialidad(req, res, next){
+        try{
+            const { id } = req.params;
+            
+            const especialidadAAgregar = new Especialidad(req.body.nombre, req.body.duracionTurnoEnMins, req.body.costoConsulta);
+
+            const nuevaEspecialidad = await this.medicoService.agregarEspecialidad(id, especialidadAAgregar);
+
+            res.status(201).json(nuevaEspecialidad);
+        } catch(error) {
+            return next(error);
+        }
+    }
+
+    async patchEspecialidad(req, res, next) {
+        try {
+            const { id, especialidadId } = req.params;
+
+            const especialidadModificada = {
+                _id: especialidadId,
+                duracionTurnoEnMins: req.body.duracionTurnoEnMins,
+                costoConsulta: req.body.costoConsulta
+            };
+
+            const resultado = await this.medicoService.modificarEspecialidad(id, especialidadModificada);
+
+            res.status(200).json(resultado);
+        } catch (error) {
+            return next(error);
+        }
+    }
+
+    async deleteEspecialidad(req, res, next){
+        try{
+            const { id, especialidadId } = req.params;
+
+            const nuevaEspecialidad = await this.medicoService.bajaEspecialidad(id, especialidadId);
+
+            res.status(200).json(nuevaEspecialidad);
+        } catch(error) {
+            return next(error);
+        }
+    }
+
+    async addPractica(req, res, next) {
+        try {
+            const { id } = req.params;
+
+            const practicaAAgregar = new Practica(req.body.codigo, req.body.nombre, req.body.duracionTurnoEnMins, req.body.costo);
+
+            const nuevaPractica = await this.medicoService.agregarPractica(id, practicaAAgregar);
+
+            res.status(201).json(nuevaPractica);
+        } catch (error) {
+            return next(error);
+        }
+    }
+
+    async patchPractica(req, res, next) {
+        try {
+            const { id, practicaId } = req.params;
+
+            const practicaModificada = {
+                _id: practicaId,
+                duracionTurnoEnMins: req.body.duracionTurnoEnMins,
+                costo: req.body.costo
+            };
+
+            const resultado = await this.medicoService.modificarPractica(id, practicaModificada);
+
+            res.status(200).json(resultado);
+        } catch (error) {
+            return next(error);
+        }
+    }
+
+    async deletePractica(req, res, next) {
+        try {
+            const { id, practicaId } = req.params;
+
+            const practicasFiltradas = await this.medicoService.bajaPractica(id, practicaId);
+
+            res.status(200).json(practicasFiltradas);
+        } catch (error) {
+            return next(error);
+        }
+    }
+
 }

@@ -6,6 +6,8 @@ import {
     NotFoundError,
     UnprocessableEntityError
 } from "../errors/AppError.js"
+import Especialidad from "./especialidad.js";
+import Practica from "./practica.js"
 
 export class Medico {
     usuario;
@@ -99,5 +101,33 @@ export class Medico {
         }
     }
 
+    agregarEspecialidad(nuevaEspecialidad){
 
+        if (!nuevaEspecialidad || !(nuevaEspecialidad instanceof Especialidad)) {
+            throw new UnprocessableEntityError("La especialidad es inválida");
+        }
+
+        if (this.especialidades.some(e => e.nombre === nuevaEspecialidad.nombre)) {
+            throw new ConflictError("El médico ya tiene esa especialidad");
+        }
+
+        this.especialidades.push(nuevaEspecialidad);
+    }
+
+    agregarPractica(nuevaPractica){
+
+        if (!nuevaPractica || !(nuevaPractica instanceof Practica)) {
+            throw new UnprocessableEntityError("La practica es inválida");
+        }
+
+        if (this.practicas.some(p => p.nombre === nuevaPractica.nombre)) {
+            throw new ConflictError("El médico ya tiene esa practica");
+        }
+
+        if (this.practicas.some(p => p.codigo === nuevaPractica.codigo)) {
+            throw new ConflictError("El médico ya tiene una practica con ese codigo");
+        }
+
+        this.practicas.push(nuevaPractica);
+    }
 }

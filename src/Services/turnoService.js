@@ -15,7 +15,6 @@ export class TurnoService {
         medicoRepo = new MedicoRepo(),
         notificacionService = new NotificacionService()
     } = {}) {
-
         this.turnoRepo = turnoRepo;
         this.medicoRepo = medicoRepo;
         this.notificacionService = notificacionService;
@@ -182,14 +181,24 @@ export class TurnoService {
         return turnoGuardado;
     }
 
+    async cancelarTurnoConMotivo(id, motivo) {
+    return await this.cancelarTurno(id, motivo);
+    }
+
+    async getHistorialPaciente(pacienteId) {
+        return await this.turnoRepo.findByPacienteId(pacienteId);
+    }
+
+
+
     async cancelarTurno(id, motivo) {
         const turno = await this.turnoRepo.findTurno(id);
         if (!turno) {
             throw new NotFoundError("Turno no encontrado");
         }
 
-        this.validaCancelable(turno);
-        this.validaAnticipacion(turno.fechaHora);
+        validaCancelable(turno);
+        validaAnticipacion(turno.fechaHora);
 
         const medico = await this.medicoRepo.findById(turno.medico);
         if (!medico) {
@@ -300,8 +309,8 @@ export class TurnoService {
             throw new NotFoundError("Turno no encontrado");
         }
 
-        this.validaCancelable(turno);
-        this.validaAnticipacion(turno.fechaHora);
+        validaCancelable(turno);
+        validaAnticipacion(turno.fechaHora);
 
         // Validar disponibilidad del médico en el nuevo horario
         const medico = await this.medicoRepo.findById(turno.medicoId);

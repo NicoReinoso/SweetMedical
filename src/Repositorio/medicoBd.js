@@ -63,7 +63,7 @@ export class MedicoRepo{
         if (!mongoose.Types.ObjectId.isValid(id)) {
         return null;
         }
-    return await this.model.findByIdAndUpdate(
+        return await this.model.findByIdAndUpdate(
         medicoId,
         {
             $push: {
@@ -71,7 +71,53 @@ export class MedicoRepo{
             }
         },
         { new: true }
-    );
-}
+        );
+    }
+
+    async updateEspecialidades(medicoId, especialidadesActualizadas) {
+        if (!mongoose.Types.ObjectId.isValid(medicoId)) {
+            return null;
+        }
+
+        return await this.model.findByIdAndUpdate(
+            medicoId,
+            { especialidades: especialidadesActualizadas },
+            { new: true }
+        );
+    }   
+
+    async updatePracticas(medicoId, practicasActualizadas) {
+        if (!mongoose.Types.ObjectId.isValid(medicoId)) {
+        return null;
+        }
+
+        return await this.model.findByIdAndUpdate(
+            medicoId,
+            { practicas: practicasActualizadas },
+            { new: true }
+        );
+    }
+
+    async findEspecialidadById(medicoId, especialidadId) {
+        if (!mongoose.Types.ObjectId.isValid(medicoId)) {
+            return null;
+        }
+
+        const medico = await this.model.findById(medicoId);
+        if (!medico) return null;
+
+        return medico.especialidades.find(e => e._id.toString() === especialidadId);
+    }
+
+    async findPracticaById(medicoId, practicaId) {
+        if (!mongoose.Types.ObjectId.isValid(medicoId)) {
+            return null;
+        }
+
+        const medico = await this.model.findById(medicoId);
+        if (!medico) return null;
+
+        return medico.practicas.find(p => p._id.toString() === practicaId);
+    }
 }
 

@@ -29,6 +29,52 @@ const disponibilidadSchema = new mongoose.Schema({
     }
 }, { _id: false });
 
+const especialidadSchema = new mongoose.Schema({
+    nombre: {
+        type: String,
+        required: true,
+        trim:true
+    },
+
+    duracionTurnoEnMins: {
+        type: Number,
+        required: true,
+        min: 1
+    },
+
+    costoConsulta: {
+        type: Number,
+        required: true,
+        min: 0
+    }
+});
+
+const practicaSchema = new mongoose.Schema({
+    codigo: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    
+    nombre: {
+        type: String,
+        required: true,
+        trim:true
+    },
+
+    duracionTurnoEnMins: {
+        type: Number,
+        required: true,
+        min: 1
+    },
+
+    costo: {
+        type: Number,
+        required: true,
+        min: 0
+    }
+});
+
 const medicoSchema = new mongoose.Schema({
     usuario: {
         type: String,
@@ -48,29 +94,9 @@ const medicoSchema = new mongoose.Schema({
         trim:true
     },
 
-    especialidades: {
-        type: [{
-            type: String,
-            trim: true
-        }],
-        required: true,
-        validate: {
-            validator: arr => arr.length > 0,
-            message: "Debe tener al menos una especialidad"
-        }
-    },
+    especialidades: [especialidadSchema],
 
-    practicas:{
-        type: [{
-            type: String,
-            trim: true
-        }],
-        required: true,
-        validate: {
-            validator: arr => arr.length > 0,
-            message: "Debe tener al menos una practica"
-        }
-    },
+    practicas: [practicaSchema],
 
     sedes: {
         type: [{
