@@ -37,9 +37,12 @@ export class MedicoRepo{
         if (!mongoose.Types.ObjectId.isValid(id)) {
         return null;
         }
-        return await this.model.findById(id)
+        return await this.model.findById(id);
     }
 
+    async findAll() {
+        return await this.model.find({});
+    }
     
     async updateMedico(id, medicoModificado) {
         if (!mongoose.Types.ObjectId.isValid(id)) {

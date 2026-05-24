@@ -30,7 +30,111 @@ export class TurnoService {
 
         return turno;
     }
-    
+
+    async buscarDisponibles(filtros) {
+
+    const {
+        medicoNombre,
+        especialidad,
+        practica,
+        sede,
+        fechaDesde,
+        fechaHasta
+    } = filtros;
+
+    // 1) obtener tpdos los médicos
+    let medicos = await this.medicoRepo.findAll();
+
+    // Filtro todos los medicos por los query params recibidos
+    if (medicoNombre) {
+        medicos = medicos.filter(m => m.nombre === medicoNombre);
+    }
+
+    if (especialidad) {
+        medicos = medicos.filter(m => m.especialidades.includes(especialidad));
+    }
+
+    if (practica) {
+        medicos = medicos.filter(m => m.practicas.includes(practica));
+    }
+
+    if (sede) {
+        medicos = medicos.filter(m => m.sedes.includes(sede));
+    }
+
+    const resultados = [];
+
+    // si NO mandan fechas, devolver disponibilidades semanales
+    if (!fechaDesde || !fechaHasta) {
+
+        for (const medico of medicos) {
+
+            for (const disponibilidad of medico.disponibilidad) {
+
+                resultados.push({
+                    medicoId: medico._id,
+                    medico: medico.nombre,
+                    especialidades: medico.especialidades,
+                    practicas: medico.practicas,
+                    sedes: medico.sedes,
+                    diaSemana: disponibilidad.diaSemana,
+                    horaDesde: disponibilidad.horaDesde,
+                    horaHasta: disponibilidad.horaHasta
+                });
+            }
+        }
+
+        return resultados;
+    }
+
+    // si mandan rango de fechas
+    const desde = new Date(fechaDesde);
+    const hasta = new Date(fechaHasta);
+
+    for (const medico of medicos) {
+
+        for (
+            let fecha = new Date(desde);
+            fecha <= hasta;
+            fecha.setDate(fecha.getDate() + 1)
+        ) {
+
+            const diaSemana = obtenerDiaSemana(fecha);
+
+            const disponibilidadesDia = medico.disponibilidad.filter(
+                d => d.diaSemana === diaSemana
+            );
+
+            for (const disponibilidad of disponibilidadesDia) {
+
+                const fechaSlot = construirFechaHora(
+                    fecha,
+                    disponibilidad.horaDesde
+                );
+
+                const ocupado = await this.turnoRepo.existeTurno(
+                    medico._id,
+                    fechaSlot
+                );
+
+                if (!ocupado) {
+
+                    resultados.push({
+                        medicoId: medico._id,
+                        medico: medico.nombre,
+                        especialidades: medico.especialidades,
+                        practicas: medico.practicas,
+                        sedes: medico.sedes,
+                        fechaHora: fechaSlot
+                    });
+                }
+            }
+        }
+    }
+
+    return resultados;
+}
+        
     
     async crearTurno(data) {
         const medico = await this.medicoRepo.findById(data.medicoId);
@@ -254,4 +358,17 @@ const obtenerDiaSemana = (fecha) => {
 
 const obtenerHora = (fecha) => {
     return fecha.toTimeString().slice(0,5); // "HH:MM"
+};
+
+const construirFechaHora = (fecha, hora) => {
+    const [h, m] = hora.split(":");
+
+    const nuevaFecha = new Date(fecha);
+
+    nuevaFecha.setHours(h);
+    nuevaFecha.setMinutes(m);
+    nuevaFecha.setSeconds(0);
+    nuevaFecha.setMilliseconds(0);
+
+    return nuevaFecha;
 };

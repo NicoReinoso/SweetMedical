@@ -17,6 +17,18 @@ export class TurnoController {
         }
     };
 
+    async buscarDisponibles(req, res, next) {
+    try {
+        const filtros = req.query;
+
+        const resultados = await this.turnoService.buscarDisponibles(filtros);
+
+        res.status(200).json(resultados);
+    } catch (error) {
+        next(error);
+    }
+}
+
     async reservarTurno(req, res, next) {
         try {
             const { pacienteId, medicoId, fechaHora, sede, practica, costo } = req.body;
