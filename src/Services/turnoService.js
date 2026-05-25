@@ -168,6 +168,9 @@ export class TurnoService {
 
         const pacienteSolicitante = await this.pacienteRepo.findById(data.pacienteId);
 
+        if(data.practica && data.especialidad) {
+            throw new ConflictError("No se puede crear un turno para una disponibilidad para una practica y especialidad a la vez");
+        }
         //validacion de practica (si se mando)
         if(data.practica){
             const practica = data.practica
@@ -195,14 +198,12 @@ export class TurnoService {
     }
 
     async cancelarTurnoConMotivo(id, motivo) {
-    return await this.cancelarTurno(id, motivo);
+        return await this.cancelarTurno(id, motivo);
     }
 
     async getHistorialPaciente(pacienteId) {
         return await this.turnoRepo.findByPacienteId(pacienteId);
     }
-
-
 
     async cancelarTurno(id, motivo) {
         const turno = await this.turnoRepo.findTurno(id);
