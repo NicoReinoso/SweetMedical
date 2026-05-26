@@ -1,13 +1,13 @@
-import Disponibilidad from "./disponibilidad.js";
-import { EstadoTurno } from "./turno.js";
 import {
     BadRequestError,
     ConflictError,
     NotFoundError,
     UnprocessableEntityError
-} from "../errors/AppError.js"
+} from "../errors/AppError.js";
+import Disponibilidad from "./disponibilidad.js";
 import Especialidad from "./especialidad.js";
-import Practica from "./practica.js"
+import Practica from "./practica.js";
+import { EstadoTurno } from "./turno.js";
 
 export class Medico {
     usuario;
@@ -37,7 +37,7 @@ export class Medico {
             throw new UnprocessableEntityError("La disponibilidad es inválida");
         }
         this.validarCoherenciaHora(nuevaDisponibilidad.horaDesde, nuevaDisponibilidad.horaHasta);
-        this.verificarDisponibilidadIgual(this.disponibilidad, nuevaDisponibilidad);
+        this.verificarSuperposicion(this.disponibilidad, nuevaDisponibilidad);
 
         this.disponibilidad.push(nuevaDisponibilidad);
     }
@@ -69,35 +69,48 @@ export class Medico {
     }
 
     //VALIDACIONES
-    validarCoherenciaHora = (horaDesde, horaHasta) => {
+    validarCoherenciaHora(horaDesde, horaHasta) {
         const desde = this.convertirHoraAMinutos(horaDesde);
         const hasta = this.convertirHoraAMinutos(horaHasta);
 
         if (desde >= hasta) {
             throw new BadRequestError("Rango horario inválido");
         }
-    };
+    }
 
-    convertirHoraAMinutos = (hora) => {
+    convertirHoraAMinutos(hora) {
         const [h, m] = hora.split(":").map(Number);
         return h * 60 + m;
-    };
+    }
 
-    verificarDisponibilidadIgual = (disponibilidades, nueva) => {
-        if (disponibilidades.some(d => d.diaSemana === nueva.diaSemana && d.horaDesde === nueva.horaDesde &&  d.horaHasta === nueva.horaHasta)) {
-            throw new ConflictError("La disponibilidad ya existe");
+    verificarSuperposicion(disponibilidades, nueva) {
+        const nuevaDesde = this.convertirHoraAMinutos(nueva.horaDesde);
+        const nuevaHasta = this.convertirHoraAMinutos(nueva.horaHasta);
+
+        const superpuesta = disponibilidades.find(d =>
+            d.diaSemana === nueva.diaSemana &&
+            this.convertirHoraAMinutos(d.horaDesde) < nuevaHasta &&
+            nuevaDesde < this.convertirHoraAMinutos(d.horaHasta)
+        );
+
+        if (superpuesta) {
+            throw new ConflictError(
+                `El bloque ${nueva.horaDesde}–${nueva.horaHasta} se superpone con una disponibilidad existente (${superpuesta.horaDesde}–${superpuesta.horaHasta})`
+            );
         }
-    };
+    }
 
-    validarSedeSolicitada = (sede) => {
-        if(!this.sedes.includes(sede)){
+    validarSedeSolicitada(sede) {
+        if (!this.sedes.includes(sede)) {
             throw new BadRequestError("El medico solicitado no opera en esa sede");
         }
     }
 
-    validarPracticaSolicitada = (practica) => {
-        if(!this.practicas.includes(practica)){
-            throw new BadRequestError("El medico solicitado no realiza esa practica");
+    validarPracticaSolicitada(practica) {
+        const enEspecialidades = this.especialidades.some(e => e.nombre === practica);
+        const enPracticas = this.practicas.some(p => p.nombre === practica);
+        if (!enEspecialidades && !enPracticas) {
+            throw new BadRequestError("El médico no ofrece el servicio solicitado");
         }
     }
 
