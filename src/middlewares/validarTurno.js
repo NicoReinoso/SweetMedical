@@ -4,10 +4,10 @@ import { BadRequestError, UnprocessableEntityError } from "../errors/AppError.js
 
 export const validarFiltrosTurno = (req, res, next) => {
     try {
-        const filtros = req.body;
+        const filtros = req.query;
 
         filtrosBusquedaFormato.parse(filtros);
-        
+
         next();
     } catch (error) {
         if (error instanceof ZodError) {
