@@ -122,7 +122,11 @@ export class Medico {
     }
 
     validarPracticaSolicitada(practica) {
-        if(!this.practicas.some(p => p.nombre === practica.nombre)){
+        const nombreBuscado = typeof practica === "string" ? practica : practica?.nombre;
+        if (!this.practicas.some(p => {
+            const nombre = typeof p === "string" ? p : p?.nombre;
+            return nombre === nombreBuscado;
+        })) {
             throw new BadRequestError("El medico solicitado no realiza esa practica");
         }
     }

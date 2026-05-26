@@ -69,7 +69,8 @@ describe("TurnoService", () => {
                 disponibilidad: [
                     {
                         diaSemana: "LUNES",
-                        horaDesde: "09:00"
+                        horaDesde: "09:00",
+                        horaHasta: "10:00"
                     }
                 ],
 
@@ -148,7 +149,8 @@ describe("TurnoService", () => {
                 disponibilidad: [
                     {
                         diaSemana: "LUNES",
-                        horaDesde: "09:00"
+                        horaDesde: "09:00",
+                        horaHasta: "10:00"
                     }
                 ],
 
@@ -249,7 +251,8 @@ describe("TurnoService", () => {
                 disponibilidad: [
                     {
                         diaSemana: "JUEVES",
-                        horaDesde: "09:00"
+                        horaDesde: "09:00",
+                        horaHasta: "10:00"
                     }
                 ]
             });

@@ -102,26 +102,37 @@ export class MedicoService{
             throw new NotFoundError("Médico no encontrado");
         }
 
-        const especialidadAModificar = medico.especialidades.find(e => e.nombre === especialidadModificada.nombre);
+        const especialidadAModificar = medico.especialidades.find(e =>
+            (especialidadModificada._id && e._id?.toString() === especialidadModificada._id?.toString()) ||
+            (!especialidadModificada._id && e.nombre === especialidadModificada.nombre)
+        );
 
         if (!especialidadAModificar) {
             throw new NotFoundError("Especialidad no encontrada");
         }
 
-        especialidadAModificar.costoBase = especialidadModificada.costoConsulta ?? especialidadAModificar.costoBase;
+        if (especialidadModificada.duracionTurnoEnMins !== undefined) {
+            especialidadAModificar.duracionTurnoEnMins = especialidadModificada.duracionTurnoEnMins;
+        }
+        if (especialidadModificada.costoConsulta !== undefined) {
+            especialidadAModificar.costoConsulta = especialidadModificada.costoConsulta;
+            especialidadAModificar.costoBase = especialidadModificada.costoConsulta;
+        }
 
         await this.medicoRepo.updateEspecialidades(medicoId, medico.especialidades);
 
-        return especialidadAModificar;
+        return especialidadModificada;
 }
 
-    async bajaEspecialidad(medicoId, nombreEspecialidad){
+    async bajaEspecialidad(medicoId, identificador){
         const medico = await this.medicoRepo.findById(medicoId);
         if (!medico) {
             throw new NotFoundError("Médico no encontrado");
         }
 
-        const especialidadesFiltradas = medico.especialidades.filter(e => e.nombre !== nombreEspecialidad);
+        const especialidadesFiltradas = medico.especialidades.filter(e =>
+            e._id?.toString() !== identificador && e.nombre !== identificador
+        );
 
         await this.medicoRepo.updateEspecialidades(medicoId, especialidadesFiltradas);
 
@@ -146,21 +157,36 @@ export class MedicoService{
             throw new NotFoundError("Médico no encontrado");
         }
 
-        const practicaAModificar = medico.practicas.find(p => p.nombre === practicaModificada.nombre);
+        const practicaAModificar = medico.practicas.find(p =>
+            (practicaModificada._id && p._id?.toString() === practicaModificada._id?.toString()) ||
+            (!practicaModificada._id && p.nombre === practicaModificada.nombre)
+        );
 
-        practicaAModificar.costoBase = practicaModificada.costo ?? practicaAModificar.costoBase;
+        if (!practicaAModificar) {
+            throw new NotFoundError("Práctica no encontrada");
+        }
+
+        if (practicaModificada.duracionTurnoEnMins !== undefined) {
+            practicaAModificar.duracionTurnoEnMins = practicaModificada.duracionTurnoEnMins;
+        }
+        if (practicaModificada.costo !== undefined) {
+            practicaAModificar.costo = practicaModificada.costo;
+            practicaAModificar.costoBase = practicaModificada.costo;
+        }
 
         await this.medicoRepo.updatePracticas(medicoId, medico.practicas);
         return practicaModificada;
     }
 
-    async bajaPractica(medicoId, nombrePractica){
+    async bajaPractica(medicoId, identificador){
         const medico = await this.medicoRepo.findById(medicoId);
         if (!medico) {
             throw new NotFoundError("Médico no encontrado");
         }
 
-        const practicasFiltradas = medico.practicas.filter(p => p.nombre !== nombrePractica);
+        const practicasFiltradas = medico.practicas.filter(p =>
+            p._id?.toString() !== identificador && p.nombre !== identificador
+        );
 
         await this.medicoRepo.updatePracticas(medicoId, practicasFiltradas);
 

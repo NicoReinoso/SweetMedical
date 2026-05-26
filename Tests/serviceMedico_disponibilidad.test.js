@@ -18,7 +18,7 @@ describe("MedicoService", () => {
             updateDisponibilidad: jest.fn()
         };
 
-        medicoService = new MedicoService(medicoRepoMock);
+        medicoService = new MedicoService({ medicoRepo: medicoRepoMock });
     });
 
     describe("obtenerDisponibilidad", () => {
