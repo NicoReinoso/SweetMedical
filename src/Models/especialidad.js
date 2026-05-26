@@ -25,7 +25,11 @@ class Especialidad{
 
         // sin cobertura
         if (!coberturaPaciente) {
-            return this.costoBase;
+            return {
+                cobertura: "SIN COBERTURA",
+                porcentajeCobertura: 0,
+                costoFinal: this.costoBase
+            };
         }
 
         const porcentaje = coberturaPaciente.porcentaje;
@@ -34,7 +38,17 @@ class Especialidad{
 
         const montoFinal = this.costoBase - descuento;
 
-        return montoFinal;
+        let tipoCobertura = "PARCIAL";
+
+        if (porcentaje === 100) {
+            tipoCobertura = "TOTAL";
+        }
+
+        return {
+            cobertura: tipoCobertura,
+            porcentajeCobertura: porcentaje,
+            costoFinal: montoFinal
+        };
     }
 }
 

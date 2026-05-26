@@ -33,7 +33,7 @@ export class TurnoService {
         return turno;
     }
 
-    async buscarDisponibles(filtros) {
+async buscarDisponibles(filtros) {
 
     const {
         pacienteId, // de momento
@@ -52,20 +52,53 @@ export class TurnoService {
 
     } = filtros;
 
-    // 1) obtener tpdos los médicos
+    // validaciones
+    if (fechaDesde && isNaN(new Date(fechaDesde))) {
+        throw new BadRequestError("fechaDesde inválida");
+    }
+
+    if (fechaHasta && isNaN(new Date(fechaHasta))) {
+        throw new BadRequestError("fechaHasta inválida");
+    }
+
+    if (isNaN(pagina) || pagina < 1) {
+        throw new BadRequestError("page inválido");
+    }
+
+    if (isNaN(limite) || limite < 1) {
+        throw new BadRequestError("limit inválido");
+    }
+
+    // =========================
+    // PACIENTE
+    // =========================
+ 
+    let paciente = null; // de momento
+
+    if (pacienteId) {
+        paciente = await this.pacienteRepo.findById(pacienteId);
+
+        if (!paciente) {
+            throw new NotFoundError("Paciente no encontrado");
+        }
+    }
+
+    // =========================
+    // MEDICOS
+    // =========================
+
     let medicos = await this.medicoRepo.findAll();
 
-    // Filtro todos los medicos por los query params recibidos
     if (medicoNombre) {
         medicos = medicos.filter(m => m.nombre === medicoNombre);
     }
 
     if (especialidad) {
-        medicos = medicos.filter(m => m.especialidades.includes(especialidad));
+        medicos = medicos.filter(m => m.especialidades.some(e => e.nombre === especialidad));
     }
 
     if (practica) {
-        medicos = medicos.filter(m => m.practicas.includes(practica));
+        medicos = medicos.filter(m => m.practicas.some(p => p.nombre === practica));
     }
 
     if (sede) {
@@ -74,76 +107,148 @@ export class TurnoService {
 
     const resultados = [];
 
-    // si NO mandan fechas, devolver disponibilidades semanales
+    // =========================
+    // SIN RANGO DE FECHAS
+    // =========================
+
     if (!fechaDesde || !fechaHasta) {
 
         for (const medico of medicos) {
-
             for (const disponibilidad of medico.disponibilidad) {
+
+                let infoCosto = {
+                    cobertura: "NO_CUBIERTO",
+                    porcentajeCobertura: 0,
+                    costoFinal: 0
+                };
+
+                // calcular costo usando practica
+                if (paciente && practica) {
+                    const practicaEncontrada = medico.practicas.find(p => p.nombre === practica);
+
+                    if (practicaEncontrada) {
+                        infoCosto = practicaEncontrada.calcularCostoFinal(paciente);
+                    }
+                }
+
+                // calcular costo usando especialidad
+                else if (paciente && especialidad) {
+                    const especialidadEncontrada = medico.especialidades.find(e => e.nombre === especialidad);
+
+                    if (especialidadEncontrada) {
+                        infoCosto = especialidadEncontrada.calcularCostoFinal(paciente);
+                    }
+                }
 
                 resultados.push({
                     medicoId: medico._id,
                     medico: medico.nombre,
-                    especialidades: medico.especialidades,
-                    practicas: medico.practicas,
+
+                    practica: practica || medico.practicas,
+                    especialidad: especialidad || medico.especialidades,
+
                     sedes: medico.sedes,
+
                     diaSemana: disponibilidad.diaSemana,
                     horaDesde: disponibilidad.horaDesde,
-                    horaHasta: disponibilidad.horaHasta
+                    horaHasta: disponibilidad.horaHasta,
+
+                    cobertura: infoCosto.cobertura,
+                    porcentajeCobertura: infoCosto.porcentajeCobertura,
+                    costoFinal: infoCosto.costoFinal
                 });
             }
         }
-
-        return resultados;
     }
 
-    // si mandan rango de fechas
-    const desde = new Date(fechaDesde);
-    const hasta = new Date(fechaHasta);
+    // =========================
+    // CON RANGO DE FECHAS
+    // =========================
 
-    for (const medico of medicos) {
+    else {
 
-        for (
-            let fecha = new Date(desde);
-            fecha <= hasta;
-            fecha.setDate(fecha.getDate() + 1)
-        ) {
+        const desde = new Date(fechaDesde);
+        const hasta = new Date(fechaHasta);
 
-            const diaSemana = obtenerDiaSemana(fecha);
+        if (desde > hasta) {
+            throw new BadRequestError("fechaDesde no puede ser mayor a fechaHasta");
+        }
 
-            const disponibilidadesDia = medico.disponibilidad.filter(
-                d => d.diaSemana === diaSemana
-            );
+        for (const medico of medicos) {
 
-            for (const disponibilidad of disponibilidadesDia) {
+            for (
+                let fecha = new Date(desde);
+                fecha <= hasta;
+                fecha.setDate(fecha.getDate() + 1)
+            ) {
 
-                const fechaSlot = construirFechaHora(
-                    fecha,
-                    disponibilidad.horaDesde
-                );
+                const diaSemana = obtenerDiaSemana(fecha);
 
-                const ocupado = await this.turnoRepo.existeTurno(
-                    medico._id,
-                    fechaSlot
-                );
+                const disponibilidadesDia = medico.disponibilidad.filter(d => d.diaSemana === diaSemana);
 
-                if (!ocupado) {
+                for (const disponibilidad of disponibilidadesDia) {
 
-                    resultados.push({
-                        medicoId: medico._id,
-                        medico: medico.nombre,
-                        especialidades: medico.especialidades,
-                        practicas: medico.practicas,
-                        sedes: medico.sedes,
-                        fechaHora: fechaSlot
-                    });
+                    const fechaSlot = construirFechaHora(fecha,disponibilidad.horaDesde);
+
+                    const ocupado = await this.turnoRepo.existeTurno(medico._id,fechaSlot);
+
+                    if (!ocupado) {
+
+                        let infoCosto = {
+                            cobertura: "NO_CUBIERTO",
+                            porcentajeCobertura: 0,
+                            costoFinal: 0
+                        };
+
+                        if (paciente && practica) {
+
+                            const practicaEncontrada = medico.practicas.find(
+                                p => p.nombre === practica
+                            );
+
+                            if (practicaEncontrada) {
+                                infoCosto = practicaEncontrada.calcularCostoFinal(paciente);
+                            }
+                        }
+
+                        else if (paciente && especialidad) {
+
+                            const especialidadEncontrada = medico.especialidades.find(
+                                e => e.nombre === especialidad
+                            );
+
+                            if (especialidadEncontrada) {
+                                infoCosto = especialidadEncontrada.calcularCostoFinal(paciente);
+                            }
+                        }
+
+                        resultados.push({
+                            medicoId: medico._id,
+                            medico: medico.nombre,
+
+                            especialidades: medico.especialidades,
+                            practicas: medico.practicas,
+
+                            sedes: medico.sedes,
+
+                            fechaHora: fechaSlot,
+
+                            cobertura: infoCosto.cobertura,
+                            porcentajeCobertura: infoCosto.porcentajeCobertura,
+                            costoFinal: infoCosto.costoFinal
+                        });
+                    }
                 }
             }
         }
     }
 
-    // Ordenamiento y paginacion
+    // =========================
+    // ORDENAMIENTO
+    // =========================
+
     if (sortBy === "fecha") {
+
         resultados.sort((a, b) => {
 
             const fechaA = new Date(a.fechaHora);
@@ -156,12 +261,18 @@ export class TurnoService {
     }
 
     if (sortBy === "costo") {
+
         resultados.sort((a, b) => {
+
             return order === "asc"
                 ? a.costoFinal - b.costoFinal
                 : b.costoFinal - a.costoFinal;
         });
     }
+
+    // =========================
+    // PAGINACION
+    // =========================
 
     const pagina = Number(page);
     const limite = Number(limit);
@@ -171,7 +282,7 @@ export class TurnoService {
 
     const resultadosPaginados = resultados.slice(inicio, fin);
 
-    return { 
+    return {
         total: resultados.length,
         page: pagina,
         limit: limite,
