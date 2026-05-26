@@ -1,4 +1,3 @@
-import Disponibilidad from "../Models/disponibilidad.js";
 import mongoose from "mongoose";
 import { MedicoModel } from "../schemas/medicoSchema.js";
 /*
@@ -35,9 +34,27 @@ export class MedicoRepo{
 
     async findById(id) {
         if (!mongoose.Types.ObjectId.isValid(id)) {
-        return null;
+            return null;
         }
         return await this.model.findById(id);
+    }
+
+    async findByParams({ nombre, especialidad, practica, sede }) {
+        const query = {};
+        if (nombre) {
+            query.nombre = { $regex: nombre, $options: 'i' };
+        }
+        if (especialidad) {
+            query['especialidades.nombre'] = { $regex: especialidad, $options: 'i' };
+        }
+        if (practica) {
+            query['practicas.nombre'] = { $regex: practica, $options: 'i' };
+        }
+        if (sede) {
+            query.sedes = { $in: [sede] };
+        }
+
+        return await this.model.find(query);
     }
 
     async findAll() {
@@ -46,7 +63,7 @@ export class MedicoRepo{
     
     async updateMedico(id, medicoModificado) {
         if (!mongoose.Types.ObjectId.isValid(id)) {
-        return null;
+            return null;
         }
         return await this.model.findByIdAndUpdate(id, medicoModificado, { new: true } );
     }
@@ -54,23 +71,19 @@ export class MedicoRepo{
 
     async updateDisponibilidad(id, nuevaDisponibilidad) {
         if (!mongoose.Types.ObjectId.isValid(id)) {
-        return null;
+            return null;
         }
         return await this.model.findByIdAndUpdate(id, {disponibilidad: nuevaDisponibilidad}, {new: true} );
     }
 
     async agregarTurnoSolicitado(medicoId, turnoId) {
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-        return null;
+        if (!mongoose.Types.ObjectId.isValid(medicoId)) {
+            return null;
         }
         return await this.model.findByIdAndUpdate(
-        medicoId,
-        {
-            $push: {
-                turnosSolicitados: turnoId
-            }
-        },
-        { new: true }
+            medicoId,
+            { $push: { turnosSolicitados: turnoId } },
+            { new: true }
         );
     }
 
@@ -88,9 +101,8 @@ export class MedicoRepo{
 
     async updatePracticas(medicoId, practicasActualizadas) {
         if (!mongoose.Types.ObjectId.isValid(medicoId)) {
-        return null;
+            return null;
         }
-
         return await this.model.findByIdAndUpdate(
             medicoId,
             { practicas: practicasActualizadas },
