@@ -53,3 +53,23 @@ export const reprogramarTurnoFormato = z.object({
                 message: "La nueva fecha debe ser futura"
             })
     }).strict();
+
+export const filtrosBusquedaFormato = z.object({
+    pacienteId: z.string({ 
+        required_error: "pacienteId es obligatorio" 
+    }),
+    fechaDesde: z.string({ 
+        required_error: "fechaDesde es obligatoria" 
+    }).refine(v => !isNaN(new Date(v).getTime()), { 
+        message: "fechaDesde debe ser una fecha válida" 
+    }),
+    fechaHasta: z.string({ 
+        required_error: "fechaHasta es obligatoria" 
+    }).refine(v => !isNaN(new Date(v).getTime()), { 
+        message: "fechaHasta debe ser una fecha válida" 
+    }),
+    page: z.string().regex(/^\d+$/, "page debe ser un número entero positivo").optional(),
+    limit: z.string().regex(/^\d+$/, "limit debe ser un número entero positivo").optional(),
+    sortBy: z.enum(['fechaHora', 'costoEstimado']).optional(),
+    order: z.enum(['asc', 'desc']).optional(),
+});
