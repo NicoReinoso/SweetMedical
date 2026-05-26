@@ -95,24 +95,25 @@ export class MedicoService{
     };
 
     async modificarEspecialidad(medicoId, especialidadModificada){
+
         const medico = await this.medicoRepo.findById(medicoId);
+
         if (!medico) {
             throw new NotFoundError("Médico no encontrado");
         }
 
-        const especialidadesActuales = medico.especialidades;
-
-        const especialidadAModificar = especialidadesActuales.find(e => e.nombre === especialidadModificada.nombre);
+        const especialidadAModificar = medico.especialidades.find(e => e.nombre === especialidadModificada.nombre);
 
         if (!especialidadAModificar) {
             throw new NotFoundError("Especialidad no encontrada");
         }
 
-        especialidadAModificar.costoBase = especialidadModificada.costoConsulta ?? especialidadAModificar.costoBase;
+        especialidadAModificar.costoBase = especialidadModificada.costoBase ?? especialidadAModificar.costoBase;
 
         await this.medicoRepo.updateEspecialidades(medicoId, medico.especialidades);
-        return especialidadModificada;
-    }
+
+        return especialidadAModificar;
+}
 
     async bajaEspecialidad(medicoId, nombreEspecialidad){
         const medico = await this.medicoRepo.findById(medicoId);

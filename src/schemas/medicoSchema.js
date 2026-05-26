@@ -29,6 +29,28 @@ const disponibilidadSchema = new mongoose.Schema({
     }
 }, { _id: false });
 
+const coberturaSchema = new mongoose.Schema({
+    obraSocial: {
+        type: String,
+        required: true,
+        trim: true
+    },
+
+    plan: {
+        type: String,
+        required: true,
+        trim: true
+    },
+
+    porcentaje: {
+        type: Number,
+        required: true,
+        min: 0,
+        max: 100
+    }
+
+}, {_id: false})
+
 const especialidadSchema = new mongoose.Schema({
     nombre: {
         type: String,
@@ -36,44 +58,30 @@ const especialidadSchema = new mongoose.Schema({
         trim:true
     },
 
-    duracionTurnoEnMins: {
-        type: Number,
-        required: true,
-        min: 1
-    },
-
-    costoConsulta: {
+    costoBase: {
         type: Number,
         required: true,
         min: 0
-    }
-});
+    },
+
+    cobertura: [coberturaSchema]
+}, { _id: false });
 
 const practicaSchema = new mongoose.Schema({
-    codigo: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    
     nombre: {
         type: String,
         required: true,
         trim:true
     },
 
-    duracionTurnoEnMins: {
-        type: Number,
-        required: true,
-        min: 1
-    },
-
-    costo: {
+    costoBase: {
         type: Number,
         required: true,
         min: 0
-    }
-});
+    },
+
+    cobertura: [coberturaSchema]
+}, { _id: false });
 
 const medicoSchema = new mongoose.Schema({
     usuario: {

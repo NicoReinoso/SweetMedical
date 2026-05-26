@@ -79,9 +79,7 @@ export class MedicoController{
 
     async deleteEspecialidad(req, res, next){
         try{
-            const { id } = req.params;
-
-            const { especialidadNombre } = req.body.nombre;
+            const { id, especialidadNombre } = req.params;
 
             const nuevaEspecialidad = await this.medicoService.bajaEspecialidad(id, especialidadNombre);
 
@@ -124,9 +122,7 @@ export class MedicoController{
 
     async deletePractica(req, res, next) {
         try {
-            const { id } = req.params;
-
-            const { practicaNombre } = req.body.nombre;
+            const { id, practicaNombre } = req.params;
 
             const practicasFiltradas = await this.medicoService.bajaPractica(id, practicaNombre);
 

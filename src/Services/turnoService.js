@@ -52,6 +52,9 @@ async buscarDisponibles(filtros) {
 
     } = filtros;
 
+    const pagina = Number(page);
+    const limite = Number(limit);
+
     // validaciones
     if (fechaDesde && isNaN(new Date(fechaDesde))) {
         throw new BadRequestError("fechaDesde inválida");
@@ -274,9 +277,6 @@ async buscarDisponibles(filtros) {
     // PAGINACION
     // =========================
 
-    const pagina = Number(page);
-    const limite = Number(limit);
-
     const inicio = (pagina - 1) * limite;
     const fin = inicio + limite;
 
@@ -322,23 +322,26 @@ async buscarDisponibles(filtros) {
 
         const pacienteSolicitante = await this.pacienteRepo.findById(data.pacienteId);
 
+        if(!data.practica && !data.especialidad) {
+            throw new BadRequestError("Se necesita la especialidad o practica para la que se requiere el turno");
+        }
+
         if(data.practica && data.especialidad) {
             throw new ConflictError("No se puede crear un turno para una disponibilidad para una practica y especialidad a la vez");
         }
         //validacion de practica (si se mando)
         if(data.practica){
-            const practica = data.practica
+            const practica = medico.practicas.find(p => p.nombre === data.practica);
             medico.validarPracticaSolicitada(practica)
             const nuevoTurno = new Turno(medico.id, data.pacienteId, fecha, sede, practica, practica.calcularCostoFinal(pacienteSolicitante));
         }
         //validacion de especialidad (si se mando)
         if(data.especialidad){
-            const especialidad = data.especialidad
+            const especialidad = medico.especialidades.find(p => p.nombre === data.especialidad);
             medico.validarPracticaSolicitada(especialidad)
             const nuevoTurno = new Turno(medico.id, data.pacienteId, fecha, sede, especialidad, especialidad.calcularCostoFinal(pacienteSolicitante));
         }
         
-
         //actualizo los repo
         const turnoGuardado = await this.turnoRepo.createTurno(nuevoTurno);
 
