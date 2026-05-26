@@ -1,7 +1,6 @@
-import { Turno } from "../Models/turno.js";
-import { TurnoModel } from "../schemas/turnoSchema.js";
-import { EstadoTurno } from "../Models/turno.js";
 import mongoose from "mongoose";
+import { EstadoTurno } from "../Models/turno.js";
+import { TurnoModel } from "../schemas/turnoSchema.js";
 
 export class TurnoRepo {
     constructor() {
@@ -39,12 +38,21 @@ export class TurnoRepo {
             return null;
         }
         return await this.model.findOne({
-        medico: medicoId,
-        fechaHora: fechaHora,
-        estado: {
-            $ne: EstadoTurno.CANCELADO
+            medicoId,
+            fechaHora,
+            estado: { $ne: EstadoTurno.CANCELADO }
+        });
+    }
+
+    async findActivosByMedicoEntreFechas(medicoId, desde, hasta) {
+        if (!mongoose.Types.ObjectId.isValid(medicoId)) {
+            return [];
         }
-    });
+        return await this.model.find({
+            medicoId,
+            fechaHora: { $gte: desde, $lte: hasta },
+            estado: { $ne: EstadoTurno.CANCELADO }
+        });
     }
 
     async findByPaciente(pacienteId) {
@@ -52,11 +60,6 @@ export class TurnoRepo {
             return null;
         }
         return await this.model.find({ pacienteId });
-        return await this.model.findOne({
-            medicoId,
-            fechaHora,
-            estado: { $ne: EstadoTurno.CANCELADO }
-        });
     }
 
 
@@ -69,12 +72,12 @@ export class TurnoRepo {
     }
 
     // Busca turnos de un médico en una ventana de 2hs alrededor de una fecha
-    async findByMedicoIdEnRango(medicoId, fechaHora) {
+    async findByMedicoIdEnRango(medicoId, fechaHora, ventanaMinutos = 120) {
         if (!mongoose.Types.ObjectId.isValid(medicoId)) {
             return null;
         }
-        const desde = new Date(new Date(fechaHora).getTime() - 2 * 60 * 60 * 1000);
-        const hasta = new Date(new Date(fechaHora).getTime() + 2 * 60 * 60 * 1000);
+        const desde = new Date(new Date(fechaHora).getTime() - ventanaMinutos * 60 * 1000);
+        const hasta = new Date(new Date(fechaHora).getTime() + ventanaMinutos * 60 * 1000);
         return await this.model.find({
             medicoId,
             fechaHora: { $gte: desde, $lte: hasta },
