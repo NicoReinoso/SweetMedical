@@ -12,18 +12,18 @@ export class Turno {
     pacienteId;
     fechaHora;
     sede;
-    practica;
+    consultaSolicitada;
     estado;
     historialEstados;
     costo;
     motivoCancelacion;
 
-    constructor(medicoId, pacienteId, fechaHora, sede, practica, costo, motivoCancelacion) {
+    constructor(medicoId, pacienteId, fechaHora, sede, consultaSolicitada, costo, motivoCancelacion) {
         this.medicoId = medicoId;
         this.pacienteId = pacienteId;
         this.fechaHora = fechaHora;
         this.sede = sede;
-        this.practica = practica;
+        this.consultaSolicitada = consultaSolicitada;
         this.estado = EstadoTurno.RESERVADO;
         this.historialEstados = [EstadoTurno.RESERVADO];
         this.costo = costo;

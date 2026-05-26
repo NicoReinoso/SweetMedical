@@ -100,28 +100,27 @@ export class MedicoService{
             throw new NotFoundError("Médico no encontrado");
         }
 
-        const especialidadId = especialidadModificada._id; // podemos usar el_id xq trajimos todos los sub-ids de medico al buscar el medico
-
         const especialidadesActuales = medico.especialidades;
 
-        const especialidadAModificar = especialidadesActuales.find(e => e._id.toString() === especialidadId);
+        const especialidadAModificar = especialidadesActuales.find(e => e.nombre === especialidadModificada.nombre);
 
-        if (!especialidadAModificar) throw new NotFoundError("Especialidad no encontrada");
+        if (!especialidadAModificar) {
+            throw new NotFoundError("Especialidad no encontrada");
+        }
 
-        especialidadAModificar.duracionTurnoEnMins = especialidadModificada.duracionTurnoEnMins ?? especialidadAModificar.duracionTurnoEnMins;
-        especialidadAModificar.costoConsulta = especialidadModificada.costoConsulta ?? especialidadAModificar.costoConsulta;
+        especialidadAModificar.costoBase = especialidadModificada.costoConsulta ?? especialidadAModificar.costoBase;
 
         await this.medicoRepo.updateEspecialidades(medicoId, medico.especialidades);
         return especialidadModificada;
     }
 
-    async bajaEspecialidad(medicoId, especialidadId){
+    async bajaEspecialidad(medicoId, nombreEspecialidad){
         const medico = await this.medicoRepo.findById(medicoId);
         if (!medico) {
             throw new NotFoundError("Médico no encontrado");
         }
 
-        const especialidadesFiltradas = medico.especialidades.filter(e => e._id.toString() !== especialidadId);
+        const especialidadesFiltradas = medico.especialidades.filter(e => e.nombre !== nombreEspecialidad);
 
         await this.medicoRepo.updateEspecialidades(medicoId, especialidadesFiltradas);
 
@@ -146,26 +145,21 @@ export class MedicoService{
             throw new NotFoundError("Médico no encontrado");
         }
 
-        const practicaId = practicaModificada._id;
+        const practicaAModificar = medico.practicas.find(p => p.nombre === practicaModificada.nombre);
 
-        const practicaAModificar = medico.practicas.find(p => p._id.toString() === practicaId);
-
-        if (!practicaAModificar) throw new NotFoundError("Practica no encontrada");
-
-        practicaAModificar.duracionTurnoEnMins = practicaModificada.duracionTurnoEnMins ?? practicaAModificar.duracionTurnoEnMins;
-        practicaAModificar.costo = practicaModificada.costo ?? practicaAModificar.costo;
+        practicaAModificar.costoBase = practicaModificada.costo ?? practicaAModificar.costoBase;
 
         await this.medicoRepo.updatePracticas(medicoId, medico.practicas);
         return practicaModificada;
     }
 
-    async bajaPractica(medicoId, practicaId){
+    async bajaPractica(medicoId, nombrePractica){
         const medico = await this.medicoRepo.findById(medicoId);
         if (!medico) {
             throw new NotFoundError("Médico no encontrado");
         }
 
-        const practicasFiltradas = medico.practicas.filter(p => p._id.toString() !== practicaId);
+        const practicasFiltradas = medico.practicas.filter(p => p.nombre !== nombrePractica);
 
         await this.medicoRepo.updatePracticas(medicoId, practicasFiltradas);
 

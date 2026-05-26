@@ -50,7 +50,7 @@ export class MedicoController{
         try{
             const { id } = req.params;
             
-            const especialidadAAgregar = new Especialidad(req.body.nombre, req.body.duracionTurnoEnMins, req.body.costoConsulta);
+            const especialidadAAgregar = new Especialidad(req.body.nombre, req.body.costo);
 
             const nuevaEspecialidad = await this.medicoService.agregarEspecialidad(id, especialidadAAgregar);
 
@@ -62,11 +62,10 @@ export class MedicoController{
 
     async patchEspecialidad(req, res, next) {
         try {
-            const { id, especialidadId } = req.params;
+            const { id } = req.params;
 
             const especialidadModificada = {
-                _id: especialidadId,
-                duracionTurnoEnMins: req.body.duracionTurnoEnMins,
+                nombre: req.body.nombre,
                 costoConsulta: req.body.costoConsulta
             };
 
@@ -80,9 +79,11 @@ export class MedicoController{
 
     async deleteEspecialidad(req, res, next){
         try{
-            const { id, especialidadId } = req.params;
+            const { id } = req.params;
 
-            const nuevaEspecialidad = await this.medicoService.bajaEspecialidad(id, especialidadId);
+            const { especialidadNombre } = req.body.nombre;
+
+            const nuevaEspecialidad = await this.medicoService.bajaEspecialidad(id, especialidadNombre);
 
             res.status(200).json(nuevaEspecialidad);
         } catch(error) {
@@ -94,7 +95,7 @@ export class MedicoController{
         try {
             const { id } = req.params;
 
-            const practicaAAgregar = new Practica(req.body.codigo, req.body.nombre, req.body.duracionTurnoEnMins, req.body.costo);
+            const practicaAAgregar = new Practica(req.body.nombre, req.body.costo);
 
             const nuevaPractica = await this.medicoService.agregarPractica(id, practicaAAgregar);
 
@@ -106,11 +107,10 @@ export class MedicoController{
 
     async patchPractica(req, res, next) {
         try {
-            const { id, practicaId } = req.params;
+            const { id } = req.params;
 
             const practicaModificada = {
-                _id: practicaId,
-                duracionTurnoEnMins: req.body.duracionTurnoEnMins,
+                nombre: req.body.nombre,
                 costo: req.body.costo
             };
 
@@ -124,9 +124,11 @@ export class MedicoController{
 
     async deletePractica(req, res, next) {
         try {
-            const { id, practicaId } = req.params;
+            const { id } = req.params;
 
-            const practicasFiltradas = await this.medicoService.bajaPractica(id, practicaId);
+            const { practicaNombre } = req.body.nombre;
+
+            const practicasFiltradas = await this.medicoService.bajaPractica(id, practicaNombre);
 
             res.status(200).json(practicasFiltradas);
         } catch (error) {
