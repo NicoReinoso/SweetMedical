@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 import { Medico } from "../Models/medico.js";
+import Especialidad from "../Models/especialidad.js";
+import Practica from "../Models/practica.js";
 
 const disponibilidadSchema = new mongoose.Schema({
     diaSemana: {
@@ -64,8 +66,10 @@ const especialidadSchema = new mongoose.Schema({
         min: 0
     },
 
-    cobertura: [coberturaSchema]
+    coberturas: [coberturaSchema]
 }, { _id: false });
+
+especialidadSchema.loadClass(Especialidad);
 
 const practicaSchema = new mongoose.Schema({
     nombre: {
@@ -80,8 +84,10 @@ const practicaSchema = new mongoose.Schema({
         min: 0
     },
 
-    cobertura: [coberturaSchema]
+    coberturas: [coberturaSchema]
 }, { _id: false });
+
+practicaSchema.loadClass(Practica);
 
 const medicoSchema = new mongoose.Schema({
     usuario: {

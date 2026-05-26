@@ -31,9 +31,9 @@ export class TurnoController {
 
     async reservarTurno(req, res, next) {
         try {
-            const { pacienteId, medicoId, fechaHora, sede, practica, costo } = req.body;
+            const { pacienteId, medicoId, fechaHora, sede, practica, especialidad, costo } = req.body;
 
-            const turno = await this.turnoService.crearTurno({pacienteId, medicoId, fechaHora, sede, practica, costo});
+            const turno = await this.turnoService.crearTurno({pacienteId, medicoId, fechaHora, sede, practica, especialidad, costo});
             res.status(201).json(turno);
         } catch (error) {
             return next(error);

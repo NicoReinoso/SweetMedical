@@ -191,55 +191,63 @@ async buscarDisponibles(filtros) {
 
                 for (const disponibilidad of disponibilidadesDia) {
 
-                    const fechaSlot = construirFechaHora(fecha,disponibilidad.horaDesde);
+                    const desdeMin = horaAMinutos(disponibilidad.horaDesde);
+                    const hastaMin = horaAMinutos(disponibilidad.horaHasta);
+                    const incremento = 30;
 
-                    const ocupado = await this.turnoRepo.existeTurno(medico._id,fechaSlot);
+                    for (let t = desdeMin; t < hastaMin; t += incremento) {
 
-                    if (!ocupado) {
+                        const horaStr = minutosAHora(t);
+                        const fechaSlot = construirFechaHora(fecha, horaStr);
 
-                        let infoCosto = {
-                            cobertura: "NO_CUBIERTO",
-                            porcentajeCobertura: 0,
-                            costoFinal: 0
-                        };
+                        const ocupado = await this.turnoRepo.existeTurno(medico._id, fechaSlot);
 
-                        if (paciente && practica) {
+                        if (!ocupado) {
 
-                            const practicaEncontrada = medico.practicas.find(
-                                p => p.nombre === practica
-                            );
+                            let infoCosto = {
+                                cobertura: "NO_CUBIERTO",
+                                porcentajeCobertura: 0,
+                                costoFinal: 0
+                            };
 
-                            if (practicaEncontrada) {
-                                infoCosto = practicaEncontrada.calcularCostoFinal(paciente);
+                            if (paciente && practica) {
+
+                                const practicaEncontrada = medico.practicas.find(
+                                    p => p.nombre === practica
+                                );
+
+                                if (practicaEncontrada) {
+                                    infoCosto = practicaEncontrada.calcularCostoFinal(paciente);
+                                }
                             }
-                        }
 
-                        else if (paciente && especialidad) {
+                            else if (paciente && especialidad) {
 
-                            const especialidadEncontrada = medico.especialidades.find(
-                                e => e.nombre === especialidad
-                            );
+                                const especialidadEncontrada = medico.especialidades.find(
+                                    e => e.nombre === especialidad
+                                );
 
-                            if (especialidadEncontrada) {
-                                infoCosto = especialidadEncontrada.calcularCostoFinal(paciente);
+                                if (especialidadEncontrada) {
+                                    infoCosto = especialidadEncontrada.calcularCostoFinal(paciente);
+                                }
                             }
+
+                            resultados.push({
+                                medicoId: medico._id,
+                                medico: medico.nombre,
+
+                                especialidades: medico.especialidades,
+                                practicas: medico.practicas,
+
+                                sedes: medico.sedes,
+
+                                fechaHora: fechaSlot,
+
+                                estadoCobertura: infoCosto.cobertura,
+                                porcentajeCobertura: infoCosto.porcentajeCobertura,
+                                costoEstimado: infoCosto.costoFinal
+                            });
                         }
-
-                        resultados.push({
-                            medicoId: medico._id,
-                            medico: medico.nombre,
-
-                            especialidades: medico.especialidades,
-                            practicas: medico.practicas,
-
-                            sedes: medico.sedes,
-
-                            fechaHora: fechaSlot,
-
-                            cobertura: infoCosto.cobertura,
-                            porcentajeCobertura: infoCosto.porcentajeCobertura,
-                            costoFinal: infoCosto.costoFinal
-                        });
                     }
                 }
             }
@@ -250,7 +258,7 @@ async buscarDisponibles(filtros) {
     // ORDENAMIENTO
     // =========================
 
-    if (sortBy === "fecha") {
+    if (sortBy === "fecha" || sortBy === "fechaHora") {
 
         resultados.sort((a, b) => {
 
@@ -263,13 +271,13 @@ async buscarDisponibles(filtros) {
         });
     }
 
-    if (sortBy === "costo") {
+    if (sortBy === "costo" || sortBy === "costoEstimado") {
 
         resultados.sort((a, b) => {
 
             return order === "asc"
-                ? a.costoFinal - b.costoFinal
-                : b.costoFinal - a.costoFinal;
+                ? a.costoEstimado - b.costoEstimado
+                : b.costoEstimado - a.costoEstimado;
         });
     }
 
@@ -301,54 +309,68 @@ async buscarDisponibles(filtros) {
         const fecha = new Date(data.fechaHora);
         const dia = obtenerDiaSemana(fecha);
         const hora = obtenerHora(fecha);
-        //encuentro la disponibilidad del medico solicitada y la valido
+
+        // Valida que el horario caiga dentro de un bloque de disponibilidad del médico
         const disponibilidad = medico.disponibilidad.find(d =>
             d.diaSemana === dia &&
-            d.horaDesde === hora
+            horaEnRango(hora, d.horaDesde, d.horaHasta)
         );
         if (!disponibilidad) {
             throw new BadRequestError("El medico solicitado no tiene disponibilidad para ese horario");
         }
 
-        //Valido que no haya un turno para ese dia en especifico
         const yaExisteTurno = await this.turnoRepo.existeTurno(medico._id, fecha);
         if (yaExisteTurno) {
             throw new ConflictError("Ya existe un turno para ese horario");
         }
 
-        //validacion de sede
         const sede = data.sede;
         medico.validarSedeSolicitada(sede);
 
         const pacienteSolicitante = await this.pacienteRepo.findById(data.pacienteId);
+        if (!pacienteSolicitante) {
+            throw new NotFoundError("Paciente no encontrado");
+        }
 
-        if(!data.practica && !data.especialidad) {
+        if (!data.practica && !data.especialidad) {
             throw new BadRequestError("Se necesita la especialidad o practica para la que se requiere el turno");
         }
+        if (data.practica && data.especialidad) {
+            throw new ConflictError("No se puede crear un turno para una practica y especialidad a la vez");
+        }
 
-        if(data.practica && data.especialidad) {
-            throw new ConflictError("No se puede crear un turno para una disponibilidad para una practica y especialidad a la vez");
-        }
-        //validacion de practica (si se mando)
-        if(data.practica){
+        let consultaSolicitada;
+        let infoCosto;
+
+        if (data.practica) {
             const practica = medico.practicas.find(p => p.nombre === data.practica);
-            medico.validarPracticaSolicitada(practica)
-            const nuevoTurno = new Turno(medico.id, data.pacienteId, fecha, sede, practica, practica.calcularCostoFinal(pacienteSolicitante));
+            if (!practica) {
+                throw new BadRequestError("El medico solicitado no realiza esa practica");
+            }
+            consultaSolicitada = practica;
+            infoCosto = practica.calcularCostoFinal(pacienteSolicitante);
+        } else {
+            const especialidad = medico.especialidades.find(e => e.nombre === data.especialidad);
+            if (!especialidad) {
+                throw new BadRequestError("El medico solicitado no tiene esa especialidad");
+            }
+            consultaSolicitada = especialidad;
+            infoCosto = especialidad.calcularCostoFinal(pacienteSolicitante);
         }
-        //validacion de especialidad (si se mando)
-        if(data.especialidad){
-            const especialidad = medico.especialidades.find(p => p.nombre === data.especialidad);
-            medico.validarPracticaSolicitada(especialidad)
-            const nuevoTurno = new Turno(medico.id, data.pacienteId, fecha, sede, especialidad, especialidad.calcularCostoFinal(pacienteSolicitante));
-        }
-        
-        //actualizo los repo
+
+        const nuevoTurno = new Turno(
+            medico.id,
+            data.pacienteId,
+            fecha,
+            sede,
+            consultaSolicitada,
+            infoCosto.costoFinal
+        );
+
         const turnoGuardado = await this.turnoRepo.createTurno(nuevoTurno);
 
-        //se agrega el nuevo turno a los solicitados del medico, para que pueda aceptarlo
-        await this.medicoRepo.agregarTurnoSolicitado(medico._id, nuevoTurno._id);
+        await this.medicoRepo.agregarTurnoSolicitado(medico._id, turnoGuardado._id);
 
-        //se notifica al medico
         await this.notificacionService.crear(nuevoTurno.medicoId, nuevoTurno.pacienteId, "Nuevo turno solicitado");
 
         return turnoGuardado;
@@ -491,7 +513,7 @@ async buscarDisponibles(filtros) {
 
         const disponibilidad = medico.disponibilidad.find(d =>
             d.diaSemana === dia &&
-            d.horaDesde === hora
+            horaEnRango(hora, d.horaDesde, d.horaHasta)
         );
         if (!disponibilidad) {
             throw new BadRequestError("El médico no tiene disponibilidad para el nuevo horario");
@@ -551,4 +573,19 @@ const construirFechaHora = (fecha, hora) => {
     nuevaFecha.setMilliseconds(0);
 
     return nuevaFecha;
+};
+
+const horaAMinutos = (hora) => {
+    const [h, m] = hora.split(":").map(Number);
+    return h * 60 + m;
+};
+
+const minutosAHora = (minutos) => {
+    const h = Math.floor(minutos / 60);
+    const m = minutos % 60;
+    return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+};
+
+const horaEnRango = (hora, horaDesde, horaHasta) => {
+    return hora >= horaDesde && hora < horaHasta;
 };

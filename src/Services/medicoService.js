@@ -108,7 +108,7 @@ export class MedicoService{
             throw new NotFoundError("Especialidad no encontrada");
         }
 
-        especialidadAModificar.costoBase = especialidadModificada.costoBase ?? especialidadAModificar.costoBase;
+        especialidadAModificar.costoBase = especialidadModificada.costoConsulta ?? especialidadAModificar.costoBase;
 
         await this.medicoRepo.updateEspecialidades(medicoId, medico.especialidades);
 

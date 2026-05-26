@@ -95,7 +95,7 @@ export class Medico {
     }
     
     //VALIDACIONES
-    validarCoherenciaHora = (horaDesde, horaHasta) => {
+    validarCoherenciaHora(horaDesde, horaHasta) {
         const desde = this.convertirHoraAMinutos(horaDesde);
         const hasta = this.convertirHoraAMinutos(horaHasta);
 
@@ -104,30 +104,30 @@ export class Medico {
         }
     };
 
-    convertirHoraAMinutos = (hora) => {
+    convertirHoraAMinutos(hora) {
         const [h, m] = hora.split(":").map(Number);
         return h * 60 + m;
     };
 
-    verificarDisponibilidadIgual = (disponibilidades, nueva) => {
+    verificarDisponibilidadIgual(disponibilidades, nueva) {
         if (disponibilidades.some(d => d.diaSemana === nueva.diaSemana && d.horaDesde === nueva.horaDesde &&  d.horaHasta === nueva.horaHasta)) {
             throw new ConflictError("La disponibilidad ya existe");
         }
     };
 
-    validarSedeSolicitada = (sede) => {
+    validarSedeSolicitada(sede) {
         if(!this.sedes.includes(sede)){
             throw new BadRequestError("El medico solicitado no opera en esa sede");
         }
     }
 
-    validarPracticaSolicitada = (practica) => {
+    validarPracticaSolicitada(practica) {
         if(!this.practicas.some(p => p.nombre === practica.nombre)){
             throw new BadRequestError("El medico solicitado no realiza esa practica");
         }
     }
 
-    validarEspecialidadSolicitada = (especialidad) => {
+    validarEspecialidadSolicitada(especialidad) {
         if(!this.especialidades.some(e => e.nombre === especialidad.nombre)){
             throw new BadRequestError("El medico solicitado no tiene esa especialidad");
         }

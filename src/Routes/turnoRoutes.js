@@ -74,7 +74,7 @@ router.get('/:id', turnoController.getTurno.bind(turnoController));
  *       400:
  *         description: Filtros inválidos
  */
-router.get("/turnos/disponibles", turnoController.buscarDisponibles.bind(turnoController));
+router.get("/disponibles", turnoController.buscarDisponibles.bind(turnoController));
 
 /**
  * @swagger
@@ -247,5 +247,7 @@ router.patch('/:id/realizar', turnoController.realizarTurno.bind(turnoController
  *       409:
  *         description: El turno ya fue finalizado
  */
+
+router.patch('/:id/modificacion-medico', turnoController.modificarTurno.bind(turnoController));
 
 export default router
