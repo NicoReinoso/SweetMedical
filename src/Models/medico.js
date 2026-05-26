@@ -67,7 +67,33 @@ export class Medico {
             t => t.id !== idTurno
         );
     }
+    
+    agregarEspecialidad(nuevaEspecialidad){
 
+        if (!nuevaEspecialidad || !(nuevaEspecialidad instanceof Especialidad)) {
+            throw new UnprocessableEntityError("La especialidad es inválida");
+        }
+
+        if (this.especialidades.some(e => e.nombre === nuevaEspecialidad.nombre)) {
+            throw new ConflictError("El médico ya tiene esa especialidad");
+        }
+
+        this.especialidades.push(nuevaEspecialidad);
+    }
+
+    agregarPractica(nuevaPractica){
+
+        if (!nuevaPractica || !(nuevaPractica instanceof Practica)) {
+            throw new UnprocessableEntityError("La practica es inválida");
+        }
+
+        if (this.practicas.some(p => p.nombre === nuevaPractica.nombre)) {
+            throw new ConflictError("El médico ya tiene esa practica");
+        }
+
+        this.practicas.push(nuevaPractica);
+    }
+    
     //VALIDACIONES
     validarCoherenciaHora = (horaDesde, horaHasta) => {
         const desde = this.convertirHoraAMinutos(horaDesde);
@@ -107,29 +133,4 @@ export class Medico {
         }
     }
 
-    agregarEspecialidad(nuevaEspecialidad){
-
-        if (!nuevaEspecialidad || !(nuevaEspecialidad instanceof Especialidad)) {
-            throw new UnprocessableEntityError("La especialidad es inválida");
-        }
-
-        if (this.especialidades.some(e => e.nombre === nuevaEspecialidad.nombre)) {
-            throw new ConflictError("El médico ya tiene esa especialidad");
-        }
-
-        this.especialidades.push(nuevaEspecialidad);
-    }
-
-    agregarPractica(nuevaPractica){
-
-        if (!nuevaPractica || !(nuevaPractica instanceof Practica)) {
-            throw new UnprocessableEntityError("La practica es inválida");
-        }
-
-        if (this.practicas.some(p => p.nombre === nuevaPractica.nombre)) {
-            throw new ConflictError("El médico ya tiene esa practica");
-        }
-
-        this.practicas.push(nuevaPractica);
-    }
 }

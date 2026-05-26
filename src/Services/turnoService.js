@@ -36,12 +36,20 @@ export class TurnoService {
     async buscarDisponibles(filtros) {
 
     const {
+        pacienteId, // de momento
         medicoNombre,
         especialidad,
         practica,
         sede,
         fechaDesde,
-        fechaHasta
+        fechaHasta,
+
+        sortBy = "fecha",
+        order = "asc",
+
+        page = 1,
+        limit = 10
+
     } = filtros;
 
     // 1) obtener tpdos los médicos
@@ -134,7 +142,42 @@ export class TurnoService {
         }
     }
 
-    return resultados;
+    // Ordenamiento y paginacion
+    if (sortBy === "fecha") {
+        resultados.sort((a, b) => {
+
+            const fechaA = new Date(a.fechaHora);
+            const fechaB = new Date(b.fechaHora);
+
+            return order === "asc"
+                ? fechaA - fechaB
+                : fechaB - fechaA;
+        });
+    }
+
+    if (sortBy === "costo") {
+        resultados.sort((a, b) => {
+            return order === "asc"
+                ? a.costoFinal - b.costoFinal
+                : b.costoFinal - a.costoFinal;
+        });
+    }
+
+    const pagina = Number(page);
+    const limite = Number(limit);
+
+    const inicio = (pagina - 1) * limite;
+    const fin = inicio + limite;
+
+    const resultadosPaginados = resultados.slice(inicio, fin);
+
+    return { 
+        total: resultados.length,
+        page: pagina,
+        limit: limite,
+        totalPages: Math.ceil(resultados.length / limite),
+        resultados: resultadosPaginados
+    };
 }
         
     
