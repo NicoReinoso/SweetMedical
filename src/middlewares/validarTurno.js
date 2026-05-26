@@ -1,6 +1,22 @@
 import { ZodError } from "zod";
-import { turnoFormato, cancelarTurnoFormato, reprogramarTurnoFormato } from "../formatos/turnoFormato.js";
+import { turnoFormato, cancelarTurnoFormato, reprogramarTurnoFormato, filtrosBusquedaFormato } from "../formatos/turnoFormato.js";
 import { BadRequestError, UnprocessableEntityError } from "../errors/AppError.js";
+
+export const validarFiltrosTurno = (req, res, next) => {
+    try {
+        const filtros = req.body;
+
+        filtrosBusquedaFormato.parse(filtros);
+        
+        next();
+    } catch (error) {
+        if (error instanceof ZodError) {
+            const mensajes = error.issues.map(e => e.message).join(", ");
+            return next(new UnprocessableEntityError(mensajes));
+        }
+        next(error);
+    }
+}
 
 export const validarTurno = (req, res, next) => {
     try {
