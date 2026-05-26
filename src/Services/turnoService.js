@@ -1,14 +1,13 @@
-import { TurnoRepo } from "../Repositorio/turnoBd.js" 
-import { MedicoRepo } from "../Repositorio/medicoBd.js"
 import { EstadoTurno, Turno } from "../Models/turno.js"
+import { MedicoRepo } from "../Repositorio/medicoBd.js"
 import { PacienteRepo } from "../Repositorio/pacienteBd.js"
+import { TurnoRepo } from "../Repositorio/turnoBd.js"
 import {
     BadRequestError,
     ConflictError,
-    NotFoundError,
-    UnprocessableEntityError
+    NotFoundError
 } from "../errors/AppError.js"
-import { NotificacionService } from "./notificacionService.js";
+import { NotificacionService } from "./notificacionService.js"
 
 export class TurnoService {
     constructor({
@@ -393,7 +392,7 @@ async buscarDisponibles(filtros) {
         validaCancelable(turno);
         validaAnticipacion(turno.fechaHora);
 
-        const medico = await this.medicoRepo.findById(turno.medico);
+        const medico = await this.medicoRepo.findById(turno.medicoId);
         if (!medico) {
             throw new NotFoundError("Medico no encontrado (por qué existe un turno con el id de un medico inexistente?!?!)");
         }
@@ -428,7 +427,7 @@ async buscarDisponibles(filtros) {
             throw new ConflictError("No se puede realizar un turno cancelado");
         }
 
-        const medico = await this.medicoRepo.findById(turno.medico);
+        const medico = await this.medicoRepo.findById(turno.medicoId);
         if (!medico) {
             throw new NotFoundError("Medico no encontrado (por qué existe un turno con el id de un medico inexistente?!?!)");
         }
@@ -484,8 +483,8 @@ async buscarDisponibles(filtros) {
             cambiosPermitidos.sede = cambios.sede;
         }
 
-        if (cambios.practica) {
-            cambiosPermitidos.practica = cambios.practica;
+        if (cambios.consultaSolicitada) {
+            cambiosPermitidos.consultaSolicitada = cambios.consultaSolicitada;
         }
 
         Object.assign(turno, cambiosPermitidos);
@@ -559,7 +558,9 @@ const obtenerDiaSemana = (fecha) => {
 };
 
 const obtenerHora = (fecha) => {
-    return fecha.toTimeString().slice(0,5); // "HH:MM"
+    const hora = fecha.getUTCHours(); // "HH:MM"
+    const minutos = fecha.getUTCMinutes();
+    return `${String(hora).padStart(2, '0')}:${String(minutos).padStart(2, '0')}`;
 };
 
 const construirFechaHora = (fecha, hora) => {

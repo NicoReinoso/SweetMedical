@@ -1,4 +1,3 @@
-import Disponibilidad from "../Models/disponibilidad.js";
 import mongoose from "mongoose";
 import { MedicoModel } from "../schemas/medicoSchema.js";
 /*
@@ -60,7 +59,7 @@ export class MedicoRepo{
     }
 
     async agregarTurnoSolicitado(medicoId, turnoId) {
-        if (!mongoose.Types.ObjectId.isValid(id)) {
+        if (!mongoose.Types.ObjectId.isValid(medicoId)) {
         return null;
         }
         return await this.model.findByIdAndUpdate(

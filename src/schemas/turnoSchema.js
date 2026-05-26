@@ -25,10 +25,10 @@ const turnoSchema = new mongoose.Schema({
         required: true
     },
     
-    practica:{
+    consultaSolicitada:{
         type: String,
         trim: true,
-        required: true,
+        required: true
     },
 
     estado:{

@@ -1,7 +1,6 @@
-import { Turno } from "../Models/turno.js";
-import { TurnoModel } from "../schemas/turnoSchema.js";
-import { EstadoTurno } from "../Models/turno.js";
 import mongoose from "mongoose";
+import { EstadoTurno } from "../Models/turno.js";
+import { TurnoModel } from "../schemas/turnoSchema.js";
 
 export class TurnoRepo {
     constructor() {
@@ -38,12 +37,13 @@ export class TurnoRepo {
         if (!mongoose.Types.ObjectId.isValid(medicoId)) {
             return null;
         }
+        console.log(medicoId, fechaHora);
         return await this.model.findOne({
-        medico: medicoId,
-        fechaHora: fechaHora,
-        estado: {
-            $ne: EstadoTurno.CANCELADO
-        }
+            medicoId: medicoId,
+            fechaHora: fechaHora,
+            estado: {
+                $ne: EstadoTurno.CANCELADO
+            }
     });
     }
 
