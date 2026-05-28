@@ -8,20 +8,16 @@ export class NotificacionService{
     this.notificacionRepo = notificacionRepo;
     }
 
-    async obtenerNoLeidas(destinatarioId) {
-        const notificaciones = await this.notificacionRepo.findNoLeidas(destinatarioId);
-        if (notificaciones === null) {
-            throw new NotFoundError("Usuario no encontrado");
+    async obtenerNotificaciones(destinatarioId, estado) {
+        if (estado === "LEIDA") {
+            return await this.notificacionRepo.findLeidas(destinatarioId);
         }
-        return notificaciones;
-    }
 
-    async obtenerLeidas(destinatarioId) {
-        const notificaciones = await this.notificacionRepo.findLeidas(destinatarioId);
-        if (notificaciones === null) {
-            throw new NotFoundError("Usuario no encontrado");
+        if (estado === "NO_LEIDA") {
+            return await this.notificacionRepo.findNoLeidas(destinatarioId);
         }
-        return notificaciones;
+
+        return await this.notificacionRepo.obtenerTodas(destinatarioId);
     }
 
     async marcarComoLeida(idNotificacion) {

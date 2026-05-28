@@ -7,9 +7,12 @@ const router = express.Router();
 
 /**
  * @swagger
- * /notificaciones/{destinatarioId}/no-leidas:
+ * /notificaciones/{destinatarioId}:
  *   get:
- *     summary: Obtiene las notificaciones sin leer de un usuario
+ *     summary: Obtener notificaciones de un destinatario
+ *     description: |
+ *       Retorna las notificaciones de un usuario.
+ *       Puede filtrarse por estado utilizando el query parameter `estado`.
  *     tags:
  *       - Notificaciones
  *     parameters:
@@ -18,36 +21,31 @@ const router = express.Router();
  *         required: true
  *         schema:
  *           type: string
- *         description: ID del usuario
- *     responses:
- *       200:
- *         description: Lista de notificaciones sin leer
- *       404:
- *         description: Usuario no encontrado
- */
-router.get('/:destinatarioId/no-leidas', notificacionController.getNoLeidas.bind(notificacionController));
-
-/**
- * @swagger
- * /notificaciones/{destinatarioId}/leidas:
- *   get:
- *     summary: Obtiene las notificaciones leidas de un usuario
- *     tags:
- *       - Notificaciones
- *     parameters:
- *       - in: path
- *         name: destinatarioId
- *         required: true
+ *         description: ID del destinatario de las notificaciones
+ *       - in: query
+ *         name: estado
+ *         required: false
  *         schema:
  *           type: string
- *         description: ID del usuario
+ *           enum:
+ *             - LEIDA
+ *             - NO_LEIDA
+ *         description: Filtra las notificaciones por estado
  *     responses:
  *       200:
- *         description: Lista de notificaciones leidas
+ *         description: Lista de notificaciones obtenida correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Notificacion'
  *       404:
- *         description: Usuario no encontrado
+ *         description: Destinatario no encontrado
+ *       500:
+ *         description: Error interno del servidor
  */
-router.get('/:destinatarioId/leidas', notificacionController.getLeidas.bind(notificacionController));
+router.get('/:destinatarioId', notificacionController.getNotificaciones.bind(notificacionController)); //?estado=LEIDA
 
 /**
  * @swagger

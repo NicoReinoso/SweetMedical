@@ -6,25 +6,19 @@ export class NotificacionController {
     this.notificacionService = notificacionService;
     }
 
-    async getNoLeidas(req, res, next) {
+    async getNotificaciones(req, res, next) {
         try {
             const { destinatarioId } = req.params;
-            const notificacionesNoLeidas = await this.notificacionService.obtenerNoLeidas(destinatarioId);
-            res.status(200).json(notificacionesNoLeidas);
+            const { estado } = req.query;
+
+            const notificaciones =await this.notificacionService.obtenerNotificaciones(destinatarioId,estado);
+
+            res.status(200).json(notificaciones);
         } catch (error) {
-            return next(error);
+            next(error);
         }
     }
 
-    async getLeidas(req, res, next) {
-        try {
-            const { destinatarioId } = req.params;
-            const notificacionesLeidas = await this.notificacionService.obtenerLeidas(destinatarioId);
-            res.status(200).json(notificacionesLeidas);
-        } catch (error) {
-            return next(error);
-        }
-    }
 
     async leer(req, res, next) {
         try {
