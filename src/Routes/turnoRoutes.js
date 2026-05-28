@@ -8,28 +8,6 @@ const router = express.Router();
 
 /**
  * @swagger
- * /turnos/{id}:
- *   get:
- *     summary: Obtiene un turno por ID
- *     tags:
- *       - Turnos
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: ID del turno
- *     responses:
- *       200:
- *         description: Turno encontrado
- *       404:
- *         description: Turno no encontrado
- */
-router.get('/:id', turnoController.getTurno.bind(turnoController));
-
-/**
- * @swagger
  * /turnos/disponibles:
  *   get:
  *     summary: Busca turnos disponibles con filtros opcionales
@@ -75,6 +53,29 @@ router.get('/:id', turnoController.getTurno.bind(turnoController));
  *         description: Filtros inválidos
  */
 router.get("/disponibles", turnoController.buscarDisponibles.bind(turnoController));
+
+/**
+ * @swagger
+ * /turnos/{id}:
+ *   get:
+ *     summary: Obtiene un turno por ID
+ *     tags:
+ *       - Turnos
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID del turno
+ *     responses:
+ *       200:
+ *         description: Turno encontrado
+ *       404:
+ *         description: Turno no encontrado
+ */
+router.get('/:id', turnoController.getTurno.bind(turnoController));
+
 
 /**
  * @swagger

@@ -149,7 +149,7 @@ router.post('/:id/especialidad', validarEspecialidad, medicoController.addEspeci
  *       422:
  *         description: Campo inexistente o inválido en el body
  */
-router.patch('/:id/especialidad', medicoController.patchEspecialidad.bind(medicoController));
+router.patch('/:id/especialidad/:especialidadId', medicoController.patchEspecialidad.bind(medicoController));
 
 /**
  * @swagger
@@ -175,7 +175,7 @@ router.patch('/:id/especialidad', medicoController.patchEspecialidad.bind(medico
  *       404:
  *         description: Médico o especialidad no encontrados
  */
-router.delete('/:id/especialidad/:especialidadNombre', medicoController.deleteEspecialidad.bind(medicoController));
+router.delete('/:id/especialidad/:especialidadId', medicoController.deleteEspecialidad.bind(medicoController));
 
 /**
  * @swagger
@@ -239,7 +239,7 @@ router.post('/:id/practica', validarPractica, medicoController.addPractica.bind(
  *       422:
  *         description: Campo inexistente o inválido en el body
  */
-router.patch('/:id/practica', medicoController.patchPractica.bind(medicoController));
+router.patch('/:id/practica/:practicaId', medicoController.patchPractica.bind(medicoController));
 
 /**
  * @swagger
@@ -265,6 +265,6 @@ router.patch('/:id/practica', medicoController.patchPractica.bind(medicoControll
  *       404:
  *         description: Médico o práctica no encontrados
  */
-router.delete('/:id/practica/:practicaNombre', medicoController.deletePractica.bind(medicoController));
+router.delete('/:id/practica/:practicaId', medicoController.deletePractica.bind(medicoController));
 
 export default router

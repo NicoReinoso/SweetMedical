@@ -67,7 +67,7 @@ const especialidadSchema = new mongoose.Schema({
     },
 
     coberturas: [coberturaSchema]
-}, { _id: false });
+});
 
 especialidadSchema.loadClass(Especialidad);
 
@@ -85,7 +85,7 @@ const practicaSchema = new mongoose.Schema({
     },
 
     coberturas: [coberturaSchema]
-}, { _id: false });
+});
 
 practicaSchema.loadClass(Practica);
 

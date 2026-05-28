@@ -62,9 +62,10 @@ export class MedicoController{
 
     async patchEspecialidad(req, res, next) {
         try {
-            const { id } = req.params;
+            const { id, especialidadId} = req.params;
 
             const especialidadModificada = {
+                _id: especialidadId,
                 nombre: req.body.nombre,
                 costoConsulta: req.body.costoConsulta
             };
@@ -79,9 +80,9 @@ export class MedicoController{
 
     async deleteEspecialidad(req, res, next){
         try{
-            const { id, especialidadNombre } = req.params;
+            const { id, especialidadId } = req.params;
 
-            const nuevaEspecialidad = await this.medicoService.bajaEspecialidad(id, especialidadNombre);
+            const nuevaEspecialidad = await this.medicoService.bajaEspecialidad(id, especialidadId);
 
             res.status(200).json(nuevaEspecialidad);
         } catch(error) {
@@ -103,12 +104,13 @@ export class MedicoController{
         }
     }
 
+
     async patchPractica(req, res, next) {
         try {
-            const { id } = req.params;
+            const { id, practicaId } = req.params;
 
             const practicaModificada = {
-                nombre: req.body.nombre,
+                _id: practicaId,
                 costo: req.body.costo
             };
 
@@ -122,9 +124,9 @@ export class MedicoController{
 
     async deletePractica(req, res, next) {
         try {
-            const { id, practicaNombre } = req.params;
+            const { id, practicaId } = req.params;
 
-            const practicasFiltradas = await this.medicoService.bajaPractica(id, practicaNombre);
+            const practicasFiltradas = await this.medicoService.bajaPractica(id, practicaId);
 
             res.status(200).json(practicasFiltradas);
         } catch (error) {

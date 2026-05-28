@@ -35,8 +35,6 @@ export class NotificacionService{
         return notificacion;
     }
 
-    // respetamos arq. en capas, dado que los otros services no pueden crear notificaciones comunicandose 
-    // directamente con el repo de notificacion.
     async crear(destinatarioId, remitenteId, mensaje) {
        
         const notificacion = new Notificacion(destinatarioId, remitenteId, mensaje);
