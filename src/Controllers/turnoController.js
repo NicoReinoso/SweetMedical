@@ -18,16 +18,16 @@ export class TurnoController {
     };
 
     async buscarDisponibles(req, res, next) {
-    try {
-        const filtros = req.query;
+        try {
+            const filtros = req.query;
 
-        const resultados = await this.turnoService.buscarDisponibles(filtros);
+            const resultados = await this.turnoService.buscarDisponibles(filtros);
 
-        res.status(200).json(resultados);
-    } catch (error) {
-        next(error);
+            res.status(200).json(resultados);
+        } catch (error) {
+            next(error);
+        }
     }
-}
 
     async reservarTurno(req, res, next) {
         try {

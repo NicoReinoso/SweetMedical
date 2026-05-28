@@ -575,14 +575,14 @@ const obtenerHora = (fecha) => {
 };
 
 const construirFechaHora = (fecha, hora) => {
-    const [h, m] = hora.split(":");
+    const [h, m] = hora.split(":").map(Number);
 
     const nuevaFecha = new Date(fecha);
 
-    nuevaFecha.setHours(h);
-    nuevaFecha.setMinutes(m);
-    nuevaFecha.setSeconds(0);
-    nuevaFecha.setMilliseconds(0);
+    nuevaFecha.setUTCHours(h); // se usa setUTC para que no se aplique una conversión por zona horaria
+    nuevaFecha.setUTCMinutes(m);
+    nuevaFecha.setUTCSeconds(0);
+    nuevaFecha.setUTCMilliseconds(0);
 
     return nuevaFecha;
 };

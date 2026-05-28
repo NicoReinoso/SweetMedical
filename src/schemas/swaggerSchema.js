@@ -50,3 +50,58 @@
  *           format: date-time
  *           example: "2026-07-01T10:30:00Z"
  */
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     TurnoDisponible:
+ *       type: object
+ *       properties:
+ *         medicoId:
+ *           type: string
+ *           example: "684d0b8d7c3e7b1c8f3c1234"
+ *
+ *         medicoNombre:
+ *           type: string
+ *           example: "Juan Pérez"
+ *
+ *         fechaHora:
+ *           type: string
+ *           format: date-time
+ *           example: "2026-07-15T10:00:00.000Z"
+ *
+ *         sede:
+ *           type: string
+ *           example: "Medrano"
+ *
+ *         consultaSolicitada:
+ *           type: object
+ *           properties:
+ *             tipo:
+ *               type: string
+ *               enum:
+ *                 - PRACTICA
+ *                 - ESPECIALIDAD
+ *               example: "ESPECIALIDAD"
+ *
+ *             nombre:
+ *               type: string
+ *               example: "Cardiología"
+ *
+ *         estadoCobertura:
+ *           type: string
+ *           enum:
+ *             - CUBIERTO
+ *             - PARCIAL
+ *             - NO_CUBIERTO
+ *           example: "PARCIAL"
+ *
+ *         porcentajeCobertura:
+ *           type: number
+ *           example: 70
+ *
+ *         costoEstimado:
+ *           type: number
+ *           example: 2500
+ */

@@ -10,47 +10,146 @@ const router = express.Router();
  * @swagger
  * /turnos/disponibles:
  *   get:
- *     summary: Busca turnos disponibles con filtros opcionales
+ *     summary: Buscar turnos disponibles
+ *     description: |
+ *       Genera y devuelve todos los turnos disponibles que podrían solicitarse
+ *       según los filtros enviados. Cada resultado representa un posible turno
+ *       para una práctica o especialidad determinada en un horario libre de un médico.
+ *
+ *       No se permite filtrar simultáneamente por práctica y especialidad.
+ *
  *     tags:
  *       - Turnos
+ *
  *     parameters:
  *       - in: query
- *         name: medicoId
+ *         name: pacienteId
+ *         required: false
  *         schema:
  *           type: string
- *         description: ID del médico
+ *         description: ID del paciente para calcular cobertura y costo estimado.
+ *
+ *       - in: query
+ *         name: medicoNombre
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: Nombre exacto del médico.
+ *
  *       - in: query
  *         name: especialidad
+ *         required: false
  *         schema:
  *           type: string
- *         description: Especialidad buscada
+ *         description: Especialidad buscada.
+ *
  *       - in: query
  *         name: practica
+ *         required: false
  *         schema:
  *           type: string
- *         description: Práctica buscada
+ *         description: Práctica buscada.
+ *
  *       - in: query
  *         name: sede
+ *         required: false
  *         schema:
  *           type: string
- *         description: Sede de atención
+ *         description: Sede donde se desea atender.
+ *
  *       - in: query
  *         name: fechaDesde
+ *         required: false
  *         schema:
  *           type: string
  *           format: date-time
- *         description: Inicio del rango de fechas
+ *         description: Fecha inicial del rango de búsqueda.
+ *
  *       - in: query
  *         name: fechaHasta
+ *         required: false
  *         schema:
  *           type: string
  *           format: date-time
- *         description: Fin del rango de fechas
+ *         description: Fecha final del rango de búsqueda.
+ *
+ *       - in: query
+ *         name: sortBy
+ *         required: false
+ *         schema:
+ *           type: string
+ *           enum:
+ *             - fechaHora
+ *             - costoEstimado
+ *           default: fechaHora
+ *         description: Campo utilizado para ordenar los resultados.
+ *
+ *       - in: query
+ *         name: order
+ *         required: false
+ *         schema:
+ *           type: string
+ *           enum:
+ *             - asc
+ *             - desc
+ *           default: asc
+ *         description: Sentido del ordenamiento.
+ *
+ *       - in: query
+ *         name: page
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *         description: Número de página.
+ *
+ *       - in: query
+ *         name: limit
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 10
+ *         description: Cantidad de resultados por página.
+ *
  *     responses:
  *       200:
- *         description: Lista de turnos disponibles
+ *         description: Turnos disponibles obtenidos correctamente.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 total:
+ *                   type: integer
+ *                   example: 42
+ *
+ *                 page:
+ *                   type: integer
+ *                   example: 1
+ *
+ *                 limit:
+ *                   type: integer
+ *                   example: 10
+ *
+ *                 totalPages:
+ *                   type: integer
+ *                   example: 5
+ *
+ *                 resultados:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/TurnoDisponible'
+ *
  *       400:
- *         description: Filtros inválidos
+ *         description: Filtros inválidos.
+ *
+ *       404:
+ *         description: Paciente no encontrado.
+ *
+ *       500:
+ *         description: Error interno del servidor.
  */
 router.get("/disponibles", turnoController.buscarDisponibles.bind(turnoController));
 
