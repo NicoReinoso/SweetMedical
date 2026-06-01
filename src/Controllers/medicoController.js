@@ -5,7 +5,7 @@ import Practica from "../Models/practica.js";
 
 export class MedicoController{
 
-    constructor({medicoService = new MedicoService()} = {}) {
+    constructor(medicoService) {
         this.medicoService = medicoService;
     }
 

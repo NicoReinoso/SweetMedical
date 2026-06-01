@@ -60,7 +60,7 @@ export class MedicoRepo{
 
     async agregarTurnoSolicitado(medicoId, turnoId) {
         if (!mongoose.Types.ObjectId.isValid(medicoId)) {
-        return null;
+            return null;
         }
         return await this.model.findByIdAndUpdate(
         medicoId,

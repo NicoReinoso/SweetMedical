@@ -8,9 +8,10 @@ import {
 } from "../errors/AppError.js"
 
 
+
 export class MedicoService{
 
-    constructor({ medicoRepo = new MedicoRepo() } = {}) {
+    constructor({ medicoRepo } = {}) {
         this.medicoRepo = medicoRepo;
     }
 
@@ -28,6 +29,22 @@ export class MedicoService{
             turnosAceptados: medico.turnosAceptados
         }
     }
+
+    async obtenerMedico(medicoId) {
+        return await this.medicoRepo.findById(medicoId);
+    };
+
+    async obtenerTodos() {
+        return await this.medicoRepo.findAll();
+    };
+
+    async agregarTurno(medicoId, turnoId) {
+        return await this.medicoRepo.agregarTurnoSolicitado(medicoId, turnoId);
+    };
+
+    async actualizarMedico(medicoId, medicoActualizado) {
+        return await this.medicoRepo.updateMedico(medicoId, medicoActualizado);
+    };
 
     async obtenerDisponibilidad(medicoId) {
         const medico = await this.medicoRepo.findById(medicoId);

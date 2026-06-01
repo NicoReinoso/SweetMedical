@@ -1,10 +1,9 @@
 import express from "express";
-import {MedicoController} from "../Controllers/medicoController.js";
+import { medicoController } from "../container.js";
 import { validarDisponibilidad } from "../middlewares/validarDisponibilidad.js";
 import { validarEspecialidad } from "../middlewares/validarEspecialidad.js";
 import { validarPractica } from "../middlewares/validarPractica.js";
 
-const medicoController = new MedicoController()
 const router = express.Router();
 
 /**

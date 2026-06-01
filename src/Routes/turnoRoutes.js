@@ -1,9 +1,8 @@
 import express from "express";
-import { TurnoController } from "../Controllers/turnoController.js"
+import { turnoController } from "../container.js";
 import { validarTurno, validarCancelacion, validarReprogramacion  } from "../middlewares/validarTurno.js";
 
 
-const turnoController = new TurnoController()
 const router = express.Router();
 
 /**

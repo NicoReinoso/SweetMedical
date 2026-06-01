@@ -10,6 +10,7 @@ import { notFoundHandler } from "./middlewares/notFoundHandler.js";
 import { errorLogger } from "./middlewares/errorLogger.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import { MongoDBClient } from "./config/database.js";
+import "./container.js";
 
 const app = express();
 app.use(express.json());

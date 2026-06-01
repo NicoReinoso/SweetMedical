@@ -1,7 +1,6 @@
 import express from "express";
-import { PacienteController } from "../Controllers/pacienteController.js";
+import { pacienteController } from "../container.js";
 
-const pacienteController = new PacienteController()
 const router = express.Router();
 
 /**

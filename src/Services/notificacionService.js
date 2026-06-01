@@ -4,7 +4,7 @@ import { Notificacion } from "../Models/notificacion.js";
 
 export class NotificacionService{
     
-    constructor({ notificacionRepo = new NotificacionRepo() } = {}) {
+    constructor({ notificacionRepo } = {}) {
     this.notificacionRepo = notificacionRepo;
     }
 

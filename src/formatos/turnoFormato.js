@@ -26,11 +26,7 @@ export const turnoFormato = z.object({
 
     practica: z.string().min(1, "practica no puede estar vacía").optional(),
 
-    especialidad: z.string().min(1, "especialidad no puede estar vacía").optional(),
-
-    costo: z.number({
-        required_error: "costo es obligatorio"
-    }).nonnegative("costo debe ser 0 o mayor")
+    especialidad: z.string().min(1, "especialidad no puede estar vacía").optional()
 
 }).strict()
 .refine(data => data.practica || data.especialidad, {

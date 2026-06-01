@@ -2,8 +2,8 @@ import { NotificacionService } from "../Services/notificacionService.js";
 
 export class NotificacionController {
 
-    constructor({ notificacionService = new NotificacionService() } = {}) {
-    this.notificacionService = notificacionService;
+    constructor(notificacionService) {
+        this.notificacionService = notificacionService;
     }
 
     async getNotificaciones(req, res, next) {

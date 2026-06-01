@@ -1,8 +1,6 @@
 import express from "express";
-import { NotificacionController } from "../Controllers/notificacionController.js";
-import { MedicoController } from "../Controllers/medicoController.js";
+import { notificacionController } from "../container.js";
 
-const notificacionController = new NotificacionController()
 const router = express.Router();
 
 /**

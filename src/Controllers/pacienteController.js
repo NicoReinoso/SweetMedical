@@ -2,7 +2,7 @@ import { PacienteService } from "../Services/pacienteService.js";
 
 export class PacienteController{
 
-    constructor({pacienteService = new PacienteService()} = {}) {
+    constructor(pacienteService) {
         this.pacienteService = pacienteService;
     }
 

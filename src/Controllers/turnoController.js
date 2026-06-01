@@ -1,7 +1,7 @@
 import { TurnoService } from "../Services/turnoService.js";
 
 export class TurnoController {
-    constructor({turnoService = new TurnoService()} = {}) {
+    constructor(turnoService) {
         this.turnoService = turnoService;
     }
 

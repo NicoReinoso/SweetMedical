@@ -1,5 +1,5 @@
 import { PacienteRepo } from "../Repositorio/pacienteBd.js"
-import { TurnoRepo } from "../Repositorio/turnoBd.js";
+import { TurnoService } from "./turnoService.js";
 import { Paciente } from "../Models/paciente.js"
 import {
     BadRequestError,
@@ -10,13 +10,15 @@ import {
 
 export class PacienteService{
     constructor({
-        pacienteRepo = new PacienteRepo(),
-        turnoRepo = new TurnoRepo()
+        pacienteRepo,
     } = {}) {
 
         this.pacienteRepo = pacienteRepo;
-        this.turnoRepo = turnoRepo;
     }
+
+    async obtenerPaciente(idPaciente) {
+        return await this.pacienteRepo.findById(idPaciente);
+    };
 
     async obtenerHistorial(idPaciente) {
 
@@ -26,6 +28,6 @@ export class PacienteService{
             throw new NotFoundError("Paciente no encontrado");
         }
 
-        return await this.turnoRepo.findByPaciente(idPaciente);
+        return await this.turnoService.encontrarPorPaciente(idPaciente);
     }
 }
