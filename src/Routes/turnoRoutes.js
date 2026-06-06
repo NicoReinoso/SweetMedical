@@ -202,7 +202,7 @@ router.post('/', validarTurno, turnoController.reservarTurno.bind(turnoControlle
 
 /**
  * @swagger
- * /turnos/{id}/reprogramar:
+ * /turnos/{id}/fecha:
  *   patch:
  *     summary: Reprograma un turno a un nuevo horario disponible del mismo médico
  *     tags:
@@ -239,7 +239,7 @@ router.post('/', validarTurno, turnoController.reservarTurno.bind(turnoControlle
  *       422:
  *         description: Campo inexistente o faltante en body
  */
-router.patch('/:id/reprogramar', validarReprogramacion, turnoController.reprogramarTurno.bind(turnoController));
+router.patch('/:id/fecha', validarReprogramacion, turnoController.reprogramarTurno.bind(turnoController));
 
 /**
  * @swagger
@@ -283,7 +283,7 @@ router.delete('/:id', validarCancelacion, turnoController.cancelarTurno.bind(tur
 
 /**
  * @swagger
- * /turnos/{id}/realizar:
+ * /turnos/{id}/estado:
  *   patch:
  *     summary: Marca un turno como realizado
  *     tags:
@@ -303,7 +303,7 @@ router.delete('/:id', validarCancelacion, turnoController.cancelarTurno.bind(tur
  *       409:
  *         description: El turno ya está cancelado o realizado
  */
-router.patch('/:id/realizar', turnoController.realizarTurno.bind(turnoController));
+router.patch('/:id/estado', turnoController.realizarTurno.bind(turnoController));
 
 /**
  * @swagger
