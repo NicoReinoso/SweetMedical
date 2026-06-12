@@ -6,9 +6,10 @@ import {
     NotFoundError,
     UnprocessableEntityError
 } from "../errors/AppError.js"
+import Especialidad from "./especialidad.js";
+import Practica from "./practica.js"
 
 export class Medico {
-    id;
     usuario;
     matricula;
     nombre;
@@ -19,8 +20,7 @@ export class Medico {
     turnosSolicitados;
     turnosAceptados;
 
-    constructor(id, usuario, matricula, nombre, especialidades, practicas, sedes) {
-        this.id = id
+    constructor(usuario, matricula, nombre, especialidades, practicas, sedes) {
         this.usuario = usuario
         this.matricula = matricula
         this.nombre = nombre.trim()
@@ -58,9 +58,44 @@ export class Medico {
         this.turnosAceptados.push(turno);
     }
     
+    removerTurno(idTurno) {
+        this.turnosSolicitados = this.turnosSolicitados.filter(
+            t => t.id !== idTurno
+        );
 
+        this.turnosAceptados = this.turnosAceptados.filter(
+            t => t.id !== idTurno
+        );
+    }
+    
+    agregarEspecialidad(nuevaEspecialidad){
+
+        if (!nuevaEspecialidad || !(nuevaEspecialidad instanceof Especialidad)) {
+            throw new UnprocessableEntityError("La especialidad es inválida");
+        }
+
+        if (this.especialidades.some(e => e.nombre === nuevaEspecialidad.nombre)) {
+            throw new ConflictError("El médico ya tiene esa especialidad");
+        }
+
+        this.especialidades.push(nuevaEspecialidad);
+    }
+
+    agregarPractica(nuevaPractica){
+
+        if (!nuevaPractica || !(nuevaPractica instanceof Practica)) {
+            throw new UnprocessableEntityError("La practica es inválida");
+        }
+
+        if (this.practicas.some(p => p.nombre === nuevaPractica.nombre)) {
+            throw new ConflictError("El médico ya tiene esa practica");
+        }
+
+        this.practicas.push(nuevaPractica);
+    }
+    
     //VALIDACIONES
-    validarCoherenciaHora = (horaDesde, horaHasta) => {
+    validarCoherenciaHora(horaDesde, horaHasta) {
         const desde = this.convertirHoraAMinutos(horaDesde);
         const hasta = this.convertirHoraAMinutos(horaHasta);
 
@@ -69,31 +104,37 @@ export class Medico {
         }
     };
 
-    convertirHoraAMinutos = (hora) => {
+    convertirHoraAMinutos(hora) {
         const [h, m] = hora.split(":").map(Number);
         return h * 60 + m;
     };
 
-    verificarDisponibilidadIgual = (disponibilidades, nueva) => {
+    verificarDisponibilidadIgual(disponibilidades, nueva) {
         if (disponibilidades.some(d => d.diaSemana === nueva.diaSemana && d.horaDesde === nueva.horaDesde &&  d.horaHasta === nueva.horaHasta)) {
             throw new ConflictError("La disponibilidad ya existe");
         }
     };
 
-    validarSedeSolicitada = (sede) => {
+    validarSedeSolicitada(sede) {
         if(!this.sedes.includes(sede)){
             throw new BadRequestError("El medico solicitado no opera en esa sede");
         }
     }
 
-    validarPracticaSolicitada = (practica) => {
-        if(!this.practicas.includes(practica)){
+    validarPracticaSolicitada(practica) {
+        const nombreBuscado = typeof practica === "string" ? practica : practica?.nombre;
+        if (!this.practicas.some(p => {
+            const nombre = typeof p === "string" ? p : p?.nombre;
+            return nombre === nombreBuscado;
+        })) {
             throw new BadRequestError("El medico solicitado no realiza esa practica");
         }
     }
 
-    removerTurnoCancelado(idTurno) {
-        this.turnosSolicitados = this.turnosSolicitados.filter(t => t.id !== idTurno);
+    validarEspecialidadSolicitada(especialidad) {
+        if(!this.especialidades.some(e => e.nombre === especialidad.nombre)){
+            throw new BadRequestError("El medico solicitado no tiene esa especialidad");
+        }
     }
 
 }
