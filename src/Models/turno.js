@@ -3,30 +3,31 @@ export const EstadoTurno = {
     RESERVADO: "RESERVADO",
     CONFIRMADO: "CONFIRMADO",
     CANCELADO: "CANCELADO",
-    REALIZADO: "REALIZADO"
+    REALIZADO: "REALIZADO",
+    REPROGRAMADO: "REPROGRAMADO"
 }
 
 export class Turno {
-    id;
-    medico;
+    medicoId;
     pacienteId;
     fechaHora;
     sede;
-    practica;
+    consultaSolicitada;
     estado;
     historialEstados;
     costo;
+    motivoCancelacion;
 
-    constructor(id, medicoId, pacienteId, fechaHora, sede, practica, costo) {
-        this.id = id;
+    constructor(medicoId, pacienteId, fechaHora, sede, consultaSolicitada, costo, motivoCancelacion) {
         this.medicoId = medicoId;
         this.pacienteId = pacienteId;
         this.fechaHora = fechaHora;
         this.sede = sede;
-        this.practica = practica;
+        this.consultaSolicitada = consultaSolicitada;
         this.estado = EstadoTurno.RESERVADO;
         this.historialEstados = [EstadoTurno.RESERVADO];
         this.costo = costo;
+        this.motivoCancelacion = null;
     }
 
 }

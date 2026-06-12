@@ -1,50 +1,84 @@
-import { Turno } from "../Models/turno.js";
-
-const turno1 = new Turno("1", "med-1", "pac-1", new Date("2026-04-27T08:00:00"), "Sede 1", "Practica 1", 100);
-const turno2 = new Turno("2", "med-2", "pac-2", new Date("2026-01-01T11:00:00"), "Sede 2", "Practica 2", 200);
-const turno3 = new Turno("3", "med-3", "pac-3", new Date("2026-01-01T12:00:00"), "Sede 3", "Practica 3", 300);
+import mongoose from "mongoose";
+import { EstadoTurno } from "../Models/turno.js";
+import { TurnoModel } from "../schemas/turnoSchema.js";
 
 export class TurnoRepo {
-    turnosCargados = [turno1, turno2, turno3];
-
-    findTurno = (id) => {
-        const turno = this.findById(id);
-
-        return turno;
-
+    constructor() {
+        this.model = TurnoModel;
     }
 
-    generarNuevoId() {
-        if (this.turnosCargados.length === 0) return 1;
-
-        const maxId = Math.max(...this.turnosCargados.map(t => Number(t.id)));
-        return String(maxId + 1);
-    }
-
-    findById = (id) => {
-        return this.turnosCargados.find(t => t.id === id);
-    }
-
-    createTurno = (turno) => {
-        this.turnosCargados.push(turno);
-        return turno;
-    }
-
-    updateTurno = (id, turno) => {
-        const index = this.turnosCargados.findIndex(t => t.id === id);
-        if (index !== -1) {
-            this.turnosCargados[index] = turno;
-            return this.turnosCargados[index];
+    async findTurno(id) {
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return null;
         }
-        return null;
+        return await this.model.findById(id);
     }
 
-    deleteTurno = (id) => {
-        const index = this.turnosCargados.findIndex(t => t.id === id);
-        if (index !== -1) {
-            this.turnosCargados.splice(index, 1);
-            return true;
+    async createTurno(turno) {
+        const nuevoTurno = new this.model(turno);
+        return await nuevoTurno.save();
+    }
+
+    async updateTurno(id, turnoModificado) {
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return null;
         }
-        return false;
+        return await this.model.findByIdAndUpdate(id, turnoModificado, { new: true } );
+    }
+
+    async deleteTurno(id) {
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return null;
+        }
+        return await this.model.findByIdAndDelete(id);   
+    }
+
+    async existeTurno(medicoId, fechaHora) {
+        if (!mongoose.Types.ObjectId.isValid(medicoId)) {
+            return null;
+        }
+        console.log(medicoId, fechaHora);
+        return await this.model.findOne({
+            medicoId: medicoId,
+            fechaHora: fechaHora,
+            estado: {
+                $ne: EstadoTurno.CANCELADO
+            }
+    });
+    }
+
+    async findByPaciente(pacienteId) {
+        if (!mongoose.Types.ObjectId.isValid(pacienteId)) {
+            return null;
+        }
+        return await this.model.find({ pacienteId });
+        return await this.model.findOne({
+            medicoId,
+            fechaHora,
+            estado: { $ne: EstadoTurno.CANCELADO }
+        });
+    }
+
+
+    // Devuelve todos los turnos de un paciente, del más reciente al más antiguo
+    async findByPacienteId(pacienteId) {
+        if (!mongoose.Types.ObjectId.isValid(pacienteId)) {
+            return null;
+        }
+        return await this.model.find({ pacienteId }).sort({ fechaHora: -1 });
+    }
+
+    // Busca turnos de un médico en una ventana de 2hs alrededor de una fecha
+    async findByMedicoIdEnRango(medicoId, fechaHora) {
+        if (!mongoose.Types.ObjectId.isValid(medicoId)) {
+            return null;
+        }
+        const desde = new Date(new Date(fechaHora).getTime() - 2 * 60 * 60 * 1000);
+        const hasta = new Date(new Date(fechaHora).getTime() + 2 * 60 * 60 * 1000);
+        return await this.model.find({
+            medicoId,
+            fechaHora: { $gte: desde, $lte: hasta },
+            estado: { $ne: EstadoTurno.CANCELADO }
+        });
     }
 }   

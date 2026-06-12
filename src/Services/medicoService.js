@@ -8,41 +8,70 @@ import {
 } from "../errors/AppError.js"
 
 
+
 export class MedicoService{
 
-    constructor({medicoRepo = new MedicoRepo()} = {}) {
+    constructor({ medicoRepo } = {}) {
         this.medicoRepo = medicoRepo;
     }
 
-    obtenerDisponibilidad = (medicoId, soloDisponibles = false) => {
-        const medico = this.medicoRepo.findById(medicoId);
+    toDTO(medico) {
+        return {
+            id: medico.id || medico._id,
+            usuario: medico.usuario,
+            matricula: medico.matricula,
+            nombre: medico.nombre,
+            especialidades: medico.especialidades,
+            practicas: medico.practicas,
+            sedes: medico.sedes,
+            disponibilidad: medico.disponibilidad,
+            turnosSolicitados: medico.turnosSolicitados,
+            turnosAceptados: medico.turnosAceptados
+        }
+    }
+
+    async obtenerMedico(medicoId) {
+        return await this.medicoRepo.findById(medicoId);
+    };
+
+    async obtenerTodos() {
+        return await this.medicoRepo.findAll();
+    };
+
+    async agregarTurno(medicoId, turnoId) {
+        return await this.medicoRepo.agregarTurnoSolicitado(medicoId, turnoId);
+    };
+
+    async actualizarMedico(medicoId, medicoActualizado) {
+        return await this.medicoRepo.updateMedico(medicoId, medicoActualizado);
+    };
+
+    async obtenerDisponibilidad(medicoId) {
+        const medico = await this.medicoRepo.findById(medicoId);
 
         if (!medico) {
             throw new NotFoundError("Médico no encontrado");
         }
 
-        if (soloDisponibles) {
-            return medico.disponibilidad.filter(d => !d.ocupado);
-        }
-
         return medico.disponibilidad;
     };
 
-    agregarDisponibilidad = (medicoId, disponibilidad) => {
-        const medico = this.medicoRepo.findById(medicoId);
+    async agregarDisponibilidad(medicoId, disponibilidad) {
+        const medico = await this.medicoRepo.findById(medicoId);
         if (!medico) {
             throw new NotFoundError("Médico no encontrado");
         }
 
         medico.agregarDisponibilidad(disponibilidad);
 
+        await this.medicoRepo.updateDisponibilidad(medicoId, medico.disponibilidad);
         return disponibilidad;
     };
 
 
-    bajaDisponibilidad = (id, horarioABorrar) => {
+    async bajaDisponibilidad(id, horarioABorrar) {
 
-        const medico = this.medicoRepo.findById(id);
+        const medico = await this.medicoRepo.findById(id);
         if (!medico) {
             throw new NotFoundError("Medico no encontrado");
         }
@@ -65,6 +94,103 @@ export class MedicoService{
             h !== disponibilidad
         );
 
-        return this.medicoRepo.updateDisponibilidad(id, disponibilidadActualizada);
+        await this.medicoRepo.updateDisponibilidad(id, disponibilidadActualizada);
+        return disponibilidadActualizada;
     };
+
+    async agregarEspecialidad(medicoId, especialidadNueva) {
+        const medico = await this.medicoRepo.findById(medicoId);
+        if (!medico) {
+            throw new NotFoundError("Médico no encontrado");
+        }
+        
+        medico.agregarEspecialidad(especialidadNueva);
+        
+        await this.medicoRepo.updateEspecialidades(medicoId, medico.especialidades);
+   
+        return especialidadNueva;
+    };
+
+  
+    async modificarEspecialidad(medicoId, especialidadModificada){
+        const medico = await this.medicoRepo.findById(medicoId);
+        if (!medico) {
+            throw new NotFoundError("Médico no encontrado");
+        }
+
+        const especialidadId = especialidadModificada._id; // podemos usar el_id xq trajimos todos los sub-ids de medico al buscar el medico
+
+        const especialidadesActuales = medico.especialidades;
+
+        const especialidadAModificar = especialidadesActuales.find(e => e._id.toString() === especialidadId);
+
+        if (!especialidadAModificar){ 
+            throw new NotFoundError("Especialidad no encontrada");
+        }
+
+        especialidadAModificar.costoConsulta = especialidadModificada.costoConsulta ?? especialidadAModificar.costoConsulta;
+
+        await this.medicoRepo.updateEspecialidades(medicoId, medico.especialidades);
+        return especialidadModificada;
+    }
+
+
+    async bajaEspecialidad(medicoId, especialidadId){
+        const medico = await this.medicoRepo.findById(medicoId);
+        if (!medico) {
+            throw new NotFoundError("Médico no encontrado");
+        }
+
+        const especialidadesFiltradas = medico.especialidades.filter(e => e._id.toString() !== especialidadId);
+
+        await this.medicoRepo.updateEspecialidades(medicoId, especialidadesFiltradas);
+
+        return especialidadesFiltradas;
+    }
+
+    async agregarPractica(medicoId, practicaNueva) {
+        const medico = await this.medicoRepo.findById(medicoId);
+        if (!medico) {
+            throw new NotFoundError("Médico no encontrado");
+        }
+
+        medico.agregarPractica(practicaNueva);
+
+        await this.medicoRepo.updatePracticas(medicoId, medico.practicas);
+        return practicaNueva;
+    };
+
+    async modificarPractica(medicoId, practicaModificada){
+        const medico = await this.medicoRepo.findById(medicoId);
+        if (!medico) {
+            throw new NotFoundError("Médico no encontrado");
+        }
+
+        const practicaId = practicaModificada._id;
+
+        const practicaAModificar = medico.practicas.find(p => p._id.toString() === practicaId);
+
+        if (!practicaAModificar){ 
+            throw new NotFoundError("Practica no encontrada");
+        }
+
+        practicaAModificar.costo = practicaModificada.costo ?? practicaAModificar.costo;
+
+        await this.medicoRepo.updatePracticas(medicoId, medico.practicas);
+        return practicaModificada;
+    }
+
+
+    async bajaPractica(medicoId, practicaId){
+        const medico = await this.medicoRepo.findById(medicoId);
+        if (!medico) {
+            throw new NotFoundError("Médico no encontrado");
+        }
+
+        const practicasFiltradas = medico.practicas.filter(p => p._id.toString() !== practicaId);
+
+        await this.medicoRepo.updatePracticas(medicoId, practicasFiltradas);
+
+        return practicasFiltradas;
+    }
 }
