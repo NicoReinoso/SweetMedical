@@ -1,0 +1,15 @@
+.home-body{
+    display: flex;
+    position: relative;
+    top: -1.5rem;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.spinner{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4rem;
+}
