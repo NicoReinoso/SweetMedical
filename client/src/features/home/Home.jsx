@@ -4,10 +4,14 @@ import './Home.css';
 
 function Home() {
   return (
-    <div>
-      <h1>Sweet Medical</h1>
-      <p>Bienvenido</p>
-    </div>
+    <div className="hero">
+    <h1>Sweet Medical</h1>
+
+    <p>
+      Encontrá especialistas y reservá tus turnos
+      de forma rápida y sencilla.
+    </p>
+  </div>
   );
 }
 

@@ -1,9 +1,24 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
 const PreseleccionContext = createContext(null);
 
 export function PreseleccionProvider({ children }) {
-  const [turnosPreseleccionados, setTurnosPreseleccionados] = useState([]);
+  const [turnosPreseleccionados, setTurnosPreseleccionados] = 
+    useState(() => {
+    const guardados =
+      localStorage.getItem("preseleccion");
+
+    return guardados
+      ? JSON.parse(guardados)
+      : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem(
+      "preseleccion",
+      JSON.stringify(turnosPreseleccionados)
+    );
+  }, [turnosPreseleccionados]);
 
   const agregarTurno = (turno) => {
     setTurnosPreseleccionados((prev) => {

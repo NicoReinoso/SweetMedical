@@ -13,11 +13,11 @@ code {
 }
 
 :root {
-  --primary-green: rgb(30, 126, 52);
-  --secondary-green: rgb(72, 168, 90);
-  --primary-white: rgb(250, 250, 250);
-  --primary-orange: rgb(255, 140, 0);
-  --primary-gray: rgb(36, 36, 36);
+  --primary: #2c7be5;
+  --secondary: #4dabf7;
+  --success: #40c057;
+  --background: #f5f7fa;
+  --text: #212529;
 }
 
 * {

@@ -1,15 +1,15 @@
-.home-body{
-    display: flex;
-    position: relative;
-    top: -1.5rem;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
+.hero {
+  text-align: center;
+  padding: 80px 20px;
 }
 
-.spinner{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 4rem;
+.hero h1 {
+  color: #2c7be5;
+  font-size: 3rem;
+  font-weight: bold;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  color: #666;
 }

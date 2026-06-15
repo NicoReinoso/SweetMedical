@@ -17,7 +17,7 @@ function AppNavbar() {
             <Nav.Link as={Link} to="/">Inicio</Nav.Link>
             <Nav.Link as={Link} to="/buscar">Buscar Turnos</Nav.Link>
             <Nav.Link as={Link} to="/preseleccion">
-              Preselección{" "}
+              Preselección
               {turnosPreseleccionados.length > 0 && (
                 <Badge bg="success">{turnosPreseleccionados.length}</Badge>
               )}

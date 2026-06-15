@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Form, Row, Col, Button, Spinner, Alert } from "react-bootstrap";
 import api from "../../api/api";
 import TurnoCard from "../../mockdata/TurnoCard";
+import { Pagination } from "react-bootstrap";
 
 function BuscarTurnos() {
   const [filtros, setFiltros] = useState({
@@ -10,15 +11,44 @@ function BuscarTurnos() {
     sede: "",
     fechaDesde: "",
     fechaHasta: "",
+    sortBy: "fechaHora",
+    order: "asc"
   });
 
   const [resultados, setResultados] = useState([]);
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState(null);
   const [busquedaRealizada, setBusquedaRealizada] = useState(false);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
 
   const handleChange = (e) => {
     setFiltros((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleBusqueda = async () => {
+    setCargando(true);
+    try {
+      const params = {
+        ...Object.fromEntries(
+          Object.entries(filtros).filter(([, value]) => value !== "")
+        ),
+        page,
+        limit: 10
+      };
+
+      const { data } = await api.get("/turnos/disponibles", { params });
+
+      setResultados(data.resultados || []);
+      setTotalPages(data.totalPages || 0);
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
+        "Ocurrió un error al buscar turnos."
+      );
+    } finally {
+      setCargando(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -26,14 +56,20 @@ function BuscarTurnos() {
     setCargando(true);
     setError(null);
     setBusquedaRealizada(true);
+    handleBusqueda();
 
     try {
-      const params = Object.fromEntries(
+      const params = {
+        ...Object.fromEntries(
         Object.entries(filtros).filter(([, value]) => value !== "")
-      );
+      ),
+      page,
+      limit: 10
+    };
 
       const { data } = await api.get("/turnos/disponibles", { params });
       setResultados(data.resultados || []);
+      setTotalPages(data.totalPages || 0);
     } catch (err) {
       setError(
         err.response?.data?.message ||
@@ -44,6 +80,13 @@ function BuscarTurnos() {
       setCargando(false);
     }
   };
+
+  useEffect(() => {
+    if (!busquedaRealizada){
+       return;
+      }
+    handleBusqueda();
+  }, [page]);
 
   return (
     <div className="container py-4">
@@ -118,20 +161,42 @@ function BuscarTurnos() {
             </Form.Group>
           </Col>
 
-          <Col xs={12} sm={6} lg={4} className="d-flex align-items-end">
-            <Button type="submit" variant="success" disabled={cargando} className="w-100">
-              {cargando ? (
-                <>
-                  <Spinner animation="border" size="sm" className="me-2" />
-                  Buscando...
-                </>
-              ) : (
-                "Buscar"
-              )}
-            </Button>
-          </Col>
         </Row>
-      </Form>
+
+      <Row className="mb-3">
+      <Col md={3}>
+        <Form.Select
+          name="sortBy"
+          value={filtros.sortBy}
+          onChange={handleChange}
+          >
+          <option value="fechaHora">Ordenar por fecha</option>
+          <option value="costoEstimado">Ordenar por costo</option>
+        </Form.Select>
+      </Col>
+
+      <Col md={3}>
+        <Form.Select
+          name="order"
+          value={filtros.order}
+          onChange={handleChange}
+          >
+          <option value="asc">Ascendente</option>
+          <option value="desc">Descendente</option>
+        </Form.Select>
+      </Col>
+      <Col xs={12} sm={6} lg={4} className="d-flex align-items-end">
+        <Button type="submit" variant="success" disabled={cargando} className="w-100">
+          {cargando ? (
+            <>
+          <Spinner animation="border" size="sm" className="me-2" />
+          Buscando...
+          </>
+          ) : ( "Buscar")}
+        </Button>
+      </Col>
+    </Row>
+    </Form>
 
       {error && <Alert variant="danger">{error}</Alert>}
 
@@ -153,6 +218,32 @@ function BuscarTurnos() {
           </Row>
         </>
       )}
+
+      {totalPages > 1 && (
+      <Pagination className="justify-content-center mt-4">
+
+        <Pagination.Prev
+          disabled={page === 1}
+          onClick={() => setPage(page - 1)}
+        />
+
+        {[...Array(totalPages)].map((_, index) => (
+          <Pagination.Item
+            key={index + 1}
+            active={page === index + 1}
+            onClick={() => setPage(index + 1)}
+          >
+            {index + 1}
+          </Pagination.Item>
+        ))}
+
+        <Pagination.Next
+          disabled={page === totalPages}
+          onClick={() => setPage(page + 1)}
+        />
+
+      </Pagination>
+    )}
     </div>
   );
 }
