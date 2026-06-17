@@ -53,31 +53,12 @@ function BuscarTurnos() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setCargando(true);
-    setError(null);
     setBusquedaRealizada(true);
-    handleBusqueda();
 
-    try {
-      const params = {
-        ...Object.fromEntries(
-        Object.entries(filtros).filter(([, value]) => value !== "")
-      ),
-      page,
-      limit: 10
-    };
-
-      const { data } = await api.get("/turnos/disponibles", { params });
-      setResultados(data.resultados || []);
-      setTotalPages(data.totalPages || 0);
-    } catch (err) {
-      setError(
-        err.response?.data?.message ||
-          "Ocurrió un error al buscar turnos. Intentá nuevamente."
-      );
-      setResultados([]);
-    } finally {
-      setCargando(false);
+    if (page !== 1) {
+      setPage(1); // cuando se cambia page hay un useEffect que ejecuta handleBusqueda
+    } else {
+      await handleBusqueda();
     }
   };
 
