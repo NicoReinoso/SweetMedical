@@ -54,10 +54,13 @@ function BuscarTurnos() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setCargando(true);
-    setError(null);
     setBusquedaRealizada(true);
-    handleBusqueda();
+
+    if (page !== 1) {
+      setPage(1); // cuando se cambia page hay un useEffect que ejecuta handleBusqueda
+    } else {
+      await handleBusqueda();
+    }
   };
 
   useEffect(() => {
