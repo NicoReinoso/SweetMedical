@@ -7,6 +7,7 @@ import "./BuscarTurnos.css";
 
 function BuscarTurnos() {
   const [filtros, setFiltros] = useState({
+    medicoNombre: "",
     especialidad: "",
     practica: "",
     sede: "",
@@ -82,6 +83,19 @@ function BuscarTurnos() {
 
       <Form onSubmit={handleSubmit} className="bg-white border rounded p-3 mb-4">
         <Row className="g-3">
+          <Col xs={12} sm={6} lg={4}>
+            <Form.Group controlId="medicoNombre">
+              <Form.Label>Médico</Form.Label>
+              <Form.Control
+                type="text"
+                name="medicoNombre"
+                value={filtros.medicoNombre}
+                onChange={handleChange}
+                placeholder="Ej: Juan Pérez"
+              />
+            </Form.Group>
+          </Col>
+
           <Col xs={12} sm={6} lg={4}>
             <Form.Group controlId="especialidad">
               <Form.Label>Especialidad</Form.Label>
@@ -214,6 +228,7 @@ function BuscarTurnos() {
                 className="ms-3"
                 onClick={() => {
                   setFiltros({
+                    medicoNombre: "",
                     especialidad: "",
                     practica: "",
                     sede: "",

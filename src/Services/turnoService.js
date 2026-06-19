@@ -105,7 +105,9 @@ async buscarDisponibles(filtros) {
     let medicos = await this.medicoService.obtenerTodos();
 
     if (medicoNombre) {
-        medicos = medicos.filter(m => m.nombre === medicoNombre);
+        const busqueda = normalizarTexto(medicoNombre);
+
+        medicos = medicos.filter(m => normalizarTexto(m.nombre).includes(busqueda));
     }
 
     if (sede) {
@@ -600,3 +602,10 @@ const minutosAHora = (minutos) => {
 const horaEnRango = (hora, horaDesde, horaHasta) => {
     return hora >= horaDesde && hora < horaHasta;
 };
+
+const normalizarTexto = (texto) => {
+    return texto
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+}
