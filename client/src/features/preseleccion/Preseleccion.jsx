@@ -1,5 +1,6 @@
 import { Card, Button } from "react-bootstrap";
 import { usePreseleccion } from "../../context/PreseleccionContext";
+import "./Preseleccion.css";
 
 function Preseleccion() {
 
@@ -15,8 +16,9 @@ function Preseleccion() {
 
   return (
     <div className="container py-4">
-
-      <h1>Turnos Preseleccionados</h1>
+      <div className="preseleccionados-header">
+        <h1>Turnos Preseleccionados</h1>
+      </div>
       <h5>Turnos seleccionados: {turnosPreseleccionados.length}</h5>
       <p>Total estimado: ${total}</p>
 

@@ -3,6 +3,7 @@ import { Form, Row, Col, Button, Spinner, Alert } from "react-bootstrap";
 import api from "../../api/api";
 import TurnoCard from "../../mockdata/TurnoCard";
 import { Pagination } from "react-bootstrap";
+import "./BuscarTurnos.css";
 
 function BuscarTurnos() {
   const [filtros, setFiltros] = useState({
@@ -57,28 +58,6 @@ function BuscarTurnos() {
     setError(null);
     setBusquedaRealizada(true);
     handleBusqueda();
-
-    try {
-      const params = {
-        ...Object.fromEntries(
-        Object.entries(filtros).filter(([, value]) => value !== "")
-      ),
-      page,
-      limit: 10
-    };
-
-      const { data } = await api.get("/turnos/disponibles", { params });
-      setResultados(data.resultados || []);
-      setTotalPages(data.totalPages || 0);
-    } catch (err) {
-      setError(
-        err.response?.data?.message ||
-          "Ocurrió un error al buscar turnos. Intentá nuevamente."
-      );
-      setResultados([]);
-    } finally {
-      setCargando(false);
-    }
   };
 
   useEffect(() => {
@@ -86,15 +65,17 @@ function BuscarTurnos() {
        return;
       }
     handleBusqueda();
-  }, [page]);
+  }, [page, filtros.sortBy, filtros.order]);
 
   return (
-    <div className="container py-4">
-      <h1>Buscar Turnos</h1>
-      <p className="text-muted">
-        Encontrá el turno que mejor se adapte a tus necesidades. Filtrá por
-        especialidad, práctica, sede o rango de fechas.
-      </p>
+      <div className="container py-4">
+      <div className="buscar-header">
+        <h1>Buscar Turnos</h1>
+        <p className="text-muted mb-0">
+          Encontrá el turno que mejor se adapte a tus necesidades. Filtrá por
+          especialidad, práctica, sede o rango de fechas.
+        </p>
+      </div>
 
       <Form onSubmit={handleSubmit} className="bg-white border rounded p-3 mb-4">
         <Row className="g-3">
@@ -136,7 +117,9 @@ function BuscarTurnos() {
               />
             </Form.Group>
           </Col>
+        </Row>
 
+      <Row className="g-3 mt-1">
           <Col xs={12} sm={6} lg={4}>
             <Form.Group controlId="fechaDesde">
               <Form.Label>Desde</Form.Label>
@@ -161,41 +144,19 @@ function BuscarTurnos() {
             </Form.Group>
           </Col>
 
+          <Col xs={12} sm={6} lg={4} className="d-flex align-items-end">
+            <Button type="submit" variant="success" disabled={cargando} className="w-100 btn-buscar-turnos">
+              {cargando ? (
+                <>
+                  <Spinner animation="border" size="sm" className="me-2" />
+                  Buscando...
+                </>
+              ) : (
+                "Buscar"
+              )}
+            </Button>
+          </Col>
         </Row>
-
-      <Row className="mb-3">
-      <Col md={3}>
-        <Form.Select
-          name="sortBy"
-          value={filtros.sortBy}
-          onChange={handleChange}
-          >
-          <option value="fechaHora">Ordenar por fecha</option>
-          <option value="costoEstimado">Ordenar por costo</option>
-        </Form.Select>
-      </Col>
-
-      <Col md={3}>
-        <Form.Select
-          name="order"
-          value={filtros.order}
-          onChange={handleChange}
-          >
-          <option value="asc">Ascendente</option>
-          <option value="desc">Descendente</option>
-        </Form.Select>
-      </Col>
-      <Col xs={12} sm={6} lg={4} className="d-flex align-items-end">
-        <Button type="submit" variant="success" disabled={cargando} className="w-100">
-          {cargando ? (
-            <>
-          <Spinner animation="border" size="sm" className="me-2" />
-          Buscando...
-          </>
-          ) : ( "Buscar")}
-        </Button>
-      </Col>
-    </Row>
     </Form>
 
       {error && <Alert variant="danger">{error}</Alert>}
@@ -208,7 +169,66 @@ function BuscarTurnos() {
 
       {resultados.length > 0 && (
         <>
-          <h2>Resultados</h2>
+          <div className="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+            <h2 className="mb-0">Resultados</h2>
+
+            <div className="d-flex flex-wrap align-items-center gap-2">
+              <span className="filtro-label me-1">Ordenar por:</span>
+              <Button
+                size="sm"
+                variant={filtros.sortBy === "fechaHora" ? "primary" : "outline-secondary"}
+                onClick={() => setFiltros((prev) => ({ ...prev, sortBy: "fechaHora" }))}
+              >
+                Fecha
+              </Button>
+              <Button
+                size="sm"
+                variant={filtros.sortBy === "costoEstimado" ? "primary" : "outline-secondary"}
+                onClick={() => setFiltros((prev) => ({ ...prev, sortBy: "costoEstimado" }))}
+              >
+                Costo
+              </Button>
+
+              <span className="filtro-label ms-3 me-1">Dirección:</span>
+              <Button
+                size="sm"
+                variant={filtros.order === "asc" ? "primary" : "outline-secondary"}
+                onClick={() => setFiltros((prev) => ({ ...prev, order: "asc" }))}
+              >
+                Ascendente
+              </Button>
+              <Button
+                size="sm"
+                variant={filtros.order === "desc" ? "primary" : "outline-secondary"}
+                onClick={() => setFiltros((prev) => ({ ...prev, order: "desc" }))}
+              >
+                Descendente
+              </Button>
+
+              <Button
+                size="sm"
+                variant="outline-danger"
+                className="ms-3"
+                onClick={() => {
+                  setFiltros({
+                    especialidad: "",
+                    practica: "",
+                    sede: "",
+                    fechaDesde: "",
+                    fechaHasta: "",
+                    sortBy: "fechaHora",
+                    order: "asc"
+                  });
+                  setBusquedaRealizada(false);
+                  setResultados([]);
+                  setPage(1);
+                }}
+              >
+                Limpiar filtros
+              </Button>
+            </div>
+          </div>
+
           <Row className="g-3">
             {resultados.map((turno, index) => (
               <Col xs={12} sm={6} lg={4} key={index}>

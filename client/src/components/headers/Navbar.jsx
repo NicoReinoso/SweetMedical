@@ -1,6 +1,7 @@
 import { Navbar, Nav, Container, Badge } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { usePreseleccion } from "../../context/PreseleccionContext";
+import "./Navbar.css"; // Importa el archivo CSS para estilos personalizados
 
 function AppNavbar() {
   const { turnosPreseleccionados } = usePreseleccion();
@@ -9,7 +10,12 @@ function AppNavbar() {
     <Navbar bg="light" expand="md" className="mb-3 shadow-sm">
       <Container>
         <Navbar.Brand as={Link} to="/">
-          Sweet Medical
+          <img
+            src="/logo.png"
+            alt="Sweet Medical"
+            height="32"
+            className="d-inline-block align-top"
+          />
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="main-navbar" />
         <Navbar.Collapse id="main-navbar">

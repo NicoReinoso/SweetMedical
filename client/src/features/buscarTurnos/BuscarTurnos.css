@@ -24,3 +24,27 @@
 .btn-buscar:hover {
   background-color: #1c5db6;
 }
+
+.filtro-label {
+  font-size: 0.8rem;
+  color: #6c757d;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.btn-buscar-turnos {
+  height: 38px;
+}
+
+.buscar-header {
+  background: linear-gradient(135deg, #eaf2fd 0%, #ffffff 100%);
+  border-radius: 15px;
+  padding: 30px 25px;
+  margin-bottom: 25px;
+}
+
+.buscar-header h1 {
+  color: #be0b0b;
+  font-weight: bold;
+  margin-bottom: 8px;
+}

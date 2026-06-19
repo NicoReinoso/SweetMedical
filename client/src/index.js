@@ -12,6 +12,7 @@ root.render(
   <React.StrictMode>
     <HashRouter>
       <PreseleccionProvider>
+        <title>Sweet Medical</title>
         <App />
       </PreseleccionProvider>
     </HashRouter>

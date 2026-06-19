@@ -7,11 +7,10 @@
 
 .navbar{
     color: var(--primary-white);
-    margin: 0 2rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 100%;
+    height: 10%;
 }
 
 .navbar-section{
@@ -21,7 +20,7 @@
 
 .brand-text{
     color: var(--primary-white);
-    margin: 0;
+    margin: 10px 0 0 10px;
 }
 
 .menu-icon{
