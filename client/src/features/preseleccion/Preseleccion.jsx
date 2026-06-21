@@ -15,7 +15,7 @@ function Preseleccion() {
   );
 
   return (
-    <div className="container py-4">
+    <div className="container py-4" id="main-content">
       <div className="preseleccionados-header">
         <h1>Turnos Preseleccionados</h1>
       </div>

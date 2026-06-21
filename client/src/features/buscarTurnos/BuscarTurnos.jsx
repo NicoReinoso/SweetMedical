@@ -65,14 +65,30 @@ function BuscarTurnos() {
   };
 
   useEffect(() => {
-    if (!busquedaRealizada){
-       return;
-      }
+    if (!busquedaRealizada) {
+      return;
+    }
     handleBusqueda();
   }, [page, filtros.sortBy, filtros.order]);
 
+  const limpiarFiltros = () => {
+    setFiltros({
+      medicoNombre: "",
+      especialidad: "",
+      practica: "",
+      sede: "",
+      fechaDesde: "",
+      fechaHasta: "",
+      sortBy: "fechaHora",
+      order: "asc"
+    });
+    setBusquedaRealizada(false);
+    setResultados([]);
+    setPage(1);
+  };
+
   return (
-      <div className="container py-4">
+    <div className="container py-4" id="main-content">
       <div className="buscar-header">
         <h1>Buscar Turnos</h1>
         <p className="text-muted mb-0">
@@ -81,7 +97,11 @@ function BuscarTurnos() {
         </p>
       </div>
 
-      <Form onSubmit={handleSubmit} className="bg-white border rounded p-3 mb-4">
+      <Form
+        onSubmit={handleSubmit}
+        className="bg-white border rounded p-3 mb-4"
+        aria-label="Filtros de búsqueda de turnos"
+      >
         <Row className="g-3">
           <Col xs={12} sm={6} lg={4}>
             <Form.Group controlId="medicoNombre">
@@ -136,7 +156,7 @@ function BuscarTurnos() {
           </Col>
         </Row>
 
-      <Row className="g-3 mt-1">
+        <Row className="g-3 mt-1">
           <Col xs={12} sm={6} lg={4}>
             <Form.Group controlId="fechaDesde">
               <Form.Label>Desde</Form.Label>
@@ -162,10 +182,22 @@ function BuscarTurnos() {
           </Col>
 
           <Col xs={12} sm={6} lg={4} className="d-flex align-items-end">
-            <Button type="submit" variant="success" disabled={cargando} className="w-100 btn-buscar-turnos">
+            <Button
+              type="submit"
+              variant="success"
+              disabled={cargando}
+              className="w-100 btn-buscar-turnos"
+            >
               {cargando ? (
                 <>
-                  <Spinner animation="border" size="sm" className="me-2" />
+                  <Spinner
+                    animation="border"
+                    size="sm"
+                    className="me-2"
+                    role="status"
+                    aria-hidden="true"
+                  />
+                  <span className="visually-hidden">Buscando turnos, por favor esperá.</span>
                   Buscando...
                 </>
               ) : (
@@ -174,15 +206,28 @@ function BuscarTurnos() {
             </Button>
           </Col>
         </Row>
-    </Form>
+      </Form>
 
-      {error && <Alert variant="danger">{error}</Alert>}
-
-      {!cargando && busquedaRealizada && resultados.length === 0 && !error && (
-        <Alert variant="info">
-          No se encontraron turnos disponibles con esos filtros.
+      {error && (
+        <Alert variant="danger" role="alert">
+          {error}
         </Alert>
       )}
+
+      {/* Región viva: anuncia a lectores de pantalla cambios en el estado de la búsqueda */}
+      <div aria-live="polite" aria-atomic="true">
+        {!cargando && busquedaRealizada && resultados.length === 0 && !error && (
+          <Alert variant="info">
+            No se encontraron turnos disponibles con esos filtros.
+          </Alert>
+        )}
+
+        {!cargando && busquedaRealizada && resultados.length > 0 && (
+          <span className="visually-hidden">
+            {resultados.length} turnos encontrados.
+          </span>
+        )}
+      </div>
 
       {resultados.length > 0 && (
         <>
@@ -190,57 +235,52 @@ function BuscarTurnos() {
             <h2 className="mb-0">Resultados</h2>
 
             <div className="d-flex flex-wrap align-items-center gap-2">
-              <span className="filtro-label me-1">Ordenar por:</span>
-              <Button
-                size="sm"
-                variant={filtros.sortBy === "fechaHora" ? "primary" : "outline-secondary"}
-                onClick={() => setFiltros((prev) => ({ ...prev, sortBy: "fechaHora" }))}
-              >
-                Fecha
-              </Button>
-              <Button
-                size="sm"
-                variant={filtros.sortBy === "costoEstimado" ? "primary" : "outline-secondary"}
-                onClick={() => setFiltros((prev) => ({ ...prev, sortBy: "costoEstimado" }))}
-              >
-                Costo
-              </Button>
+              <div role="group" aria-label="Ordenar resultados por fecha o costo" className="d-flex align-items-center gap-2">
+                <span className="filtro-label me-1">Ordenar por:</span>
+                <Button
+                  size="sm"
+                  variant={filtros.sortBy === "fechaHora" ? "primary" : "outline-secondary"}
+                  aria-pressed={filtros.sortBy === "fechaHora"}
+                  onClick={() => setFiltros((prev) => ({ ...prev, sortBy: "fechaHora" }))}
+                >
+                  Fecha
+                </Button>
+                <Button
+                  size="sm"
+                  variant={filtros.sortBy === "costoEstimado" ? "primary" : "outline-secondary"}
+                  aria-pressed={filtros.sortBy === "costoEstimado"}
+                  onClick={() => setFiltros((prev) => ({ ...prev, sortBy: "costoEstimado" }))}
+                >
+                  Costo
+                </Button>
+              </div>
 
-              <span className="filtro-label ms-3 me-1">Dirección:</span>
-              <Button
-                size="sm"
-                variant={filtros.order === "asc" ? "primary" : "outline-secondary"}
-                onClick={() => setFiltros((prev) => ({ ...prev, order: "asc" }))}
-              >
-                Ascendente
-              </Button>
-              <Button
-                size="sm"
-                variant={filtros.order === "desc" ? "primary" : "outline-secondary"}
-                onClick={() => setFiltros((prev) => ({ ...prev, order: "desc" }))}
-              >
-                Descendente
-              </Button>
+              <div role="group" aria-label="Dirección del ordenamiento" className="d-flex align-items-center gap-2">
+                <span className="filtro-label ms-3 me-1">Dirección:</span>
+                <Button
+                  size="sm"
+                  variant={filtros.order === "asc" ? "primary" : "outline-secondary"}
+                  aria-pressed={filtros.order === "asc"}
+                  onClick={() => setFiltros((prev) => ({ ...prev, order: "asc" }))}
+                >
+                  Ascendente
+                </Button>
+                <Button
+                  size="sm"
+                  variant={filtros.order === "desc" ? "primary" : "outline-secondary"}
+                  aria-pressed={filtros.order === "desc"}
+                  onClick={() => setFiltros((prev) => ({ ...prev, order: "desc" }))}
+                >
+                  Descendente
+                </Button>
+              </div>
 
               <Button
                 size="sm"
                 variant="outline-danger"
                 className="ms-3"
-                onClick={() => {
-                  setFiltros({
-                    medicoNombre: "",
-                    especialidad: "",
-                    practica: "",
-                    sede: "",
-                    fechaDesde: "",
-                    fechaHasta: "",
-                    sortBy: "fechaHora",
-                    order: "asc"
-                  });
-                  setBusquedaRealizada(false);
-                  setResultados([]);
-                  setPage(1);
-                }}
+                onClick={limpiarFiltros}
+                aria-label="Limpiar todos los filtros y resultados de búsqueda"
               >
                 Limpiar filtros
               </Button>
@@ -258,30 +298,32 @@ function BuscarTurnos() {
       )}
 
       {totalPages > 1 && (
-      <Pagination className="justify-content-center mt-4">
+        <Pagination className="justify-content-center mt-4" aria-label="Paginación de resultados">
+          <Pagination.Prev
+            disabled={page === 1}
+            onClick={() => setPage(page - 1)}
+            aria-label="Ir a la página anterior"
+          />
 
-        <Pagination.Prev
-          disabled={page === 1}
-          onClick={() => setPage(page - 1)}
-        />
+          {[...Array(totalPages)].map((_, index) => (
+            <Pagination.Item
+              key={index + 1}
+              active={page === index + 1}
+              onClick={() => setPage(index + 1)}
+              aria-label={`Ir a la página ${index + 1}`}
+              aria-current={page === index + 1 ? "page" : undefined}
+            >
+              {index + 1}
+            </Pagination.Item>
+          ))}
 
-        {[...Array(totalPages)].map((_, index) => (
-          <Pagination.Item
-            key={index + 1}
-            active={page === index + 1}
-            onClick={() => setPage(index + 1)}
-          >
-            {index + 1}
-          </Pagination.Item>
-        ))}
-
-        <Pagination.Next
-          disabled={page === totalPages}
-          onClick={() => setPage(page + 1)}
-        />
-
-      </Pagination>
-    )}
+          <Pagination.Next
+            disabled={page === totalPages}
+            onClick={() => setPage(page + 1)}
+            aria-label="Ir a la página siguiente"
+          />
+        </Pagination>
+      )}
     </div>
   );
 }

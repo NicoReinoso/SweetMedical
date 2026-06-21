@@ -4,7 +4,7 @@ import './Home.css';
 
 function Home() {
   return (
-    <div className="hero">
+    <div className="hero" id="main-content">
     <h1>Sweet Medical</h1>
 
     <p>

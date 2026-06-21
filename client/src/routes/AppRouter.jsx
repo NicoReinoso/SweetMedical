@@ -6,8 +6,24 @@ import Preseleccion from "../features/preseleccion/Preseleccion";
 import Navbar from "../components/headers/Navbar";
 
 function AppRouter() {
+  const handleSkipClick = (e) => {
+    e.preventDefault();
+    const main = document.getElementById("main-content");
+    if (main) {
+      main.setAttribute("tabindex", "-1");
+      main.focus();
+    }
+  };
+
   return (
     <>
+      <a
+        href="#main-content"
+        className="visually-hidden-focusable"
+        onClick={handleSkipClick}
+      >
+        Saltar al contenido principal
+      </a>
       <Navbar />
 
       <Routes>

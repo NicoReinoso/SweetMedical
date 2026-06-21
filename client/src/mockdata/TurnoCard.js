@@ -41,6 +41,11 @@ function TurnoCard({ turno }) {
           disabled={yaPreseleccionado}
           onClick={() => agregarTurno(turno)}
           className="mt-auto"
+          aria-label={
+            yaPreseleccionado
+              ? `Turno con ${turno.medicoNombre} el ${fecha} ya preseleccionado`
+              : `Agregar turno con ${turno.medicoNombre} el ${fecha} a la preselección`
+          }
         >
           {yaPreseleccionado ? "Ya preseleccionado" : "Agregar a preselección"}
         </Button>
