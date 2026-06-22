@@ -6,6 +6,7 @@ import App from './App';
 import { PreseleccionProvider } from './context/PreseleccionContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "./styles/global.css";
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
