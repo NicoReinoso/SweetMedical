@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Form, Button } from "react-bootstrap";
+import { Form, Button, Alert } from "react-bootstrap";
 import "./Login.css";
 
 function Login({ setRol }) {
@@ -8,6 +8,7 @@ function Login({ setRol }) {
 
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -25,6 +26,8 @@ function Login({ setRol }) {
       setRol("medico"); 
       navigate("/medico");
     }
+
+    setError("Usuario no encontrado");
   };
 
   return (
@@ -76,6 +79,12 @@ function Login({ setRol }) {
           </Button>
 
         </Form>
+
+        {error && (
+          <Alert variant="danger" className="mt-3">
+          {error}
+          </Alert>
+        )}
 
         <div className="login-help">
           Para la demo ingresar usuario: <strong>paciente</strong> o <strong>medico</strong> y cualquier contraseña.
