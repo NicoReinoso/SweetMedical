@@ -580,10 +580,10 @@ const construirFechaHora = (fecha, hora) => {
 
     const nuevaFecha = new Date(fecha);
 
-    nuevaFecha.setUTCHours(h); // se usa setUTC para que no se aplique una conversión por zona horaria
-    nuevaFecha.setUTCMinutes(m);
-    nuevaFecha.setUTCSeconds(0);
-    nuevaFecha.setUTCMilliseconds(0);
+    nuevaFecha.setHours(h); // se usa setUTC (ahora lo cambiamos de nuevo porque no andaba) para que no se aplique una conversión por zona horaria
+    nuevaFecha.setMinutes(m);
+    nuevaFecha.setSeconds(0);
+    nuevaFecha.setMilliseconds(0);
 
     return nuevaFecha;
 };
