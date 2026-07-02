@@ -1,9 +1,31 @@
 import { useState, useEffect } from "react";
 import { Form, Row, Col, Button, Spinner, Alert } from "react-bootstrap";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import FechaInput from "./FechaInput";
 import api from "../../api/api";
 import TurnoCard from "../../mockdata/TurnoCard";
 import { Pagination } from "react-bootstrap";
 import "./BuscarTurnos.css";
+
+// Helpers de fecha (trabajamos con objetos Date porque react-datepicker los necesita así)
+const hoy = new Date();
+hoy.setHours(0, 0, 0, 0);
+
+const sumarMeses = (fecha, meses) => {
+  const d = new Date(fecha);
+  d.setMonth(d.getMonth() + meses);
+  return d;
+};
+
+// Convierte Date -> "YYYY-MM-DD" para mandar al backend, sin problemas de timezone
+const formatearParaApi = (fecha) => {
+  if (!fecha) return "";
+  const y = fecha.getFullYear();
+  const m = String(fecha.getMonth() + 1).padStart(2, "0");
+  const d = String(fecha.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+};
 
 function BuscarTurnos() {
   const [filtros, setFiltros] = useState({
@@ -11,11 +33,13 @@ function BuscarTurnos() {
     especialidad: "",
     practica: "",
     sede: "",
-    fechaDesde: "",
-    fechaHasta: "",
     sortBy: "fechaHora",
     order: "asc"
   });
+
+  // Fechas separadas como objetos Date para el datepicker
+  const [fechaDesde, setFechaDesde] = useState(null);
+  const [fechaHasta, setFechaHasta] = useState(null);
 
   const [resultados, setResultados] = useState([]);
   const [cargando, setCargando] = useState(false);
@@ -28,6 +52,17 @@ function BuscarTurnos() {
     setFiltros((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
+  // Al elegir "Desde", si "Hasta" quedó fuera del nuevo rango válido, la reseteamos
+  const handleFechaDesdeChange = (fecha) => {
+    setFechaDesde(fecha);
+    if (fecha && fechaHasta) {
+      const limite = sumarMeses(fecha, 6);
+      if (fechaHasta < fecha || fechaHasta > limite) {
+        setFechaHasta(null);
+      }
+    }
+  };
+
   const handleBusqueda = async () => {
     setCargando(true);
     try {
@@ -35,6 +70,8 @@ function BuscarTurnos() {
         ...Object.fromEntries(
           Object.entries(filtros).filter(([, value]) => value !== "")
         ),
+        ...(fechaDesde ? { fechaDesde: formatearParaApi(fechaDesde) } : {}),
+        ...(fechaHasta ? { fechaHasta: formatearParaApi(fechaHasta) } : {}),
         page,
         limit: 10
       };
@@ -77,11 +114,11 @@ function BuscarTurnos() {
       especialidad: "",
       practica: "",
       sede: "",
-      fechaDesde: "",
-      fechaHasta: "",
       sortBy: "fechaHora",
       order: "asc"
     });
+    setFechaDesde(null);
+    setFechaHasta(null);
     setBusquedaRealizada(false);
     setResultados([]);
     setPage(1);
@@ -141,7 +178,9 @@ function BuscarTurnos() {
               />
             </Form.Group>
           </Col>
+        </Row>
 
+        <Row className="g-3 mt-1">
           <Col xs={12} sm={6} lg={4}>
             <Form.Group controlId="sede">
               <Form.Label>Sede</Form.Label>
@@ -154,17 +193,24 @@ function BuscarTurnos() {
               />
             </Form.Group>
           </Col>
-        </Row>
 
-        <Row className="g-3 mt-1">
           <Col xs={12} sm={6} lg={4}>
             <Form.Group controlId="fechaDesde">
               <Form.Label>Desde</Form.Label>
-              <Form.Control
-                type="date"
-                name="fechaDesde"
-                value={filtros.fechaDesde}
-                onChange={handleChange}
+              <DatePicker
+                id="fechaDesde"
+                selected={fechaDesde}
+                onChange={handleFechaDesdeChange}
+                selectsStart
+                startDate={fechaDesde}
+                endDate={fechaHasta}
+                minDate={hoy}
+                maxDate={fechaHasta || sumarMeses(hoy, 6)}
+                dateFormat="dd/MM/yyyy"
+                placeholderText="dd/mm/aaaa"
+                autoComplete="off"
+                aria-label="Fecha desde"
+                customInput={<FechaInput onFechaCompleta={handleFechaDesdeChange} />}
               />
             </Form.Group>
           </Col>
@@ -172,21 +218,41 @@ function BuscarTurnos() {
           <Col xs={12} sm={6} lg={4}>
             <Form.Group controlId="fechaHasta">
               <Form.Label>Hasta</Form.Label>
-              <Form.Control
-                type="date"
-                name="fechaHasta"
-                value={filtros.fechaHasta}
-                onChange={handleChange}
+              <DatePicker
+                id="fechaHasta"
+                selected={fechaHasta}
+                onChange={(fecha) => setFechaHasta(fecha)}
+                selectsEnd
+                startDate={fechaDesde}
+                endDate={fechaHasta}
+                minDate={fechaDesde || hoy}
+                maxDate={sumarMeses(fechaDesde || hoy, 6)}
+                // Esto es lo que hace que el calendario "Hasta" abra
+                // parado en el mes de la fecha elegida en "Desde"
+                openToDate={fechaDesde || hoy}
+                dateFormat="dd/MM/yyyy"
+                placeholderText="dd/mm/aaaa"
+                autoComplete="off"
+                aria-label="Fecha hasta"
+                disabled={!fechaDesde}
+                customInput={<FechaInput onFechaCompleta={setFechaHasta} />}
               />
+              {!fechaDesde && (
+                <Form.Text className="text-muted">
+                  Elegí primero la fecha "Desde".
+                </Form.Text>
+              )}
             </Form.Group>
           </Col>
+        </Row>
 
-          <Col xs={12} sm={6} lg={4} className="d-flex align-items-end">
+        <Row className="g-3 mt-1">
+          <Col xs={12} className="d-flex justify-content-end">
             <Button
               type="submit"
               variant="success"
               disabled={cargando}
-              className="w-100 btn-buscar-turnos"
+              className="btn-buscar-turnos"
             >
               {cargando ? (
                 <>
@@ -201,7 +267,10 @@ function BuscarTurnos() {
                   Buscando...
                 </>
               ) : (
-                "Buscar"
+                <>
+                  <i className="bi bi-search me-2" aria-hidden="true"></i>
+                  Buscar
+                </>
               )}
             </Button>
           </Col>

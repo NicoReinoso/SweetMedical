@@ -25,7 +25,7 @@ function AppNavbar({ rol = "publico", setRol }) {
             <img
               src="/logo.png"
               alt="Sweet Medical"
-              height="32"
+              height="50"
               className="d-inline-block align-top"
             />
           </Navbar.Brand>
@@ -50,17 +50,20 @@ function AppNavbar({ rol = "publico", setRol }) {
                   <Nav.Link as={Link} to="/paciente/buscar">Buscar Turnos</Nav.Link>
                   <Nav.Link as={Link} to="/paciente/mis-turnos">Mis Turnos</Nav.Link>
                   <Nav.Link as={Link} to="/paciente/preseleccion">
-                    Preselección
+                    Confirmar Turnos
                     {turnosPreseleccionados.length > 0 && (
                       <Badge bg="success" className="ms-1">
                         {turnosPreseleccionados.length}
+                        <span className="visually-hidden">
+                          {" "}turnos pendientes de confirmar
+                        </span>
                       </Badge>
                     )}
                   </Nav.Link>
-                  <Nav.Link as={Link} to="/paciente/notificaciones" title="Notificaciones">
+                  <Nav.Link as={Link} to="/paciente/notificaciones" title="Notificaciones" aria-label="Notificaciones">
                     <i className="bi bi-bell" aria-hidden="true"></i>
                   </Nav.Link>
-                  <Nav.Link as={Link} to="/paciente/perfil" title="Mi perfil">
+                  <Nav.Link as={Link} to="/paciente/perfil" title="Mi perfil" aria-label="Mi perfil">
                     <i className="bi bi-person-circle" aria-hidden="true"></i>
                   </Nav.Link>
                   <Nav.Link onClick={() => setMostrarConfirmacion(true)}>Salir</Nav.Link>
@@ -72,10 +75,10 @@ function AppNavbar({ rol = "publico", setRol }) {
                 <>
                   <Nav.Link as={Link} to="/medico">Inicio</Nav.Link>
                   <Nav.Link as={Link} to="/medico/mis-turnos">Mis Turnos</Nav.Link>
-                  <Nav.Link as={Link} to="/medico/notificaciones" title="Notificaciones">
+                  <Nav.Link as={Link} to="/medico/notificaciones" title="Notificaciones" aria-label="Notificaciones">
                     <i className="bi bi-bell" aria-hidden="true"></i>
                   </Nav.Link>
-                  <Nav.Link as={Link} to="/medico/perfil" title="Mi perfil">
+                  <Nav.Link as={Link} to="/medico/perfil" title="Mi perfil" aria-label="Mi perfil">
                     <i className="bi bi-person-circle" aria-hidden="true"></i>
                   </Nav.Link>
                   <Nav.Link onClick={() => setMostrarConfirmacion(true)}>Salir</Nav.Link>
