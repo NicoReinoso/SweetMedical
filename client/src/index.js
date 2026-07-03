@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { HashRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import './index.css';
 import App from './App';
 import { PreseleccionProvider } from './context/PreseleccionContext';
@@ -11,11 +11,11 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <HashRouter>
+    <BrowserRouter>
       <PreseleccionProvider>
         <title>Sweet Medical</title>
         <App />
       </PreseleccionProvider>
-    </HashRouter>
+    </BrowserRouter>
   </React.StrictMode>
 );

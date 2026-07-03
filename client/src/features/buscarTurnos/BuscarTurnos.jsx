@@ -45,6 +45,7 @@ function BuscarTurnos() {
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState(null);
   const [busquedaRealizada, setBusquedaRealizada] = useState(false);
+  const [mostrarFiltros, setMostrarFiltros] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
 
@@ -93,6 +94,7 @@ function BuscarTurnos() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setBusquedaRealizada(true);
+    setMostrarFiltros(false);
 
     if (page !== 1) {
       setPage(1); // cuando se cambia page hay un useEffect que ejecuta handleBusqueda
@@ -122,7 +124,33 @@ function BuscarTurnos() {
     setBusquedaRealizada(false);
     setResultados([]);
     setPage(1);
+    setMostrarFiltros(true);
   };
+
+  const quitarFiltro = (campo) => {
+    if (campo === "fechaDesde") {
+      setFechaDesde(null);
+      if (fechaHasta) setFechaHasta(null); // si sacás "desde", "hasta" pierde sentido/validez
+    } else if (campo === "fechaHasta") {
+      setFechaHasta(null);
+    } else {
+      setFiltros((prev) => ({ ...prev, [campo]: "" }));
+    }
+  };
+
+  useEffect(() => {
+    if (!busquedaRealizada) return;
+    handleBusqueda();
+  }, [filtros.medicoNombre, filtros.especialidad, filtros.practica, filtros.sede, fechaDesde, fechaHasta]);
+
+  const chipsActivos = [
+        filtros.medicoNombre && { campo: "medicoNombre", label: `Médico: ${filtros.medicoNombre}` },
+        filtros.especialidad && { campo: "especialidad", label: `Especialidad: ${filtros.especialidad}` },
+        filtros.practica && { campo: "practica", label: `Práctica: ${filtros.practica}` },
+        filtros.sede && { campo: "sede", label: `Sede: ${filtros.sede}` },
+        fechaDesde && { campo: "fechaDesde", label: `Desde: ${formatearParaApi(fechaDesde)}` },
+        fechaHasta && { campo: "fechaHasta", label: `Hasta: ${formatearParaApi(fechaHasta)}` },
+      ].filter(Boolean);
 
   return (
     <div className="container py-4" id="main-content">
@@ -133,149 +161,176 @@ function BuscarTurnos() {
           especialidad, práctica, sede o rango de fechas.
         </p>
       </div>
+      {mostrarFiltros && (
+        <Form
+          onSubmit={handleSubmit}
+          className="bg-white border rounded p-3 mb-4"
+          aria-label="Filtros de búsqueda de turnos"
+        >
+          <Row className="g-3">
+            <Col xs={12} sm={6} lg={4}>
+              <Form.Group controlId="medicoNombre">
+                <Form.Label>Médico</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="medicoNombre"
+                  value={filtros.medicoNombre}
+                  onChange={handleChange}
+                  placeholder="Ej: Juan Pérez"
+                />
+              </Form.Group>
+            </Col>
 
-      <Form
-        onSubmit={handleSubmit}
-        className="bg-white border rounded p-3 mb-4"
-        aria-label="Filtros de búsqueda de turnos"
-      >
-        <Row className="g-3">
-          <Col xs={12} sm={6} lg={4}>
-            <Form.Group controlId="medicoNombre">
-              <Form.Label>Médico</Form.Label>
-              <Form.Control
-                type="text"
-                name="medicoNombre"
-                value={filtros.medicoNombre}
-                onChange={handleChange}
-                placeholder="Ej: Juan Pérez"
-              />
-            </Form.Group>
-          </Col>
+            <Col xs={12} sm={6} lg={4}>
+              <Form.Group controlId="especialidad">
+                <Form.Label>Especialidad</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="especialidad"
+                  value={filtros.especialidad}
+                  onChange={handleChange}
+                  placeholder="Ej: Cardiología"
+                />
+              </Form.Group>
+            </Col>
 
-          <Col xs={12} sm={6} lg={4}>
-            <Form.Group controlId="especialidad">
-              <Form.Label>Especialidad</Form.Label>
-              <Form.Control
-                type="text"
-                name="especialidad"
-                value={filtros.especialidad}
-                onChange={handleChange}
-                placeholder="Ej: Cardiología"
-              />
-            </Form.Group>
-          </Col>
+            <Col xs={12} sm={6} lg={4}>
+              <Form.Group controlId="practica">
+                <Form.Label>Práctica</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="practica"
+                  value={filtros.practica}
+                  onChange={handleChange}
+                  placeholder="Ej: Electrocardiograma"
+                />
+              </Form.Group>
+            </Col>
+          </Row>
 
-          <Col xs={12} sm={6} lg={4}>
-            <Form.Group controlId="practica">
-              <Form.Label>Práctica</Form.Label>
-              <Form.Control
-                type="text"
-                name="practica"
-                value={filtros.practica}
-                onChange={handleChange}
-                placeholder="Ej: Electrocardiograma"
-              />
-            </Form.Group>
-          </Col>
-        </Row>
+          <Row className="g-3 mt-1">
+            <Col xs={12} sm={6} lg={4}>
+              <Form.Group controlId="sede">
+                <Form.Label>Sede</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="sede"
+                  value={filtros.sede}
+                  onChange={handleChange}
+                  placeholder="Ej: Medrano"
+                />
+              </Form.Group>
+            </Col>
 
-        <Row className="g-3 mt-1">
-          <Col xs={12} sm={6} lg={4}>
-            <Form.Group controlId="sede">
-              <Form.Label>Sede</Form.Label>
-              <Form.Control
-                type="text"
-                name="sede"
-                value={filtros.sede}
-                onChange={handleChange}
-                placeholder="Ej: Medrano"
-              />
-            </Form.Group>
-          </Col>
+            <Col xs={12} sm={6} lg={4}>
+              <Form.Group controlId="fechaDesde">
+                <Form.Label>Desde</Form.Label>
+                <DatePicker
+                  id="fechaDesde"
+                  selected={fechaDesde}
+                  onChange={handleFechaDesdeChange}
+                  selectsStart
+                  startDate={fechaDesde}
+                  endDate={fechaHasta}
+                  minDate={hoy}
+                  maxDate={fechaHasta || sumarMeses(hoy, 6)}
+                  dateFormat="dd/MM/yyyy"
+                  placeholderText="dd/mm/aaaa"
+                  autoComplete="off"
+                  aria-label="Fecha desde"
+                  customInput={<FechaInput onFechaCompleta={handleFechaDesdeChange} />}
+                />
+              </Form.Group>
+            </Col>
 
-          <Col xs={12} sm={6} lg={4}>
-            <Form.Group controlId="fechaDesde">
-              <Form.Label>Desde</Form.Label>
-              <DatePicker
-                id="fechaDesde"
-                selected={fechaDesde}
-                onChange={handleFechaDesdeChange}
-                selectsStart
-                startDate={fechaDesde}
-                endDate={fechaHasta}
-                minDate={hoy}
-                maxDate={fechaHasta || sumarMeses(hoy, 6)}
-                dateFormat="dd/MM/yyyy"
-                placeholderText="dd/mm/aaaa"
-                autoComplete="off"
-                aria-label="Fecha desde"
-                customInput={<FechaInput onFechaCompleta={handleFechaDesdeChange} />}
-              />
-            </Form.Group>
-          </Col>
+            <Col xs={12} sm={6} lg={4}>
+              <Form.Group controlId="fechaHasta">
+                <Form.Label>Hasta</Form.Label>
+                <DatePicker
+                  id="fechaHasta"
+                  selected={fechaHasta}
+                  onChange={(fecha) => setFechaHasta(fecha)}
+                  selectsEnd
+                  startDate={fechaDesde}
+                  endDate={fechaHasta}
+                  minDate={fechaDesde || hoy}
+                  maxDate={sumarMeses(fechaDesde || hoy, 6)}
+                  // Esto es lo que hace que el calendario "Hasta" abra
+                  // parado en el mes de la fecha elegida en "Desde"
+                  openToDate={fechaDesde || hoy}
+                  dateFormat="dd/MM/yyyy"
+                  placeholderText="dd/mm/aaaa"
+                  autoComplete="off"
+                  aria-label="Fecha hasta"
+                  disabled={!fechaDesde}
+                  customInput={<FechaInput onFechaCompleta={setFechaHasta} />}
+                />
+                {!fechaDesde && (
+                  <Form.Text className="text-muted">
+                    Elegí primero la fecha "Desde".
+                  </Form.Text>
+                )}
+              </Form.Group>
+            </Col>
+          </Row>
 
-          <Col xs={12} sm={6} lg={4}>
-            <Form.Group controlId="fechaHasta">
-              <Form.Label>Hasta</Form.Label>
-              <DatePicker
-                id="fechaHasta"
-                selected={fechaHasta}
-                onChange={(fecha) => setFechaHasta(fecha)}
-                selectsEnd
-                startDate={fechaDesde}
-                endDate={fechaHasta}
-                minDate={fechaDesde || hoy}
-                maxDate={sumarMeses(fechaDesde || hoy, 6)}
-                // Esto es lo que hace que el calendario "Hasta" abra
-                // parado en el mes de la fecha elegida en "Desde"
-                openToDate={fechaDesde || hoy}
-                dateFormat="dd/MM/yyyy"
-                placeholderText="dd/mm/aaaa"
-                autoComplete="off"
-                aria-label="Fecha hasta"
-                disabled={!fechaDesde}
-                customInput={<FechaInput onFechaCompleta={setFechaHasta} />}
-              />
-              {!fechaDesde && (
-                <Form.Text className="text-muted">
-                  Elegí primero la fecha "Desde".
-                </Form.Text>
-              )}
-            </Form.Group>
-          </Col>
-        </Row>
+          <Row className="g-3 mt-1">
+            <Col xs={12} className="d-flex justify-content-end">
+              <Button
+                type="submit"
+                variant="success"
+                disabled={cargando}
+                className="btn-buscar-turnos"
+              >
+                {cargando ? (
+                  <>
+                    <Spinner
+                      animation="border"
+                      size="sm"
+                      className="me-2"
+                      role="status"
+                      aria-hidden="true"
+                    />
+                    <span className="visually-hidden">Buscando turnos, por favor esperá.</span>
+                    Buscando...
+                  </>
+                ) : (
+                  <>
+                    <i className="bi bi-search me-2" aria-hidden="true"></i>
+                    Buscar
+                  </>
+                )}
+              </Button>
+            </Col>
+          </Row>
+        </Form>
+      )}
 
-        <Row className="g-3 mt-1">
-          <Col xs={12} className="d-flex justify-content-end">
+      {!mostrarFiltros && (
+        <div className="d-flex flex-wrap align-items-center gap-2 mb-3">
+          {chipsActivos.map((chip) => (
             <Button
-              type="submit"
-              variant="success"
-              disabled={cargando}
-              className="btn-buscar-turnos"
+              key={chip.campo}
+              size="sm"
+              variant="primary"
+              className="rounded-pill"
+              onClick={() => quitarFiltro(chip.campo)}
+              aria-label={`Quitar filtro ${chip.label}`}
             >
-              {cargando ? (
-                <>
-                  <Spinner
-                    animation="border"
-                    size="sm"
-                    className="me-2"
-                    role="status"
-                    aria-hidden="true"
-                  />
-                  <span className="visually-hidden">Buscando turnos, por favor esperá.</span>
-                  Buscando...
-                </>
-              ) : (
-                <>
-                  <i className="bi bi-search me-2" aria-hidden="true"></i>
-                  Buscar
-                </>
-              )}
+              {chip.label} <i className="bi bi-x ms-1" aria-hidden="true"></i>
             </Button>
-          </Col>
-        </Row>
-      </Form>
+          ))}
+
+          <Button
+            size="sm"
+            variant="link"
+            onClick={() => setMostrarFiltros(true)}
+            aria-label="Editar filtros de búsqueda"
+          >
+            Editar filtros
+          </Button>
+        </div>
+      )}
 
       {error && (
         <Alert variant="danger" role="alert">
