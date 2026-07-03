@@ -21,6 +21,18 @@ export class MedicoController{
         }
     };
 
+    async getSugerencias(req, res, next) {
+        try {
+            const { nombre } = req.query;
+
+            const sugerencia = await this.medicoService.obtenerSugerencias(nombre);
+
+            res.status(200).json(sugerencia);
+        } catch (error) {
+            next(error);
+        }
+    };
+
     async addDisponibilidad(req, res, next) {
         try {
             const { id } = req.params; //ID del medico

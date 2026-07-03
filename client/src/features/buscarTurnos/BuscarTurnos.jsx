@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Form, Row, Col, Button, Spinner, Alert } from "react-bootstrap";
+import { Form, Row, Col, Button, Spinner, Alert, ListGroup } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import FechaInput from "./FechaInput";
@@ -48,9 +48,32 @@ function BuscarTurnos() {
   const [mostrarFiltros, setMostrarFiltros] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const [sugerencias, setSugerencias] = useState([]);
 
-  const handleChange = (e) => {
-    setFiltros((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  const handleChange = async (e) => {
+    const { name, value } = e.target;
+
+    setFiltros(prev => ({
+      ...prev,
+      [name]: value
+    }));
+
+    if (name === "medicoNombre") {
+      if (value.length < 2) {
+        setSugerencias([]);
+        return;
+      }
+
+      try {
+        const { data } = await api.get("/medicos/sugerencias", {
+          params: { nombre: value }
+        });
+
+        setSugerencias(data);
+      } catch {
+        setSugerencias([]);
+      }
+    }
   };
 
   // Al elegir "Desde", si "Hasta" quedó fuera del nuevo rango válido, la reseteamos
@@ -169,7 +192,7 @@ function BuscarTurnos() {
         >
           <Row className="g-3">
             <Col xs={12} sm={6} lg={4}>
-              <Form.Group controlId="medicoNombre">
+              <Form.Group controlId="medicoNombre" className="position-relative">
                 <Form.Label>Médico</Form.Label>
                 <Form.Control
                   type="text"
@@ -178,6 +201,25 @@ function BuscarTurnos() {
                   onChange={handleChange}
                   placeholder="Ej: Juan Pérez"
                 />
+                {sugerencias.length > 0 && (
+                    <ListGroup className="autocomplete-list">
+                      {sugerencias.map((nombre) => (
+                        <ListGroup.Item
+                          key={nombre}
+                          action
+                          onClick={() => {
+                            setFiltros(prev => ({
+                              ...prev,
+                              medicoNombre: nombre
+                            }));
+                            setSugerencias([]);
+                          }}
+                        >
+                          {nombre}
+                        </ListGroup.Item>
+                      ))}
+                    </ListGroup>
+                  )}
               </Form.Group>
             </Col>
 
@@ -190,7 +232,7 @@ function BuscarTurnos() {
                   value={filtros.especialidad}
                   onChange={handleChange}
                   placeholder="Ej: Cardiología"
-                />
+                  />
               </Form.Group>
             </Col>
 

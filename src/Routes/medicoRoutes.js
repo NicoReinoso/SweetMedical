@@ -30,6 +30,41 @@ router.get('/:id/disponibilidad', medicoController.getDisponibilidad.bind(medico
 
 /**
  * @swagger
+ * /medicos/sugerencias:
+ *   get:
+ *     summary: Obtener sugerencias de médicos por nombre
+ *     tags:
+ *       - Médicos
+ *     parameters:
+ *       - in: query
+ *         name: nombre
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Texto parcial del nombre del médico.
+ *         example: Dr
+ *     responses:
+ *       200:
+ *         description: Lista de nombres de médicos que coinciden.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: string
+ *             example:
+ *               - "Dr. Cristina López"
+ *               - "Dr. Cristian García"
+ *               - "Dra. Cristina Fernández"
+ *       400:
+ *         description: Parámetro inválido.
+ *       500:
+ *         description: Error interno del servidor.
+ */
+router.get(`/sugerencias`, medicoController.getSugerencias.bind(medicoController));
+
+/**
+ * @swagger
  * /medicos/{id}/disponibilidad:
  *   post:
  *     summary: Agrega una disponibilidad a un médico

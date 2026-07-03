@@ -56,6 +56,14 @@ export class MedicoService{
         return medico.disponibilidad;
     };
 
+    async obtenerSugerencias(nombre) {
+
+        const medicos = await this.medicoRepo.findAll();
+        const busqueda = normalizarTexto(nombre);
+
+        return medicos.filter(m =>normalizarTexto(m.nombre).includes(busqueda)).map(m => m.nombre);
+    }
+
     async agregarDisponibilidad(medicoId, disponibilidad) {
         const medico = await this.medicoRepo.findById(medicoId);
         if (!medico) {
@@ -194,3 +202,11 @@ export class MedicoService{
         return practicasFiltradas;
     }
 }
+
+// AUXILIAR
+const normalizarTexto = (texto = "") => {
+    return String(texto)
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+};
