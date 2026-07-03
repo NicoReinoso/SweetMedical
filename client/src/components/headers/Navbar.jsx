@@ -19,7 +19,7 @@ function AppNavbar({ rol = "publico", setRol }) {
 
   return (
     <>
-      <Navbar bg="light" expand="md" className="mb-3 shadow-sm">
+      <Navbar bg="light" expand="md" className="mb-0 shadow-sm">
         <Container>
           <Navbar.Brand as={Link} to="/">
             <img
