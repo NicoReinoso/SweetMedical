@@ -96,6 +96,12 @@ const medicoSchema = new mongoose.Schema({
         trim:true
     },
 
+    contrasenia: {
+        type: String,
+        required: true,
+        trim:true
+    },
+
     matricula: {
         type: Number,
         required: true,

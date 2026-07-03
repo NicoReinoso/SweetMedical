@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import { useState } from "react";
+import { useSession } from "../context/SessionContext";
 
 import HomePublica from "../features/homePublica/HomePublica";
 import BuscarTurnos from "../features/buscarTurnos/BuscarTurnos";
@@ -24,6 +25,8 @@ function AppRouter() {
     }
   };
 
+  const { user } = useSession();
+
   const [rol, setRol] = useState(localStorage.getItem("rol") || "publico");
 
   return (
@@ -36,7 +39,7 @@ function AppRouter() {
         Saltar al contenido principal
       </a>
       
-      <Navbar rol={rol} setRol={setRol} />
+      <Navbar rol={user?.rol ?? "publico"} />
       
       <Routes>
         <Route path="/" element={<HomePublica />} />
