@@ -105,7 +105,9 @@ async buscarDisponibles(filtros) {
     let medicos = await this.medicoService.obtenerTodos();
 
     if (medicoNombre) {
-        medicos = medicos.filter(m => m.nombre === medicoNombre);
+        const busqueda = normalizarTexto(medicoNombre);
+
+        medicos = medicos.filter(m => normalizarTexto(m.nombre).includes(busqueda));
     }
 
     if (sede) {
@@ -578,10 +580,10 @@ const construirFechaHora = (fecha, hora) => {
 
     const nuevaFecha = new Date(fecha);
 
-    nuevaFecha.setUTCHours(h); // se usa setUTC para que no se aplique una conversión por zona horaria
-    nuevaFecha.setUTCMinutes(m);
-    nuevaFecha.setUTCSeconds(0);
-    nuevaFecha.setUTCMilliseconds(0);
+    nuevaFecha.setHours(h); // se usa setUTC (ahora lo cambiamos de nuevo porque no andaba) para que no se aplique una conversión por zona horaria
+    nuevaFecha.setMinutes(m);
+    nuevaFecha.setSeconds(0);
+    nuevaFecha.setMilliseconds(0);
 
     return nuevaFecha;
 };
@@ -600,3 +602,10 @@ const minutosAHora = (minutos) => {
 const horaEnRango = (hora, horaDesde, horaHasta) => {
     return hora >= horaDesde && hora < horaHasta;
 };
+
+const normalizarTexto = (texto) => {
+    return texto
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+}
