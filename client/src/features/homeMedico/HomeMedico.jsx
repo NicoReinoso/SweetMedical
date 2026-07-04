@@ -1,16 +1,24 @@
-import "../homePublica/HomePublica.css";
+import { useNavigate } from "react-router-dom";
+
 
 function HomeMedico() {
-  const nombre = localStorage.getItem("nombre") || "Médico";
+  const nombre = localStorage.getItem("nombre") || "Paciente";
+  const navigate = useNavigate();
 
   return (
-    <div className="hero" id="main-content">
-      <h1>Bienvenido, {nombre}</h1>
-
-      <p>
-        Administrá tu agenda y consultá tus turnos
-        de forma rápida y sencilla.
-      </p>
+    <div className="hero">
+      <div className="hero-overlay" />
+      <div className="hero-content">
+        <div className="hero-card">
+          <h1>Hola, {nombre} 👋</h1>
+          <p>¿Qué necesitás hoy?</p>
+          <div>
+            <button className="btn-mis-turnos" onClick={() => navigate('/medico/mis-turnos')}>
+              Mis Turnos
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
