@@ -14,6 +14,7 @@ import MisTurnosMedico from "../features/misTurnosMedico/MisTurnosMedico";
 import PerfilPaciente from "../features/perfilPaciente/PerfilPaciente";
 import PerfilMedico from "../features/perfilMedico/PerfilMedico";
 import Notificaciones from "../features/notificaciones/Notificaciones";
+import AppNavbar from "../components/headers/Navbar";
 
 function AppRouter() {
   const handleSkipClick = (e) => {
@@ -39,12 +40,12 @@ function AppRouter() {
         Saltar al contenido principal
       </a>
       
-      <Navbar rol={user?.rol ?? "publico"} />
+      <AppNavbar />
       
       <Routes>
         <Route path="/" element={<HomePublica />} />
 
-         <Route path="/login" element={<Login setRol={setRol} />} />
+         <Route path="/login" element={<Login />} />
 
         <Route path="/paciente" element={<HomePaciente />} />
         <Route path="/paciente/buscar" element={<BuscarTurnos />} />

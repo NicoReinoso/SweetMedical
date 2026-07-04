@@ -1,6 +1,6 @@
 export class Paciente {
     usuario;
-    contrasenia;
+    password;
     nombre;
     obraSocial;
     plan;

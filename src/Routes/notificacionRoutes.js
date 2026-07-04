@@ -1,5 +1,6 @@
 import express from "express";
 import { notificacionController } from "../container.js";
+import { verificarToken } from "../middlewares/auth.js";
 
 const router = express.Router();
 
@@ -43,7 +44,7 @@ const router = express.Router();
  *       500:
  *         description: Error interno del servidor
  */
-router.get('/:destinatarioId', notificacionController.getNotificaciones.bind(notificacionController)); //?estado=LEIDA
+router.get('/:destinatarioId', verificarToken, notificacionController.getNotificaciones.bind(notificacionController)); //?estado=LEIDA
 
 /**
  * @swagger
@@ -64,6 +65,6 @@ router.get('/:destinatarioId', notificacionController.getNotificaciones.bind(not
  *       404:
  *         description: Notificacion no encontrada
  */
-router.patch('/:id', notificacionController.leer.bind(notificacionController));
+router.patch('/:id', verificarToken, notificacionController.leer.bind(notificacionController));
 
 export default router

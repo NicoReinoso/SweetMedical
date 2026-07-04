@@ -41,10 +41,10 @@ const turnoService = new TurnoService({
     notificacionService
 });
 
-const loginService = new LoginService({
+const loginService = new LoginService(
     pacienteService,
     medicoService
-})
+);
 
 // Controllers
 export const pacienteController = new PacienteController(pacienteService);

@@ -3,20 +3,24 @@ import { Navbar, Nav, Container, Badge, Modal, Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { usePreseleccion } from "../../context/PreseleccionContext";
 import "./Navbar.css";
+import { useSession } from "../../context/SessionContext";
 
-function AppNavbar({ rol = "publico", setRol }) {
+function AppNavbar() {
   const navigate = useNavigate();
   const { turnosPreseleccionados } = usePreseleccion();
+  const { user, logout } = useSession();
+  const rol = user?.rol ?? "publico";
 
   const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
 
   const handleLogout = () => {
-    setMostrarConfirmacion(false);
-    localStorage.clear();
-    setRol("publico");
-    navigate("/");
-  };
+  setMostrarConfirmacion(false);
 
+  logout(); // elimina el token y pone user = null
+
+  localStorage.removeItem("preseleccion");
+  navigate("/");
+};
   return (
     <>
       <Navbar bg="light" expand="md" className="mb-3 shadow-sm">

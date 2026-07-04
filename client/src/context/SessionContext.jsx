@@ -1,5 +1,6 @@
 import { createContext, useContext, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
+import axios from 'axios';
 
 const SessionContext = createContext(null);
 
@@ -15,18 +16,23 @@ export function SessionProvider({ children }) {
   });
 
   const login = (token) => {
-    localStorage.
-setItem('token', token);
-    
-setUser(jwtDecode(token));
+
+    localStorage.setItem("token", token);
+
+    const usuario = jwtDecode(token);
+
+    setUser(usuario);
+
+    return usuario;
   };
 
-  const logout = () => {
+    const logout = () => {
     localStorage.
-removeItem('token');
-    
-setUser(null);
+    removeItem('token');
+        
+    setUser(null);
   };
+
   return (
     <SessionContext.Provider value={{ user, login, logout }}>
       {children}

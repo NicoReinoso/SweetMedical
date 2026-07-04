@@ -96,7 +96,7 @@ const medicoSchema = new mongoose.Schema({
         trim:true
     },
 
-    contrasenia: {
+    password: {
         type: String,
         required: true,
         trim:true
