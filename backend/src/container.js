@@ -34,8 +34,8 @@ const medicoService = new MedicoService({
 
 const turnoService = new TurnoService({
     turnoRepo,
-    pacienteService,
-    medicoService,
+    pacienteRepo,
+    medicoRepo,
     notificacionService
 });
 

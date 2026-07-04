@@ -1,16 +1,17 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-import express from "express";
 import cors from "cors";
-import router from "./Routes/router.js";
+import express from "express";
 import swaggerUi from "swagger-ui-express";
-import { swaggerSpec } from "./swagger.js";
-import { notFoundHandler } from "./middlewares/notFoundHandler.js";
-import { errorLogger } from "./middlewares/errorLogger.js";
-import { errorHandler } from "./middlewares/errorHandler.js";
+import { config } from "./config/config.js";
 import { MongoDBClient } from "./config/database.js";
 import "./container.js";
+import { errorHandler } from "./middlewares/errorHandler.js";
+import { errorLogger } from "./middlewares/errorLogger.js";
+import { notFoundHandler } from "./middlewares/notFoundHandler.js";
+import router from "./Routes/router.js";
+import { swaggerSpec } from "./swagger.js";
 
 const app = express();
 app.use(express.json());
@@ -23,14 +24,14 @@ app.use(notFoundHandler);
 app.use(errorLogger);
 app.use(errorHandler);
 
-const PORT = 3001;
+const port = config.port;
 MongoDBClient.connect().then(() => {
-    app.listen(PORT, () => {
+    app.listen(port, () => {
         console.log(`==========================================`);
-        console.log(`Servidor corriendo en http://localhost:${PORT}`);
+        console.log(`Servidor corriendo en http://localhost:${port}`);
         console.log(`Probá el health check en Postman usando esa URL`);
         console.log(`-------------------------------------------`);
-        console.log(`Docs en http://localhost:${PORT}/api-docs`);
+        console.log(`Docs en http://localhost:${port}/api-docs`);
         console.log(`==========================================`);
     });
 });
