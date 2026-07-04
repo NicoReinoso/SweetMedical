@@ -7,6 +7,7 @@ import api from "../../api/api";
 import TurnoCard from "../../mockdata/TurnoCard";
 import { Pagination } from "react-bootstrap";
 import "./BuscarTurnos.css";
+import ToastNotificacion from "../../components/ToastNotificacion";
 
 // Helpers de fecha (trabajamos con objetos Date porque react-datepicker los necesita así)
 const hoy = new Date();
@@ -49,6 +50,7 @@ function BuscarTurnos() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [sugerencias, setSugerencias] = useState([]);
+  const [toast, setToast] = useState({ show: false, mensaje: "", variant: "success" });
 
   const handleChange = async (e) => {
     const { name, value } = e.target;
@@ -174,6 +176,14 @@ function BuscarTurnos() {
         fechaDesde && { campo: "fechaDesde", label: `Desde: ${formatearParaApi(fechaDesde)}` },
         fechaHasta && { campo: "fechaHasta", label: `Hasta: ${formatearParaApi(fechaHasta)}` },
       ].filter(Boolean);
+
+  const mostrarToast = (mensaje, variant = "success") => {
+    setToast({ show: true, mensaje, variant });
+  };
+
+  const cerrarToast = () => {
+    setToast((prev) => ({ ...prev, show: false }));
+  };
 
   return (
     <div className="container py-4" id="main-content">
@@ -456,7 +466,10 @@ function BuscarTurnos() {
           <Row className="g-3">
             {resultados.map((turno, index) => (
               <Col xs={12} sm={6} lg={4} key={index}>
-                <TurnoCard turno={turno} />
+                <TurnoCard
+                  turno={turno}
+                  onAgregado={() => mostrarToast("Turno agregado a la preselección", "success")}
+                />
               </Col>
             ))}
           </Row>
@@ -490,6 +503,13 @@ function BuscarTurnos() {
           />
         </Pagination>
       )}
+
+      <ToastNotificacion
+        show={toast.show}
+        mensaje={toast.mensaje}
+        variant={toast.variant}
+        onClose={cerrarToast}
+      />
     </div>
   );
 }

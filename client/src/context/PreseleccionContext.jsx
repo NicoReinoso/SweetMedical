@@ -46,9 +46,13 @@ export function PreseleccionProvider({ children }) {
     );
   };
 
+  const eliminarTodos = () => {
+    setTurnosPreseleccionados([]);
+  };
+
   return (
     <PreseleccionContext.Provider
-      value={{ turnosPreseleccionados, agregarTurno, quitarTurno }}
+      value={{ turnosPreseleccionados, agregarTurno, quitarTurno, eliminarTodos }}
     >
       {children}
     </PreseleccionContext.Provider>
