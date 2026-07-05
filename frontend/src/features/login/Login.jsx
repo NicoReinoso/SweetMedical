@@ -68,7 +68,7 @@ function Login({ setRol }) {
               type="text"
               value={usuario}
               onChange={(e) => setUsuario(e.target.value)}
-              placeholder="paciente/medico"
+              placeholder="Ingrese su usuario"
             />
           </Form.Group>
 
