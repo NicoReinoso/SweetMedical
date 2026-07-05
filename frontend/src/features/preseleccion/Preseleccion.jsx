@@ -3,6 +3,8 @@ import { Card, Button, Row, Col } from "react-bootstrap";
 import { usePreseleccion } from "../../context/PreseleccionContext";
 import ToastNotificacion from "../../components/ToastNotificacion";
 import "./Preseleccion.css";
+import { useSession } from "../../context/SessionContext.jsx";
+import api from "../../api/api.js";
 
 function Preseleccion() {
 
@@ -11,6 +13,8 @@ function Preseleccion() {
     quitarTurno,
     eliminarTodos
   } = usePreseleccion();
+
+  const { user } = useSession();
 
   const [toast, setToast] = useState({ show: false, mensaje: "", variant: "success" });
 
@@ -32,9 +36,23 @@ function Preseleccion() {
     mostrarToast("Todos los turnos eliminados", "danger");
   };
 
-  const handleConfirmar = () => {
-    // TODO: conectar con endpoint de reserva cuando esté listo
-    mostrarToast("Turno reservado con éxito", "success");
+  const handleConfirmar = async () => {
+    try {
+      const body = {
+        turnos: turnosPreseleccionados
+      };
+      await api.post("/turnos/lote", {
+        turnos: turnosPreseleccionados
+      });
+
+      eliminarTodos();
+
+      mostrarToast("Turnos reservados con éxito");
+
+    } catch (err) {
+      console.error(err);
+      mostrarToast("No se pudieron reservar los turnos", "danger");
+    }
   };
 
   const total = turnosPreseleccionados.reduce(

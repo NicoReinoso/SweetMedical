@@ -468,7 +468,7 @@ function BuscarTurnos() {
               <Col xs={12} sm={6} lg={4} key={index}>
                 <TurnoCard
                   turno={turno}
-                  onAgregado={() => mostrarToast("Turno agregado a la preselección", "success")}
+                  onAgregado={mostrarToast}
                 />
               </Col>
             ))}

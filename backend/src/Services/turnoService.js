@@ -385,6 +385,33 @@ async buscarDisponibles(filtros) {
         return turnoGuardado;
     }
 
+    async crearMultiplesTurnos(turnos, pacienteId) {
+
+        const creados = [];
+
+        for (const turno of turnos) {
+
+            const creado = await this.crearTurno({
+                pacienteId,
+                medicoId: turno.medicoId,
+                fechaHora: turno.fechaHora,
+                sede: turno.sede,
+                practica:
+                    turno.consultaSolicitada?.tipo === "PRACTICA"
+                        ? turno.consultaSolicitada.nombre
+                        : undefined,
+                especialidad:
+                    turno.consultaSolicitada?.tipo === "ESPECIALIDAD"
+                        ? turno.consultaSolicitada.nombre
+                        : undefined
+            });
+
+            creados.push(creado);
+        }
+
+        return creados;
+    }
+
     async cancelarTurnoConMotivo(id, motivo) {
         return await this.cancelarTurno(id, motivo);
     }
