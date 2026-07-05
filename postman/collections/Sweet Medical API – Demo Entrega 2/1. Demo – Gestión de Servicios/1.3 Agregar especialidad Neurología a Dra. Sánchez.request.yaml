@@ -1,0 +1,13 @@
+$kind: http-request
+url: "{{baseUrl}}/medicos/{{medicoId2}}/especialidad"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "nombre": "Neurología",
+      "costo": 6000
+    }
+order: 3000

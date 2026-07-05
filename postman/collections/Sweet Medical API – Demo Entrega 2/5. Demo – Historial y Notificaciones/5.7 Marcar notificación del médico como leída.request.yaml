@@ -1,0 +1,5 @@
+$kind: http-request
+description: Usa el ID capturado en 5.4. La notificación pasa a leida=true.
+url: "{{baseUrl}}/notificaciones/{{notificacionId}}"
+method: PATCH
+order: 7000

@@ -1,0 +1,5 @@
+$kind: http-request
+name: Swagger (usar en navegador)
+url: http://localhost:3000/api-docs
+method: GET
+order: 1164373640692944

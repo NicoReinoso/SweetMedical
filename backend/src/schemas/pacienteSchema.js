@@ -4,7 +4,14 @@ import { Paciente } from "../Models/paciente.js";
 const pacienteSchema = new mongoose.Schema({
     usuario: {
         type: String,
-        required: true
+        required: true,
+        trim: true
+    },
+
+    password: {
+        type: String,
+        required: true,
+        trim:true
     },
 
     nombre: {

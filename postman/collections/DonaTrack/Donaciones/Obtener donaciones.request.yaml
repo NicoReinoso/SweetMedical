@@ -1,0 +1,5 @@
+$kind: http-request
+name: Obtener donaciones
+url: http://localhost:8080/donaciones-service/donaciones
+method: GET
+order: 1779914436204

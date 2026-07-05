@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import { useState } from "react";
+import { useSession } from "../context/SessionContext";
 
 import HomePublica from "../features/homePublica/HomePublica";
 import BuscarTurnos from "../features/buscarTurnos/BuscarTurnos";
@@ -13,6 +14,7 @@ import MisTurnosMedico from "../features/misTurnosMedico/MisTurnosMedico";
 import PerfilPaciente from "../features/perfilPaciente/PerfilPaciente";
 import PerfilMedico from "../features/perfilMedico/PerfilMedico";
 import Notificaciones from "../features/notificaciones/Notificaciones";
+import AppNavbar from "../components/headers/Navbar";
 
 function AppRouter() {
   const handleSkipClick = (e) => {
@@ -23,6 +25,8 @@ function AppRouter() {
       main.focus();
     }
   };
+
+  const { user } = useSession();
 
   const [rol, setRol] = useState(localStorage.getItem("rol") || "publico");
 
@@ -36,12 +40,12 @@ function AppRouter() {
         Saltar al contenido principal
       </a>
       
-      <Navbar rol={rol} setRol={setRol} />
+      <AppNavbar />
       
       <Routes>
         <Route path="/" element={<HomePublica />} />
 
-         <Route path="/login" element={<Login setRol={setRol} />} />
+         <Route path="/login" element={<Login />} />
 
         <Route path="/paciente" element={<HomePaciente />} />
         <Route path="/paciente/buscar" element={<BuscarTurnos />} />

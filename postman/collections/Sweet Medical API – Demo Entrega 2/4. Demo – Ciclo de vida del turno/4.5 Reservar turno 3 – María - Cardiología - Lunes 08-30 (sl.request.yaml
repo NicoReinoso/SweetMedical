@@ -1,0 +1,27 @@
+$kind: http-request
+name: 4.5 Reservar turno 3 – María / Cardiología / Lunes 08:30 (slot liberado)
+description: María / PAMI 100% → costo $0. El slot 08:30 está libre porque Juan lo reprogramó.
+url: "{{baseUrl}}/turnos"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "medicoId": "{{medicoId1}}",
+      "pacienteId": "{{pacienteId2}}",
+      "fechaHora": "2026-07-06T11:30:00.000Z",
+      "sede": "Medrano",
+      "especialidad": "Cardiología",
+      "costo": 0
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      if (pm.response.code === 201) {
+        pm.collectionVariables.set('turnoId3', pm.response.json()._id);
+        console.log('turnoId3 =', pm.response.json()._id);
+      }
+    language: text/javascript
+order: 5000

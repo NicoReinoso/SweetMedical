@@ -1,0 +1,30 @@
+$kind: http-request
+name: 4.1 Reservar turno 1 – Juan / Cardiología / Lunes 08:00
+description: |-
+  2026-07-06T11:00Z = lunes 06-Jul-2026 a las 08:00 UTC-3.
+  Cardiología es una ESPECIALIDAD. Costo $1100 (OSDE 80% sobre base $5500).
+url: "{{baseUrl}}/turnos"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "medicoId": "{{medicoId1}}",
+      "pacienteId": "{{pacienteId1}}",
+      "fechaHora": "2026-07-06T11:00:00.000Z",
+      "sede": "Medrano",
+      "especialidad": "Cardiología",
+      "costo": 1100
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      if (pm.response.code === 201) {
+        const body = pm.response.json();
+        if (body._id) pm.collectionVariables.set('turnoId1', body._id);
+        console.log('turnoId1 =', body._id);
+      }
+    language: text/javascript
+order: 1000

@@ -1,0 +1,4 @@
+$kind: http-request
+url: "{{baseUrl}}/medicos/{{medicoId2}}/disponibilidad"
+method: GET
+order: 5000

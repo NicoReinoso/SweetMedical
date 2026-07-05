@@ -2,6 +2,7 @@ import express from "express";
 import { medicoController } from "../container.js";
 import { validarDisponibilidad } from "../middlewares/validarDisponibilidad.js";
 import { validarEspecialidad } from "../middlewares/validarEspecialidad.js";
+import { verificarToken } from "../middlewares/auth.js";
 import { validarPractica } from "../middlewares/validarPractica.js";
 
 const router = express.Router();
@@ -26,7 +27,7 @@ const router = express.Router();
  *       404:
  *         description: Médico no encontrado
  */
-router.get('/:id/disponibilidad', medicoController.getDisponibilidad.bind(medicoController));
+router.get('/:id/disponibilidad', verificarToken, medicoController.getDisponibilidad.bind(medicoController));
 
 /**
  * @swagger
@@ -61,7 +62,7 @@ router.get('/:id/disponibilidad', medicoController.getDisponibilidad.bind(medico
  *       500:
  *         description: Error interno del servidor.
  */
-router.get(`/sugerencias`, medicoController.getSugerencias.bind(medicoController));
+router.get('/sugerencias', medicoController.getSugerencias.bind(medicoController));
 
 /**
  * @swagger
@@ -90,7 +91,7 @@ router.get(`/sugerencias`, medicoController.getSugerencias.bind(medicoController
  *       404:
  *         description: Médico no encontrado
  */
-router.post('/:id/disponibilidad', validarDisponibilidad, medicoController.addDisponibilidad.bind(medicoController));
+router.post('/:id/disponibilidad', validarDisponibilidad, verificarToken, medicoController.addDisponibilidad.bind(medicoController));
 
 /**
  * @swagger
@@ -119,7 +120,7 @@ router.post('/:id/disponibilidad', validarDisponibilidad, medicoController.addDi
  *       409:
  *         description: Disponibilidad ocupada
  */
-router.delete('/:id/disponibilidad', validarDisponibilidad, medicoController.deleteDisponibilidad.bind(medicoController));
+router.delete('/:id/disponibilidad', validarDisponibilidad, verificarToken, medicoController.deleteDisponibilidad.bind(medicoController));
 
 /**
  * @swagger
@@ -152,7 +153,7 @@ router.delete('/:id/disponibilidad', validarDisponibilidad, medicoController.del
  *       422:
  *         description: Campo inexistente, de más o faltante en el body
  */
-router.post('/:id/especialidad', validarEspecialidad, medicoController.addEspecialidad.bind(medicoController));
+router.post('/:id/especialidad', validarEspecialidad, verificarToken, medicoController.addEspecialidad.bind(medicoController));
 
 /**
  * @swagger
@@ -183,7 +184,7 @@ router.post('/:id/especialidad', validarEspecialidad, medicoController.addEspeci
  *       422:
  *         description: Campo inexistente o inválido en el body
  */
-router.patch('/:id/especialidad/:especialidadId', medicoController.patchEspecialidad.bind(medicoController));
+router.patch('/:id/especialidad/:especialidadId', verificarToken, medicoController.patchEspecialidad.bind(medicoController));
 
 /**
  * @swagger
@@ -209,7 +210,7 @@ router.patch('/:id/especialidad/:especialidadId', medicoController.patchEspecial
  *       404:
  *         description: Médico o especialidad no encontrados
  */
-router.delete('/:id/especialidad/:especialidadId', medicoController.deleteEspecialidad.bind(medicoController));
+router.delete('/:id/especialidad/:especialidadId', verificarToken, medicoController.deleteEspecialidad.bind(medicoController));
 
 /**
  * @swagger
@@ -242,7 +243,7 @@ router.delete('/:id/especialidad/:especialidadId', medicoController.deleteEspeci
  *       422:
  *         description: Campo inexistente, de más o faltante en el body
  */
-router.post('/:id/practica', validarPractica, medicoController.addPractica.bind(medicoController));
+router.post('/:id/practica', validarPractica, verificarToken, medicoController.addPractica.bind(medicoController));
 
 /**
  * @swagger
@@ -273,7 +274,7 @@ router.post('/:id/practica', validarPractica, medicoController.addPractica.bind(
  *       422:
  *         description: Campo inexistente o inválido en el body
  */
-router.patch('/:id/practica/:practicaId', medicoController.patchPractica.bind(medicoController));
+router.patch('/:id/practica/:practicaId', verificarToken, medicoController.patchPractica.bind(medicoController));
 
 /**
  * @swagger
@@ -299,6 +300,6 @@ router.patch('/:id/practica/:practicaId', medicoController.patchPractica.bind(me
  *       404:
  *         description: Médico o práctica no encontrados
  */
-router.delete('/:id/practica/:practicaId', medicoController.deletePractica.bind(medicoController));
+router.delete('/:id/practica/:practicaId', verificarToken, medicoController.deletePractica.bind(medicoController));
 
 export default router

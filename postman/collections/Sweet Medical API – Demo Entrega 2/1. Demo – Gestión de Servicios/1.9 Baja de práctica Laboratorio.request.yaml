@@ -1,0 +1,5 @@
+$kind: http-request
+description: Baja de servicio. Práctica removida del médico.
+url: "{{baseUrl}}/medicos/{{medicoId1}}/practica/Laboratorio"
+method: DELETE
+order: 10000

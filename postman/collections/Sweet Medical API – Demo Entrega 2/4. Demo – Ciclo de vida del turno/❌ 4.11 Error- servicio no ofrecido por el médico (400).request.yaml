@@ -1,0 +1,19 @@
+$kind: http-request
+name: "❌ 4.11 Error: servicio no ofrecido por el médico (400)"
+description: El Dr. García no tiene la especialidad Traumatología. Debe retornar 400.
+url: "{{baseUrl}}/turnos"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "medicoId": "{{medicoId1}}",
+      "pacienteId": "{{pacienteId1}}",
+      "fechaHora": "2026-07-06T13:00:00.000Z",
+      "sede": "Medrano",
+      "especialidad": "Traumatología",
+      "costo": 1000
+    }
+order: 11000

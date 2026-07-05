@@ -30,6 +30,16 @@ export class NotificacionRepo{
         });
     }
 
+    async obtenerTodas(destinatarioId) {
+        if (!mongoose.Types.ObjectId.isValid(destinatarioId)) {
+            return null;
+        }
+
+        return await this.model.find({ 
+            destinatarioId: new mongoose.Types.ObjectId(destinatarioId)
+        });
+    }
+
     async setLeida(idNotificacion) {
         if (!mongoose.Types.ObjectId.isValid(idNotificacion)) {
             return null;
@@ -40,7 +50,9 @@ export class NotificacionRepo{
                 leida: true,
                 fechaHoraLeida: new Date()
             },
-            { new: true }
+            {
+                returnDocument: "after"
+            }
         );
     }
 

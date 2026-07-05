@@ -1,0 +1,16 @@
+$kind: http-request
+name: "❌ 2.8 Error: disponibilidad duplicada (409)"
+description: El bloque LUNES 08:00–12:00 ya existe. Debe retornar 409 ConflictError.
+url: "{{baseUrl}}/medicos/{{medicoId1}}/disponibilidad"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "diaSemana": "LUNES",
+      "horaDesde": "08:00",
+      "horaHasta": "12:00"
+    }
+order: 8000

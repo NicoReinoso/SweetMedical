@@ -1,0 +1,14 @@
+$kind: http-request
+description: Alta de Ecocardiograma con costo base $8000.
+url: "{{baseUrl}}/medicos/{{medicoId1}}/practica"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "nombre": "Ecocardiograma",
+      "costo": 8000
+    }
+order: 2000

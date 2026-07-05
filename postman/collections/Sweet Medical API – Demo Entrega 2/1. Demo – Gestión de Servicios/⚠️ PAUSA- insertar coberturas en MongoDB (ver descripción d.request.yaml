@@ -1,0 +1,9 @@
+$kind: http-request
+name: "⚠️ PAUSA: insertar coberturas en MongoDB (ver descripción de colección)"
+description: |-
+  ACCIÓN MANUAL REQUERIDA antes de continuar:
+  Ejecutar en MongoDB los comandos de coberturas indicados en la descripción de la colección (sección 4).
+  Esta request solo es un placeholder — ejecutar el GET para confirmar que el servidor sigue operativo.
+url: "{{baseUrl}}/health"
+method: GET
+order: 4000

@@ -1,0 +1,5 @@
+$kind: http-request
+description: María tiene turno3 CANCELADO por el médico.
+url: "{{baseUrl}}/pacientes/{{pacienteId2}}/historial"
+method: GET
+order: 3000

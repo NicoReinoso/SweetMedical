@@ -1,5 +1,6 @@
 import express from "express";
 import { pacienteController } from "../container.js";
+import { verificarToken } from "../middlewares/auth.js";
 
 const router = express.Router();
 
@@ -31,6 +32,6 @@ const router = express.Router();
  */
 
 // Ruta GET /pacientes/:id/historial
-router.get('/:id/historial', pacienteController.getHistorial.bind(pacienteController));
+router.get('/:id/historial', verificarToken, pacienteController.getHistorial.bind(pacienteController));
 
 export default router;

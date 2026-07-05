@@ -1,0 +1,10 @@
+$kind: http-request
+name: "❌ 3.14 Error: rango de fechas invertido (400)"
+description: fechaDesde > fechaHasta. Debe retornar 400 BadRequestError.
+url: "{{baseUrl}}/turnos/disponibles?pacienteId={{pacienteId1}}&fechaDesde=2026-07-31T03:00:00.000Z&fechaHasta=2026-07-01T03:00:00.000Z"
+method: GET
+queryParams:
+  pacienteId: "{{pacienteId1}}"
+  fechaDesde: 2026-07-31T03:00:00.000Z
+  fechaHasta: 2026-07-01T03:00:00.000Z
+order: 14000

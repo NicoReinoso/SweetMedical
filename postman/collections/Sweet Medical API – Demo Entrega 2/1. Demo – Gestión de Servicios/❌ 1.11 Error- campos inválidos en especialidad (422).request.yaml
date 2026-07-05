@@ -1,0 +1,14 @@
+$kind: http-request
+name: "❌ 1.11 Error: campos inválidos en especialidad (422)"
+description: Falta el campo 'costo'. Debe retornar 422.
+url: "{{baseUrl}}/medicos/{{medicoId1}}/especialidad"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "nombre": "Dermatología"
+    }
+order: 12000

@@ -2,33 +2,46 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Form, Button, Alert } from "react-bootstrap";
 import "./Login.css";
+import { useSession } from "../../context/SessionContext.jsx";
+import api from "../../api/api.js";
 
 function Login({ setRol }) {
   const navigate = useNavigate();
+  const { login } = useSession();
 
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    if (usuario === "paciente") {
-      localStorage.setItem("rol", "paciente");
-      localStorage.setItem("nombre", "Juan Pérez");
-      setRol("paciente"); 
-      navigate("/paciente");
+  setError("");
+
+  try {
+
+    const { data } = await api.post("/login", {
+      usuario,
+      password
+    });
+
+    const usuarioLogueado = login(data.token);
+
+    if (usuarioLogueado.rol === "paciente") {
+        navigate("/paciente");
+    } else {
+        navigate("/medico");
     }
 
-    if (usuario === "medico") {
-      localStorage.setItem("rol", "medico");
-      localStorage.setItem("nombre", "Dra. María Gómez");
-      setRol("medico"); 
-      navigate("/medico");
-    }
+  } catch (err) {
 
-    setError("Usuario no encontrado");
-  };
+    setError(
+      err.response?.data?.message ??
+      "Usuario o contraseña incorrectos"
+    );
+
+  }
+};
 
   return (
     <div className="login-container">
@@ -55,7 +68,7 @@ function Login({ setRol }) {
               type="text"
               value={usuario}
               onChange={(e) => setUsuario(e.target.value)}
-              placeholder="paciente/medico"
+              placeholder="Ingrese su usuario"
             />
           </Form.Group>
 
@@ -85,10 +98,6 @@ function Login({ setRol }) {
           {error}
           </Alert>
         )}
-
-        <div className="login-help">
-          Para la demo ingresar usuario: <strong>paciente</strong> o <strong>medico</strong> y cualquier contraseña.
-        </div>
 
       </div>
     </div>

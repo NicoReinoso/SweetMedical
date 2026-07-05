@@ -1,0 +1,16 @@
+$kind: http-request
+name: 2.1 Agregar disponibilidad LUNES 09:00–10:00 al Dr. García
+description: "Bloque de 4 horas. La búsqueda de disponibles generará slots cada 30 min: 08:00, 08:30, 09:00 … 11:30."
+url: "{{baseUrl}}/medicos/{{medicoId1}}/disponibilidad"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "diaSemana": "LUNES",
+      "horaDesde": "09:00",
+      "horaHasta": "10:00"
+    }
+order: 1000

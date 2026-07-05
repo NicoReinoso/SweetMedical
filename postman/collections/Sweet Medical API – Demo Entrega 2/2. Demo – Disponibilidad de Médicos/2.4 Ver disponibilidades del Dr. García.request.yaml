@@ -1,0 +1,5 @@
+$kind: http-request
+description: Médico consulta su disponibilidad horaria. Los slots disponibles para cada especialidad/práctica se ven en la búsqueda (sección 3).
+url: "{{baseUrl}}/medicos/{{medicoId1}}/disponibilidad"
+method: GET
+order: 4000

@@ -1,0 +1,13 @@
+$kind: http-request
+url: "{{baseUrl}}/medicos/{{medicoId1}}/practica"
+method: PATCH
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "nombre": "Laboratorio",
+      "costo": 2500
+    }
+order: 9000

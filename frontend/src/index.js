@@ -8,15 +8,17 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import "./styles/global.css";
 import "./styles/headers.css";
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import { SessionProvider } from './context/SessionContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <PreseleccionProvider>
-        <title>Sweet Medical</title>
-        <App />
-      </PreseleccionProvider>
+      <SessionProvider>
+        <PreseleccionProvider>
+          <App />
+        </PreseleccionProvider>
+      </SessionProvider>
     </BrowserRouter>
   </React.StrictMode>
 );

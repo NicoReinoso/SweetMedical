@@ -1,0 +1,11 @@
+$kind: http-request
+description: Cardiología ($1100) aparece antes que Ecocardiograma ($4000).
+url: "{{baseUrl}}/turnos/disponibles?pacienteId={{pacienteId1}}&fechaDesde=2026-07-01T03:00:00.000Z&fechaHasta=2026-07-07T23:59:59.000Z&sortBy=costoEstimado&order=asc"
+method: GET
+queryParams:
+  pacienteId: "{{pacienteId1}}"
+  fechaDesde: 2026-07-01T03:00:00.000Z
+  fechaHasta: 2026-07-07T23:59:59.000Z
+  sortBy: costoEstimado
+  order: asc
+order: 9000

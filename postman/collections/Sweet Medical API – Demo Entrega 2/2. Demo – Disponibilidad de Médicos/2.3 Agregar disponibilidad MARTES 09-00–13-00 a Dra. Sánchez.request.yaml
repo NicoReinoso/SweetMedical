@@ -1,0 +1,15 @@
+$kind: http-request
+name: 2.3 Agregar disponibilidad MARTES 09:00–13:00 a Dra. Sánchez
+url: "{{baseUrl}}/medicos/{{medicoId2}}/disponibilidad"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "diaSemana": "MARTES",
+      "horaDesde": "09:00",
+      "horaHasta": "13:00"
+    }
+order: 3000

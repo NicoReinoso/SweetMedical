@@ -1,0 +1,5 @@
+$kind: http-request
+description: Estado pasa a REALIZADO. El turno es removido de la agenda del médico.
+url: "{{baseUrl}}/turnos/{{turnoId1}}/realizar"
+method: PATCH
+order: 7000

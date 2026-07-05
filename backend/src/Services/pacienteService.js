@@ -20,6 +20,10 @@ export class PacienteService{
         return await this.pacienteRepo.findById(idPaciente);
     };
 
+    async obtenerPorUsuario(usuario) {
+        return await this.pacienteRepo.findByUsuario(usuario);
+    };
+
     async obtenerHistorial(idPaciente) {
 
         const paciente = await this.pacienteRepo.findById(idPaciente);

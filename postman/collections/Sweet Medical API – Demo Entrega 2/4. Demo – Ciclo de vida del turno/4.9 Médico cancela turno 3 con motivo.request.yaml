@@ -1,0 +1,13 @@
+$kind: http-request
+description: El médico cancela el turno de María con al menos 1 hora de anticipación. Se notifica a la paciente.
+url: "{{baseUrl}}/turnos/{{turnoId3}}"
+method: DELETE
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "motivo": "El médico tiene una emergencia y debe cancelar la agenda del día"
+    }
+order: 9000
