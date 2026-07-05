@@ -136,6 +136,7 @@ export class MedicoService{
             throw new NotFoundError("Especialidad no encontrada");
         }
 
+        especialidadAModificar.duracionTurnoEnMins = especialidadModificada.duracionTurnoEnMins ?? especialidadAModificar.duracionTurnoEnMins;
         especialidadAModificar.costoConsulta = especialidadModificada.costoConsulta ?? especialidadAModificar.costoConsulta;
 
         await this.medicoRepo.updateEspecialidades(medicoId, medico.especialidades);
@@ -182,6 +183,7 @@ export class MedicoService{
             throw new NotFoundError("Practica no encontrada");
         }
 
+        practicaAModificar.duracionTurnoEnMins = practicaModificada.duracionTurnoEnMins ?? practicaAModificar.duracionTurnoEnMins;
         practicaAModificar.costo = practicaModificada.costo ?? practicaAModificar.costo;
 
         await this.medicoRepo.updatePracticas(medicoId, medico.practicas);

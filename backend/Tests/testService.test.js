@@ -1,7 +1,7 @@
 // Tests/testTurno.test.js
 import { jest } from "@jest/globals";
-import { TurnoService } from "../src/Services/turnoService.js";
 import { EstadoTurno } from "../src/Models/turno.js";
+import { TurnoService } from "../src/Services/turnoService.js";
 
 describe("TurnoService", () => {
 

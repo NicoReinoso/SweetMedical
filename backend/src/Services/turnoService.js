@@ -1,6 +1,4 @@
 import { EstadoTurno, Turno } from "../Models/turno.js"
-import { MedicoService } from "./medicoService.js"
-import { PacienteService } from "./pacienteService.js"
 import { TurnoRepo } from "../Repositorio/turnoBd.js"
 import {
     BadRequestError,
@@ -12,14 +10,14 @@ import { NotificacionService } from "./notificacionService.js"
 export class TurnoService {
     constructor({
         turnoRepo,
-        medicoService,
+        medicoRepo,
         notificacionService,
-        pacienteService
+        pacienteRepo
     } = {}) {
         this.turnoRepo = turnoRepo;
-        this.medicoService = medicoService;
+        this.medicoRepo = medicoRepo;
         this.notificacionService = notificacionService;
-        this.pacienteService = pacienteService;
+        this.pacienteRepo = pacienteRepo;
     }
 
     async obtenerTurno(id) {
@@ -91,7 +89,7 @@ async buscarDisponibles(filtros) {
 
     if (pacienteId) {
 
-        paciente = await this.pacienteService.obtenerPaciente(pacienteId);
+        paciente = await this.pacienteRepo.findById(pacienteId);
 
         if (!paciente) {
             throw new NotFoundError("Paciente no encontrado");
@@ -102,7 +100,7 @@ async buscarDisponibles(filtros) {
     // MEDICOS
     // =========================
 
-    let medicos = await this.medicoService.obtenerTodos();
+    let medicos = await this.medicoRepo.findAll();
 
     if (medicoNombre) {
         const busqueda = normalizarTexto(medicoNombre);
@@ -312,7 +310,7 @@ async buscarDisponibles(filtros) {
         
     
     async crearTurno(data) {
-        const medico = await this.medicoService.obtenerMedico(data.medicoId);
+        const medico = await this.medicoRepo.findById(data.medicoId);
 
         if (!medico) {
             throw new NotFoundError("Médico no encontrado");
@@ -338,7 +336,7 @@ async buscarDisponibles(filtros) {
         const sede = data.sede;
         medico.validarSedeSolicitada(sede);
 
-        const pacienteSolicitante = await this.pacienteService.obtenerPaciente(data.pacienteId);
+        const pacienteSolicitante = await this.pacienteRepo.findById(data.pacienteId);
         if (!pacienteSolicitante) {
             throw new NotFoundError("Paciente no encontrado");
         }
@@ -380,7 +378,7 @@ async buscarDisponibles(filtros) {
 
         const turnoGuardado = await this.turnoRepo.createTurno(nuevoTurno);
 
-        await this.medicoService.agregarTurno(medico._id, turnoGuardado._id);
+        await this.medicoRepo.agregarTurnoSolicitado(medico._id, turnoGuardado._id);
 
         await this.notificacionService.crear(nuevoTurno.medicoId, nuevoTurno.pacienteId, "Nuevo turno solicitado");
 
@@ -404,7 +402,7 @@ async buscarDisponibles(filtros) {
         validaCancelable(turno);
         validaAnticipacion(turno.fechaHora);
 
-        const medico = await this.medicoService.obtenerMedico(turno.medicoId);
+        const medico = await this.medicoRepo.findById(turno.medicoId);
         if (!medico) {
             throw new NotFoundError("Medico no encontrado (por qué existe un turno con el id de un medico inexistente?!?!)");
         }
@@ -419,7 +417,7 @@ async buscarDisponibles(filtros) {
         // se remueve el turno cancelado de la lista de turnos solicitados/aceptados del medico
         medico.removerTurno(id);
 
-        await this.medicoService.actualizarMedico(medico.id, medico);
+        await this.medicoRepo.updateMedico(medico.id, medico);
 
         await this.notificacionService.crear(turno.pacienteId, turno.medicoId, "Su turno fue cancelado");
 
@@ -439,7 +437,7 @@ async buscarDisponibles(filtros) {
             throw new ConflictError("No se puede realizar un turno cancelado");
         }
 
-        const medico = await this.medicoService.obtenerMedico(turno.medicoId);
+        const medico = await this.medicoRepo.findById(turno.medicoId);
         if (!medico) {
             throw new NotFoundError("Medico no encontrado (por qué existe un turno con el id de un medico inexistente?!?!)");
         }
@@ -453,7 +451,7 @@ async buscarDisponibles(filtros) {
 
         // se remueve el turno finalizado de la lista de turnos solicitados/aceptados del medico
         medico.removerTurno(id);
-        await this.medicoService.actualizarMedico(medico.id, medico);
+        await this.medicoRepo.updateMedico(medico.id, medico);
 
         return turno;
     }
@@ -517,7 +515,7 @@ async buscarDisponibles(filtros) {
         validaAnticipacion(turno.fechaHora);
 
         // Validar disponibilidad del médico en el nuevo horario
-        const medico = await this.medicoService.obtenerMedico(turno.medicoId);
+        const medico = await this.medicoRepo.findById(turno.medicoId);
         const fecha = new Date(nuevaFechaHora);
         const dia = obtenerDiaSemana(fecha);
         const hora = obtenerHora(fecha);
@@ -570,8 +568,8 @@ const obtenerDiaSemana = (fecha) => {
 };
 
 const obtenerHora = (fecha) => {
-    const hora = fecha.getUTCHours(); // "HH:MM"
-    const minutos = fecha.getUTCMinutes();
+    const hora = fecha.getHours(); // "HH:MM"
+    const minutos = fecha.getMinutes();
     return `${String(hora).padStart(2, '0')}:${String(minutos).padStart(2, '0')}`;
 };
 
