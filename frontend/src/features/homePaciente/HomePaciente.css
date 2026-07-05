@@ -4,7 +4,7 @@
   display: flex;
   align-items: center;
   overflow: hidden;
-  background-image: url('C:\Users\User\Repositorios GitHub\TP Desarrollo\2026-1c-backend-grupo-03\client\src\assests\images\online-marketing-hIgeoQjS_iE-unsplash.jpg');
+  background-image: url('../../assests/images/online-marketing-hIgeoQjS_iE-unsplash.jpg');
   background-size: contain;
   background-position: center; 
   width: 100%; 
