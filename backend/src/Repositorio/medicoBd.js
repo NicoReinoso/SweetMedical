@@ -39,6 +39,10 @@ export class MedicoRepo{
         return await this.model.findById(id);
     }
 
+    async findByUsuario(usuario) {
+        return await this.model.findOne({usuario});
+    }
+
     async findAll() {
         return await this.model.find({});
     }

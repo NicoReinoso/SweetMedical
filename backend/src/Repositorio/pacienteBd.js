@@ -14,6 +14,10 @@ export class PacienteRepo {
         return await this.model.findById(id);
     }
 
+    async findByUsuario(usuario) {
+        return await this.model.findOne({usuario});
+    }
+
     async updatePaciente(id, paciente) {
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return null;

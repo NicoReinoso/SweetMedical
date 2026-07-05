@@ -1,6 +1,7 @@
 import express from "express";
 import { turnoController } from "../container.js";
 import { validarTurno, validarCancelacion, validarReprogramacion  } from "../middlewares/validarTurno.js";
+import { verificarToken } from "../middlewares/auth.js";
 
 
 const router = express.Router();
@@ -150,7 +151,7 @@ const router = express.Router();
  *       500:
  *         description: Error interno del servidor.
  */
-router.get("/disponibles", turnoController.buscarDisponibles.bind(turnoController));
+router.get("/disponibles", verificarToken, turnoController.buscarDisponibles.bind(turnoController));
 
 /**
  * @swagger
@@ -172,7 +173,7 @@ router.get("/disponibles", turnoController.buscarDisponibles.bind(turnoControlle
  *       404:
  *         description: Turno no encontrado
  */
-router.get('/:id', turnoController.getTurno.bind(turnoController));
+router.get('/:id', verificarToken, turnoController.getTurno.bind(turnoController));
 
 
 /**
@@ -198,7 +199,7 @@ router.get('/:id', turnoController.getTurno.bind(turnoController));
  *       422:
  *         description: Campo inexistente o faltante en body
  */
-router.post('/', validarTurno, turnoController.reservarTurno.bind(turnoController));
+router.post('/', validarTurno, verificarToken, turnoController.reservarTurno.bind(turnoController));
 
 /**
  * @swagger
@@ -239,7 +240,7 @@ router.post('/', validarTurno, turnoController.reservarTurno.bind(turnoControlle
  *       422:
  *         description: Campo inexistente o faltante en body
  */
-router.patch('/:id/fecha', validarReprogramacion, turnoController.reprogramarTurno.bind(turnoController));
+router.patch('/:id/fecha', validarReprogramacion, verificarToken, turnoController.reprogramarTurno.bind(turnoController));
 
 /**
  * @swagger
@@ -279,7 +280,7 @@ router.patch('/:id/fecha', validarReprogramacion, turnoController.reprogramarTur
  *       422:
  *         description: Campo inexistente o faltante en body
  */
-router.delete('/:id', validarCancelacion, turnoController.cancelarTurno.bind(turnoController));
+router.delete('/:id', validarCancelacion, verificarToken, turnoController.cancelarTurno.bind(turnoController));
 
 /**
  * @swagger
@@ -303,7 +304,7 @@ router.delete('/:id', validarCancelacion, turnoController.cancelarTurno.bind(tur
  *       409:
  *         description: El turno ya está cancelado o realizado
  */
-router.patch('/:id/estado', turnoController.realizarTurno.bind(turnoController));
+router.patch('/:id/estado', verificarToken, turnoController.realizarTurno.bind(turnoController));
 
 /**
  * @swagger
@@ -347,6 +348,6 @@ router.patch('/:id/estado', turnoController.realizarTurno.bind(turnoController))
  *         description: El turno ya fue finalizado
  */
 
-router.patch('/:id/modificacion-medico', turnoController.modificarTurno.bind(turnoController));
+router.patch('/:id/modificacion-medico', verificarToken, turnoController.modificarTurno.bind(turnoController));
 
 export default router

@@ -11,6 +11,7 @@ import Practica from "./practica.js"
 
 export class Medico {
     usuario;
+    password;
     matricula;
     nombre;
     especialidades;

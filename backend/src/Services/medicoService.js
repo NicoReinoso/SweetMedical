@@ -34,6 +34,10 @@ export class MedicoService{
         return await this.medicoRepo.findById(medicoId);
     };
 
+    async obtenerPorUsuario(usuario) {
+        return await this.medicoRepo.findByUsuario(usuario);
+    }
+
     async obtenerTodos() {
         return await this.medicoRepo.findAll();
     };
