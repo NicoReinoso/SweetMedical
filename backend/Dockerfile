@@ -13,7 +13,7 @@ FROM base AS development
 
 EXPOSE 3001
 
-CMD ["npm", "start"]
+CMD ["npm", "run", "dev"]
 
 # ---------- Producción ----------
 FROM base AS production
