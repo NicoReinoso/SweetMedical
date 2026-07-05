@@ -26,7 +26,9 @@ function PerfilMedico() {
   return (
     <div className="container py-4">
 
-      <h1>Mi Perfil</h1>
+      <div className="page-header">
+        <h1>Mi Perfil</h1>
+      </div>
 
       <Card className="shadow-sm mt-3">
 
@@ -80,7 +82,7 @@ function PerfilMedico() {
           <div className="mb-3">
             {medico.practicas.map((p, index) => (
               <Badge
-                bg="success"
+                bg="primary"
                 className="me-2 mb-2"
                 key={index}
               >
@@ -90,7 +92,7 @@ function PerfilMedico() {
           </div>
 
           <Button
-            variant="outline-success"
+            variant="outline-primary"
             size="sm"
             className="mb-4"
           >
@@ -108,7 +110,7 @@ function PerfilMedico() {
           </ListGroup>
 
           <Button
-            variant="outline-warning"
+            variant="outline-primary"
             size="sm"
             className="mb-4"
           >
@@ -125,7 +127,7 @@ function PerfilMedico() {
           </Button>
 
           <Button
-            variant="outline-secondary"
+            variant="secondary"
           >
             Cambiar contraseña
           </Button>

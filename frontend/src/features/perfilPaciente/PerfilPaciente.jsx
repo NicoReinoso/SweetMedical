@@ -16,7 +16,9 @@ function PerfilPaciente() {
   return (
     <div className="container py-4">
 
-      <h1>Mi Perfil</h1>
+      <div className="page-header">
+        <h1>Mi Perfil</h1>
+      </div>
 
       <Card className="shadow-sm mt-3">
 
@@ -68,7 +70,7 @@ function PerfilPaciente() {
             </Button>
 
             <Button
-              variant="outline-secondary"
+              variant="secondary"
             >
               Cambiar contraseña
             </Button>

@@ -70,8 +70,8 @@ function Notificaciones({ rol }) {
             </div>
 
             {!n.leida && (
-              <Button
-                variant="outline-primary"
+            <Button
+                variant="primary"
                 size="sm"
                 className="mt-3"
                 onClick={() => marcarComoLeida(n._id)}

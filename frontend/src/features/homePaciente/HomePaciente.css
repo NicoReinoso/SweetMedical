@@ -26,6 +26,7 @@
 }
 
 .hero-content {
+  color: #2A65D9;
   position: relative;
   z-index: 1;
   padding: 3rem 3.5rem;
@@ -40,7 +41,7 @@
 
 .btn-buscar {
   background: #ffffff;
-  color: #c0392b;
+  color: #2A65D9;
   padding: 13px 26px;
   border: none;
   gap: 16px;

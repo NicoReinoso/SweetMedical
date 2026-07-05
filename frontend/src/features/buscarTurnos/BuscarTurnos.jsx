@@ -187,7 +187,7 @@ function BuscarTurnos() {
 
   return (
     <div className="container py-4" id="main-content">
-      <div className="buscar-header">
+      <div className="page-header">
         <h1>Buscar Turnos</h1>
         <p className="text-muted mb-0">
           Encontrá el turno que mejor se adapte a tus necesidades. Filtrá por

@@ -21,9 +21,13 @@ function MisTurnosPaciente() {
   ];
 
   return (
-    <div className="container py-4">
-
-      <h1>Mis Turnos</h1>
+    <div className="container py-4" id="main-content">
+      <div className="page-header">
+        <h1>Mis Turnos</h1>
+        <p className="text-muted mb-0">
+          Consultá y gestioná los turnos que reservaste.
+        </p>
+      </div>
 
       <Row className="g-3 mt-2">
 
@@ -35,11 +39,23 @@ function MisTurnosPaciente() {
 
               <Card.Body>
 
-                <Card.Title>
-                  {turno.medico}
-                </Card.Title>
+                <div className="d-flex justify-content-between align-items-center">
+                  <Card.Title className="mb-0">
+                    {turno.medico}
+                  </Card.Title>
 
-                <Card.Text>
+                  <Badge
+                    bg={
+                      turno.estado === "CONFIRMADO"
+                        ? "success"
+                        : "warning"
+                    }
+                  >
+                    {turno.estado}
+                  </Badge>
+                </div>
+
+                <Card.Text className="mt-2">
 
                   <strong>Especialidad:</strong>{" "}
                   {turno.especialidad}
@@ -51,20 +67,10 @@ function MisTurnosPaciente() {
 
                 </Card.Text>
 
-                <Badge
-                  bg={
-                    turno.estado === "CONFIRMADO"
-                      ? "success"
-                      : "warning"
-                  }
-                >
-                  {turno.estado}
-                </Badge>
-
                 <div className="mt-3">
 
                   <Button
-                    variant="outline-primary"
+                    variant="secondary"
                     size="sm"
                     className="me-2"
                   >
@@ -72,7 +78,7 @@ function MisTurnosPaciente() {
                   </Button>
 
                   <Button
-                    variant="outline-danger"
+                    variant="danger"
                     size="sm"
                   >
                     Cancelar
