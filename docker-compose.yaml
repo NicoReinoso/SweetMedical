@@ -18,7 +18,7 @@ services:
       target: development
 
     env_file:
-      - ./backend/.env
+      - ./backend/.env.docker
 
     ports:
       - "3001:3001"
