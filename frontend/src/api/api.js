@@ -17,8 +17,7 @@ api.interceptors.response.use(null, (error) => {
     localStorage.removeItem('token');
     window.location.href = '/login';
   }
-  return 
-Promise.reject(error);
+  return Promise.reject(error);
 });
 
 export default api;
