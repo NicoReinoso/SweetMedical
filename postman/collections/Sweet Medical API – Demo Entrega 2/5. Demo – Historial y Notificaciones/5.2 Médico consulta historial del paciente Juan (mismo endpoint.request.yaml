@@ -1,0 +1,6 @@
+$kind: http-request
+name: 5.2 Médico consulta historial del paciente Juan (mismo endpoint)
+description: El médico usa el mismo endpoint para consultar el historial de un paciente antes de la consulta.
+url: "{{baseUrl}}/pacientes/{{pacienteId1}}/historial"
+method: GET
+order: 2000

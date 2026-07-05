@@ -1,0 +1,15 @@
+$kind: http-request
+name: 2.2 Agregar disponibilidad MIERCOLES 14:00–18:00 al Dr. García
+url: "{{baseUrl}}/medicos/{{medicoId1}}/disponibilidad"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "diaSemana": "MIERCOLES",
+      "horaDesde": "14:00",
+      "horaHasta": "18:00"
+    }
+order: 2000

@@ -1,0 +1,78 @@
+$kind: collection
+name: Sweet Medical API – Demo Entrega 2
+description: |-
+  ## Setup previo requerido
+
+  Antes de ejecutar la colección, insertar en MongoDB los siguientes documentos.
+
+  ### 1. Médicos
+  ```js
+  db.medicos.insertMany([
+    { usuario: "rgarcia", matricula: 12345, nombre: "Dr. Ramón García",
+      especialidades: [], practicas: [], sedes: ["Medrano"],
+      disponibilidad: [], turnosSolicitados: [], turnosAceptados: [] },
+    { usuario: "lsanchez", matricula: 67890, nombre: "Dra. Laura Sánchez",
+      especialidades: [], practicas: [], sedes: ["Palermo"],
+      disponibilidad: [], turnosSolicitados: [], turnosAceptados: [] }
+  ])
+  ```
+
+  ### 2. Pacientes
+  ```js
+  db.pacientes.insertMany([
+    { usuario: "jperez", nombre: "Juan Pérez", obraSocial: "OSDE", plan: "310", notificaciones: [] },
+    { usuario: "mgarcia", nombre: "María García", obraSocial: "PAMI", plan: "Básico", notificaciones: [] }
+  ])
+  ```
+
+  ### 3. Copiar IDs en variables de colección
+  ```js
+  db.medicos.find({}, { nombre: 1 })
+  db.pacientes.find({}, { nombre: 1 })
+  ```
+  Copiar los `_id` en las variables: `medicoId1`, `medicoId2`, `pacienteId1`, `pacienteId2`.
+
+  ### 4. Coberturas (ejecutar DESPUÉS de los pasos 1.1–1.3 de la demo)
+  Tras agregar especialidades y prácticas via API, insertar coberturas directamente en MongoDB:
+  ```js
+  // Cardiología cubierta al 80% para OSDE Plan 310
+  db.medicos.updateOne(
+    { usuario: "rgarcia", "especialidades.nombre": "Cardiología" },
+    { $push: { "especialidades.$.coberturas": { obraSocial: "OSDE", plan: "310", porcentaje: 80 } } }
+  )
+  // Cardiología cubierta al 100% para PAMI Básico
+  db.medicos.updateOne(
+    { usuario: "rgarcia", "especialidades.nombre": "Cardiología" },
+    { $push: { "especialidades.$.coberturas": { obraSocial: "PAMI", plan: "Básico", porcentaje: 100 } } }
+  )
+  // Ecocardiograma cubierto al 50% para OSDE Plan 310
+  db.medicos.updateOne(
+    { usuario: "rgarcia", "practicas.nombre": "Ecocardiograma" },
+    { $push: { "practicas.$.coberturas": { obraSocial: "OSDE", plan: "310", porcentaje: 50 } } }
+  )
+  // Neurología no tiene cobertura → los pacientes pagan el precio completo
+  ```
+
+  ---
+
+  ## Escenario
+  - **Dr. Ramón García** — sede Medrano — Cardiología ($5000→$5500, especialidad) + Ecocardiograma ($8000, práctica)
+  - **Dra. Laura Sánchez** — sede Palermo — Neurología ($6000, especialidad)
+  - **Juan Pérez** — OSDE Plan 310 → Cardiología 80% cubierta → paga **$1100** | Ecocardiograma 50% → paga **$4000**
+  - **María García** — PAMI Plan Básico → Cardiología 100% cubierta → paga **$0** | Neurología sin cobertura → paga **$6000**
+
+  ## Timezone
+  El servidor se asume corriendo en UTC-3 (Argentina). Las fechas ISO están en UTC:
+  - `2026-07-06T11:00:00.000Z` = Lunes 06-Jul-2026 **08:00** hora Argentina
+  - `2026-07-06T11:30:00.000Z` = **08:30** Argentina
+  - `2026-07-06T12:00:00.000Z` = **09:00** Argentina
+variables:
+  baseUrl: http://localhost:3000
+  medicoId1: REEMPLAZAR_CON_ID_MEDICO_1
+  medicoId2: REEMPLAZAR_CON_ID_MEDICO_2
+  pacienteId1: REEMPLAZAR_CON_ID_PACIENTE_1
+  pacienteId2: REEMPLAZAR_CON_ID_PACIENTE_2
+  turnoId1: ""
+  turnoId2: ""
+  turnoId3: ""
+  notificacionId: ""

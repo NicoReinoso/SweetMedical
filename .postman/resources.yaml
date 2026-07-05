@@ -1,0 +1,14 @@
+collections:
+  - path: postman/collections/Swift Medical
+workspace:
+  id: 56e6389b-c4ad-4538-8027-05b0766e393c
+
+# Each entry here maps a local resource to one or more corresponding objects in Postman Cloud
+
+cloudResources:
+  collections:
+    ..\postman\collections\Sweet Medical API – Demo Entrega 2: 6982046f-9af9-4b89-ad52-1186d14bfcbf
+
+localResources:
+  docs:
+    - ..\README.md

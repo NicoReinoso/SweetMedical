@@ -1,0 +1,24 @@
+$kind: http-request
+name: Crear necesidad recurrente
+url: http://localhost:8080/donaciones-service/necesidades-materiales
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"descripcion\": \"Arroz\",\r
+
+    \    \"idEntidadSolicitante\": 1,\r
+
+    \    \"tipoNecesidad\": \"RECURRENTE\",\r
+
+    \    \"cantidadNecesaria\": 100,\r
+
+    \    \"subcategoriaId\": 1,\r
+
+    \    \"periodo\": \"P1M\",\r
+
+    \    \"fechaInicioPeriodo\": \"2026-05-11T08:00:00\"\r
+
+    }"
+order: 3856011051254237

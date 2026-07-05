@@ -1,0 +1,22 @@
+$kind: http-request
+name: Reservar un turno
+url: http://localhost:3000/turnos
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"pacienteId\": \"pac-1\",\r
+
+    \  \"medicoId\": \"med-1\",\r
+
+    \  \"fechaHora\": \"2026-05-11T08:00:00\",\r
+
+    \  \"sede\": \"Medrano\",\r
+
+    \  \"practica\": \"Cardio\",\r
+
+    \  \"costo\": 5000\r
+
+    }"
+order: 4494952435718294

@@ -1,0 +1,14 @@
+$kind: http-request
+description: "Modificación de servicio: sube el costo de Cardiología a $5500. Los turnos ya reservados no cambian; impacta solo en nuevos turnos."
+url: "{{baseUrl}}/medicos/{{medicoId1}}/especialidad"
+method: PATCH
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "nombre": "Cardiología",
+      "costoConsulta": 5500
+    }
+order: 5000

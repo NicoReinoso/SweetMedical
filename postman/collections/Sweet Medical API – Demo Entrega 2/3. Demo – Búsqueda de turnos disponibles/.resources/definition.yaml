@@ -1,0 +1,3 @@
+$kind: collection
+description: Búsqueda con filtros, cobertura según obra social, paginación y ordenamiento.
+order: 3000

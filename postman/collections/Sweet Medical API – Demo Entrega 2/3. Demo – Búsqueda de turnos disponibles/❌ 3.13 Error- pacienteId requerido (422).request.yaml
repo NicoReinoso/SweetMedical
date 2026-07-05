@@ -1,0 +1,10 @@
+$kind: http-request
+name: "❌ 3.13 Error: pacienteId requerido (422)"
+description: pacienteId omitido. El paciente no es encontrado pero la búsqueda igual funciona sin cobertura calculada. Si el sistema lo requiere como obligatorio retorna 404.
+url: "{{baseUrl}}/turnos/disponibles?especialidad=Cardiología&fechaDesde=2026-07-01T03:00:00.000Z&fechaHasta=2026-07-31T23:59:59.000Z"
+method: GET
+queryParams:
+  especialidad: Cardiología
+  fechaDesde: 2026-07-01T03:00:00.000Z
+  fechaHasta: 2026-07-31T23:59:59.000Z
+order: 13000

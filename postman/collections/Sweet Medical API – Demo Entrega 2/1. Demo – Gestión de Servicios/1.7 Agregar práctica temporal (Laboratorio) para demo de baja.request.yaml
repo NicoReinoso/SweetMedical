@@ -1,0 +1,13 @@
+$kind: http-request
+url: "{{baseUrl}}/medicos/{{medicoId1}}/practica"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "nombre": "Laboratorio",
+      "costo": 2000
+    }
+order: 8000

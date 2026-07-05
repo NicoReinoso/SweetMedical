@@ -1,0 +1,13 @@
+$kind: http-request
+description: El médico cambia el tipo de consulta del turno. Se envía notificación a María para que pueda aceptar, reprogramar o cancelar según su criterio.
+url: "{{baseUrl}}/turnos/{{turnoId3}}/modificacion-medico"
+method: PATCH
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "practica": "Ecocardiograma"
+    }
+order: 6000

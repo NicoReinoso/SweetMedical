@@ -1,0 +1,6 @@
+$kind: http-request
+name: "❌ 4.13 Error: realizar turno ya realizado (409)"
+description: Turno 1 ya está REALIZADO. Debe retornar 409 ConflictError.
+url: "{{baseUrl}}/turnos/{{turnoId1}}/realizar"
+method: PATCH
+order: 13000

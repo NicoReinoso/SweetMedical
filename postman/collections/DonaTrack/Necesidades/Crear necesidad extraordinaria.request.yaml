@@ -1,0 +1,19 @@
+$kind: http-request
+url: http://localhost:8080/donaciones-service/necesidades-materiales
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"descripcion\": \"Arroz\",\r
+
+    \    \"idEntidadSolicitante\": 1,\r
+
+    \    \"tipoNecesidad\": \"EXTRAORDINARIA\",\r
+
+    \    \"cantidadNecesaria\": 100,\r
+
+    \    \"subcategoriaId\": 1\r
+
+    }"
+order: 3377023334703398

@@ -1,0 +1,13 @@
+$kind: http-request
+name: 3.1 Búsqueda básica – Juan (OSDE) / Cardiología / Julio 2026
+description: |-
+  Cobertura OSDE 80% → costoBase $5500 → costoEstimado = $1100. estadoCobertura: PARCIAL.
+  Slots cada 30 min dentro del bloque LUNES 08:00–12:00 y MIERCOLES 14:00–18:00.
+url: "{{baseUrl}}/turnos/disponibles?pacienteId={{pacienteId1}}&especialidad=Cardiología&fechaDesde=2026-07-01T03:00:00.000Z&fechaHasta=2026-07-31T23:59:59.000Z"
+method: GET
+queryParams:
+  pacienteId: "{{pacienteId1}}"
+  especialidad: Cardiología
+  fechaDesde: 2026-07-01T03:00:00.000Z
+  fechaHasta: 2026-07-31T23:59:59.000Z
+order: 1000

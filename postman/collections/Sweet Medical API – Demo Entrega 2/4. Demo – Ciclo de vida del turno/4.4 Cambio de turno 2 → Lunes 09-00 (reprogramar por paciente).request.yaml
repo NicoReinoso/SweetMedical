@@ -1,0 +1,14 @@
+$kind: http-request
+name: 4.4 Cambio de turno 2 → Lunes 09:00 (reprogramar por paciente)
+description: El paciente cambia su turno al slot 09:00 UTC-3 del mismo lunes. Estado pasa a REPROGRAMADO. El slot 08:30 queda libre.
+url: "{{baseUrl}}/turnos/{{turnoId2}}/reprogramar"
+method: PATCH
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "fechaHora": "2026-07-06T12:00:00.000Z"
+    }
+order: 4000

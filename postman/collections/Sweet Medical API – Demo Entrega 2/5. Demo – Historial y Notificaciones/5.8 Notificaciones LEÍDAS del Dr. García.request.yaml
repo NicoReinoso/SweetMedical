@@ -1,0 +1,5 @@
+$kind: http-request
+description: Debe aparecer la notificación marcada como leída en el paso anterior.
+url: "{{baseUrl}}/notificaciones/{{medicoId1}}/leidas"
+method: GET
+order: 8000

@@ -1,0 +1,11 @@
+$kind: http-request
+url: "{{baseUrl}}/turnos/disponibles?pacienteId={{pacienteId1}}&especialidad=Cardiología&fechaDesde=2026-07-01T03:00:00.000Z&fechaHasta=2026-07-31T23:59:59.000Z&sortBy=fechaHora&order=desc"
+method: GET
+queryParams:
+  pacienteId: "{{pacienteId1}}"
+  especialidad: Cardiología
+  fechaDesde: 2026-07-01T03:00:00.000Z
+  fechaHasta: 2026-07-31T23:59:59.000Z
+  sortBy: fechaHora
+  order: desc
+order: 12000

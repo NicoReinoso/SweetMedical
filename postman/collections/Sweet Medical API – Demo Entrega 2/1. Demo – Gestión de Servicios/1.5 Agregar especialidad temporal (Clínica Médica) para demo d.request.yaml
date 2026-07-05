@@ -1,0 +1,14 @@
+$kind: http-request
+name: 1.5 Agregar especialidad temporal (Clínica Médica) para demo de baja
+url: "{{baseUrl}}/medicos/{{medicoId1}}/especialidad"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "nombre": "Clínica Médica",
+      "costo": 3500
+    }
+order: 6000
