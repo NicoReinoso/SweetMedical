@@ -4,12 +4,21 @@ import { usePreseleccion } from "../context/PreseleccionContext";
 function TurnoCard({ turno, onAgregado }) {
   const { agregarTurno, turnosPreseleccionados } = usePreseleccion();
 
-  const yaPreseleccionado = turnosPreseleccionados.some(
-    (t) =>
+  const turnoYaPreseleccionado = turnosPreseleccionados.some(
+  (t) =>
+    t.medicoId === turno.medicoId &&
+    t.fechaHora === turno.fechaHora &&
+    t.consultaSolicitada?.nombre === turno.consultaSolicitada?.nombre
+);
+
+const horarioOcupado = turnosPreseleccionados.some(
+  (t) =>
+    t.fechaHora === turno.fechaHora &&
+    !(
       t.medicoId === turno.medicoId &&
-      t.fechaHora === turno.fechaHora &&
       t.consultaSolicitada?.nombre === turno.consultaSolicitada?.nombre
-  );
+    )
+);
 
   const fecha = new Date(turno.fechaHora).toLocaleString("es-AR", {
     dateStyle: "medium",
@@ -37,20 +46,29 @@ function TurnoCard({ turno, onAgregado }) {
             : `$${turno.costoEstimado ?? "-"} (${turno.porcentajeCobertura}% cubierto)`}
         </Card.Text>
         <Button
-          variant={yaPreseleccionado ? "secondary" : "primary"}
-          disabled={yaPreseleccionado}
+          variant={turnoYaPreseleccionado || horarioOcupado ? "secondary" : "primary"}
+          disabled={turnoYaPreseleccionado || horarioOcupado}
           onClick={() => {
-            agregarTurno(turno);
-            onAgregado();
+            const agregado = agregarTurno(turno);
+
+            if (agregado) {
+              onAgregado("Turno agregado a la preselección", "success");
+            }
           }}
           className="mt-auto"
           aria-label={
-            yaPreseleccionado
-              ? `Turno con ${turno.medicoNombre} el ${fecha} ya preseleccionado`
+          turnoYaPreseleccionado
+            ? `Turno con ${turno.medicoNombre} el ${fecha} ya preseleccionado`
+            : horarioOcupado
+              ? `Ya tenés otro turno seleccionado para el ${fecha}`
               : `Agregar turno con ${turno.medicoNombre} el ${fecha} a la preselección`
-          }
+        }
         >
-          {yaPreseleccionado ? "Ya preseleccionado" : "Agregar a preselección"}
+          {turnoYaPreseleccionado
+            ? "Turno ya preseleccionado"
+            : horarioOcupado
+              ? "Horario ocupado"
+              : "Agregar a preselección"}
         </Button>
       </Card.Body>
     </Card>

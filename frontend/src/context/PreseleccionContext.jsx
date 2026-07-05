@@ -21,18 +21,18 @@ export function PreseleccionProvider({ children }) {
   }, [turnosPreseleccionados]);
 
   const agregarTurno = (turno) => {
-    setTurnosPreseleccionados((prev) => {
-      const yaExiste = prev.some(
-        (t) =>
-          t.medicoId === turno.medicoId &&
-          t.fechaHora === turno.fechaHora &&
-          t.consultaSolicitada?.nombre === turno.consultaSolicitada?.nombre
-      );
-      if (yaExiste) return prev;
-      return [...prev, turno];
-    });
-  };
+    const yaExiste = turnosPreseleccionados.some(
+      (t) => t.fechaHora === turno.fechaHora
+    );
 
+    if (yaExiste) {
+      return false;
+    }
+
+    setTurnosPreseleccionados((prev) => [...prev, turno]);
+    return true;
+  };
+  
   const quitarTurno = (turno) => {
     setTurnosPreseleccionados((prev) =>
       prev.filter(

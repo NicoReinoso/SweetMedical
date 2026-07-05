@@ -201,6 +201,8 @@ router.get('/:id', verificarToken, turnoController.getTurno.bind(turnoController
  */
 router.post('/', validarTurno, verificarToken, turnoController.reservarTurno.bind(turnoController));
 
+router.post('/lote', verificarToken, turnoController.reservarMultiples.bind(turnoController));
+
 /**
  * @swagger
  * /turnos/{id}/fecha:

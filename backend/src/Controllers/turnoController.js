@@ -40,6 +40,23 @@ export class TurnoController {
         }
     };
 
+    async reservarMultiples(req, res, next) {
+    try {
+
+        const pacienteId = req.user.id;
+
+        const turnos = await this.turnoService.crearMultiplesTurnos(
+            req.body.turnos,
+            pacienteId
+        );
+
+        res.status(201).json(turnos);
+
+    } catch (error) {
+        next(error);
+    }
+}
+
     async cancelarTurno(req, res, next) {
         try {
             const { id } = req.params;
