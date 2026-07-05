@@ -10,7 +10,7 @@ function HomePaciente() {
     <div className="hero">
       <div className="hero-overlay" />
       <div className="hero-content">
-        <div className="hero-card">
+        <div className="page-header">
           <h1>Hola, {nombre} 👋</h1>
           <p>¿Qué necesitás hoy?</p>
           <div className="hero-actions">

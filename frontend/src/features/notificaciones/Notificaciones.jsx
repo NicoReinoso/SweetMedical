@@ -29,7 +29,9 @@ function Notificaciones({ rol }) {
 
   return (
     <div className="container py-4">
-      <h1>Notificaciones</h1>
+      <div className="page-header">
+        <h1>Notificaciones</h1>
+      </div>
 
       {notificaciones.map((n) => (
        <Card
@@ -53,7 +55,7 @@ function Notificaciones({ rol }) {
 
             {!n.leida && (
             <Button
-                variant="outline-primary"
+                variant="primary"
                 size="sm"
                 className="mt-3"
                 onClick={() => marcarComoLeida(n.id)}

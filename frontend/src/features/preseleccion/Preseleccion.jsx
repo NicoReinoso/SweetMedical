@@ -44,11 +44,12 @@ function Preseleccion() {
 
   return (
     <div className="container py-4" id="main-content">
-      <div className="preseleccionados-header">
+      <div className="page-header">
         <h1>Turnos Preseleccionados</h1>
+        <h5>Turnos seleccionados: {turnosPreseleccionados.length}</h5>
+        <p>Total estimado: ${total}</p>
       </div>
-      <h5>Turnos seleccionados: {turnosPreseleccionados.length}</h5>
-      <p>Total estimado: ${total}</p>
+      
 
       {turnosPreseleccionados.length === 0 ? (
         <p>No hay turnos seleccionados.</p>
