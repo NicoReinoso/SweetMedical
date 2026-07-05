@@ -11,6 +11,8 @@ COPY . .
 # ---------- Desarrollo ----------
 FROM base AS development
 
+RUN npm install -g nodemon
+
 EXPOSE 3001
 
 CMD ["npm", "run", "dev"]
