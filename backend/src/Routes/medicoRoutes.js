@@ -7,6 +7,8 @@ import { validarPractica } from "../middlewares/validarPractica.js";
 
 const router = express.Router();
 
+router.get('/:id/misTurnos', verificarToken, medicoController.getMisTurnos.bind(medicoController));
+
 /**
  * @swagger
  * /medicos/{id}/disponibilidad:

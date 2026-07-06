@@ -2,6 +2,7 @@ import { Card, Button, Row, Col, Badge, Modal, Form } from "react-bootstrap";
 import { useSession } from "../../context/SessionContext.jsx";
 import { useState, useEffect } from "react";
 import api from "../../api/api.js";
+import ToastNotificacion from "../../components/ToastNotificacion.jsx";
 
 function MisTurnosPaciente() {
   const [turnos, setTurnos] = useState([]);
@@ -13,6 +14,19 @@ function MisTurnosPaciente() {
   const [mostrarModalCancelar, setMostrarModalCancelar] = useState(false);
   const [turnoCancelar, setTurnoCancelar] = useState(null);
   const [motivoCancelacion, setMotivoCancelacion] = useState("");
+  const [toast, setToast] = useState({
+    show: false,
+    mensaje: "",
+    variant: "success",
+  });
+
+  const mostrarToast = (mensaje, variant = "success") => {
+    setToast({
+      show: true,
+      mensaje,
+      variant,
+    });
+  };
 
   useEffect(() => {
   if (user?.id) {
@@ -63,7 +77,9 @@ function MisTurnosPaciente() {
       cargarTurnos();
 
     } catch (err) {
-      console.error(err);
+      mostrarToast(
+      err.response?.data?.message || "No se pudo reprogramar el turno",
+      "danger");
     }
   };
 
@@ -80,7 +96,9 @@ function MisTurnosPaciente() {
       cargarTurnos();
 
     } catch (err) {
-      console.error(err);
+      mostrarToast(
+      err.response?.data?.message || "No se pudo reprogramar el turno",
+      "danger");
     }
   };
 
@@ -274,6 +292,13 @@ function MisTurnosPaciente() {
 
       </Modal.Footer>
     </Modal>
+
+    <ToastNotificacion
+      show={toast.show}
+      mensaje={toast.mensaje}
+      variant={toast.variant}
+      onClose={() => setToast((t) => ({ ...t, show: false }))}
+    />
 
     </div>
 

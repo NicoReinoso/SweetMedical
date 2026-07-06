@@ -416,6 +416,10 @@ async buscarDisponibles(filtros) {
         return await this.turnoRepo.findByPacienteSinCompletar(idPaciente);
     }
 
+    async obtenerSinCompletarMedico(idMedico){
+        return await this.turnoRepo.findByMedicoSinCompletar(idMedico);
+    }
+
     async cancelarTurnoConMotivo(id, motivo) {
         return await this.cancelarTurno(id, motivo);
     }
@@ -451,6 +455,34 @@ async buscarDisponibles(filtros) {
         await this.medicoRepo.updateMedico(medico.id, medico);
 
         await this.notificacionService.crear(turno.pacienteId, turno.medicoId, "Su turno fue cancelado");
+
+        return turno;
+    }
+
+    async confirmarTurno(id) {
+        const turno = await this.turnoRepo.findTurno(id);
+
+        if (!turno) {
+            throw new NotFoundError("Turno no encontrado");
+        }
+        if (turno.historialEstados.includes(EstadoTurno.REALIZADO)){
+            throw new ConflictError("No se puede realizar un turno realizado");
+        }
+        if (turno.historialEstados.includes(EstadoTurno.CANCELADO)){
+            throw new ConflictError("No se puede realizar un turno cancelado");
+        }
+
+        const medico = await this.medicoRepo.findById(turno.medicoId);
+        if (!medico) {
+            throw new NotFoundError("Medico no encontrado (por qué existe un turno con el id de un medico inexistente?!?!)");
+        }
+
+        // cambiar estado
+        turno.estado = EstadoTurno.CONFIRMADO;
+        turno.historialEstados.push(EstadoTurno.CONFIRMADO);
+
+        // actualizo los datos en el repo
+        await this.turnoRepo.updateTurno(id, turno);
 
         return turno;
     }
