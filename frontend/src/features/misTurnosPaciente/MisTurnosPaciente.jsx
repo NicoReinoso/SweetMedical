@@ -1,24 +1,88 @@
-import { Card, Button, Row, Col, Badge } from "react-bootstrap";
+import { Card, Button, Row, Col, Badge, Modal, Form } from "react-bootstrap";
+import { useSession } from "../../context/SessionContext.jsx";
+import { useState, useEffect } from "react";
+import api from "../../api/api.js";
 
 function MisTurnosPaciente() {
+  const [turnos, setTurnos] = useState([]);
+  const { user } = useSession();
+  const [turnoSeleccionado, setTurnoSeleccionado] = useState(null);
+  const [mostrarModal, setMostrarModal] = useState(false);
+  const [fechaSeleccionada, setFechaSeleccionada] = useState("");
+  const [opciones, setOpciones] = useState([]);
+  const [mostrarModalCancelar, setMostrarModalCancelar] = useState(false);
+  const [turnoCancelar, setTurnoCancelar] = useState(null);
+  const [motivoCancelacion, setMotivoCancelacion] = useState("");
 
-    //MOCK
-  const turnos = [
-    {
-      id: 1,
-      medico: "Dr. Ramón García",
-      especialidad: "Cardiología",
-      fecha: "2026-06-20 14:00",
-      estado: "CONFIRMADO"
-    },
-    {
-      id: 2,
-      medico: "Dra. María Gómez",
-      especialidad: "Clínica Médica",
-      fecha: "2026-06-25 10:30",
-      estado: "PENDIENTE"
+  useEffect(() => {
+  if (user?.id) {
+    cargarTurnos();
+  }
+  }, [user]);
+
+  const cargarTurnos = async () => {
+    try {
+      const { data } = await api.get(`/pacientes/${user?.id}/misTurnos`);
+      setTurnos(data);
+    } catch (err) {
+      console.error(err);
     }
-  ];
+  }
+
+  const reprogramarTurno = async (idTurno, medico, consulta) => {
+    try {
+      const fechaFutura = new Date();
+      fechaFutura.setMonth(fechaFutura.getMonth() + 1);
+
+      const query =
+        consulta.tipo === "Especialidad"
+          ? `especialidad=${consulta.nombre}`
+          : `practica=${consulta.nombre}`;
+
+      const { data } = await api.get(
+        `/turnos/disponibles?medicoNombre=${medico.nombre}&${query}&fechaHasta=${fechaFutura.toISOString()}`
+      );
+
+      setTurnoSeleccionado(idTurno);
+      setOpciones(data.resultados);
+      setMostrarModal(true);
+
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const confirmarReprogramacion = async () => {
+    try {
+      await api.patch(`/turnos/${turnoSeleccionado}/fecha`, {
+        fechaHora: fechaSeleccionada
+      });
+
+      setMostrarModal(false);
+
+      cargarTurnos();
+
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const confirmarCancelacion = async () => {
+    try {
+      await api.delete(`/turnos/${turnoCancelar}`, {
+        data: {
+          motivo: motivoCancelacion
+        }
+      });
+
+      setMostrarModalCancelar(false);
+
+      cargarTurnos();
+
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <div className="container py-4" id="main-content">
@@ -30,8 +94,17 @@ function MisTurnosPaciente() {
       </div>
 
       <Row className="g-3 mt-2">
-
-        {turnos.map((turno) => (
+        {turnos.length === 0 ? (
+        <Card className="text-center p-4">
+        <Card.Body>
+          <Card.Title>No hay turnos pendientes</Card.Title>
+          <Card.Text>
+            No tenés turnos pendientes por el momento.
+          </Card.Text>
+        </Card.Body>
+      </Card>
+      ) : (
+        turnos.map((turno) => (
 
           <Col md={6} key={turno.id}>
 
@@ -41,7 +114,7 @@ function MisTurnosPaciente() {
 
                 <div className="d-flex justify-content-between align-items-center">
                   <Card.Title className="mb-0">
-                    {turno.medico}
+                    {turno.medicoId.nombre}
                   </Card.Title>
 
                   <Badge
@@ -57,13 +130,13 @@ function MisTurnosPaciente() {
 
                 <Card.Text className="mt-2">
 
-                  <strong>Especialidad:</strong>{" "}
-                  {turno.especialidad}
+                  <strong>Consulta:</strong>{" "}
+                  {turno.consultaSolicitada.nombre}
 
                   <br />
 
                   <strong>Fecha:</strong>{" "}
-                  {turno.fecha}
+                  {new Date(turno.fechaHora).toLocaleString()}
 
                 </Card.Text>
 
@@ -73,6 +146,7 @@ function MisTurnosPaciente() {
                     variant="secondary"
                     size="sm"
                     className="me-2"
+                    onClick={() => reprogramarTurno(turno._id, turno.medicoId, turno.consultaSolicitada)}
                   >
                     Reprogramar
                   </Button>
@@ -80,6 +154,11 @@ function MisTurnosPaciente() {
                   <Button
                     variant="danger"
                     size="sm"
+                    onClick={() => {
+                      setTurnoCancelar(turno._id);
+                      setMotivoCancelacion("");
+                      setMostrarModalCancelar(true);
+                    }}
                   >
                     Cancelar
                   </Button>
@@ -92,11 +171,113 @@ function MisTurnosPaciente() {
 
           </Col>
 
-        ))}
-
+        )))}
       </Row>
+      <Modal
+
+        show={mostrarModal}
+        onHide={() => setMostrarModal(false)}
+    >
+        <Modal.Header closeButton>
+            <Modal.Title>
+                Reprogramar turno
+            </Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body>
+
+            <p>Elegí un nuevo horario:</p>
+
+            {opciones.map((opcion) => (
+
+                <div key={opcion.fechaHora}>
+
+                    <input
+                        type="radio"
+                        name="fecha"
+                        value={opcion.fechaHora}
+                        onChange={(e) =>
+                            setFechaSeleccionada(e.target.value)
+                        }
+                    />
+
+                    {" "}
+
+                    {new Date(opcion.fechaHora)
+                        .toLocaleString("es-AR")}
+
+                </div>
+
+            ))}
+
+        </Modal.Body>
+
+        <Modal.Footer>
+
+            <Button
+                variant="secondary"
+                onClick={() => setMostrarModal(false)}
+            >
+                Cancelar
+            </Button>
+
+            <Button
+                variant="primary"
+                disabled={!fechaSeleccionada}
+                onClick={confirmarReprogramacion}
+            >
+                Confirmar
+            </Button>
+
+        </Modal.Footer>
+
+    </Modal>
+
+    <Modal
+      show={mostrarModalCancelar}
+      onHide={() => setMostrarModalCancelar(false)}
+    >
+      <Modal.Header closeButton>
+        <Modal.Title>Cancelar turno</Modal.Title>
+      </Modal.Header>
+
+      <Modal.Body>
+
+        <p>Ingresá el motivo de la cancelación.</p>
+
+        <Form.Control
+          as="textarea"
+          rows={3}
+          value={motivoCancelacion}
+          onChange={(e) => setMotivoCancelacion(e.target.value)}
+          placeholder="Motivo..."
+        />
+
+      </Modal.Body>
+
+      <Modal.Footer>
+
+        <Button
+          variant="secondary"
+          onClick={() => setMostrarModalCancelar(false)}
+        >
+          Volver
+        </Button>
+
+        <Button
+          variant="danger"
+          disabled={!motivoCancelacion.trim()}
+          onClick={confirmarCancelacion}
+        >
+          Cancelar turno
+        </Button>
+
+      </Modal.Footer>
+    </Modal>
 
     </div>
+
+    
   );
 }
 

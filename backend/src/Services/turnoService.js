@@ -412,6 +412,10 @@ async buscarDisponibles(filtros) {
         return creados;
     }
 
+    async obtenerSinCompletarPaciente(idPaciente){
+        return await this.turnoRepo.findByPacienteSinCompletar(idPaciente);
+    }
+
     async cancelarTurnoConMotivo(id, motivo) {
         return await this.cancelarTurno(id, motivo);
     }

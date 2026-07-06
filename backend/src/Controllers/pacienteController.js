@@ -6,6 +6,18 @@ export class PacienteController{
         this.pacienteService = pacienteService;
     }
 
+    async getMisTurnos(req, res, next) {
+        try {
+            const { id } = req.params;
+
+            const turnos = await this.pacienteService.obtenerTurnosSinCompletarPaciente(id);
+
+            res.status(200).json(turnos);
+        } catch (error) {
+            next(error);
+        }
+    }
+
     async getHistorial(req, res, next) {
         try {
             const { id } = req.params;

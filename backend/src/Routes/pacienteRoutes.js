@@ -4,6 +4,8 @@ import { verificarToken } from "../middlewares/auth.js";
 
 const router = express.Router();
 
+router.get('/:id/misTurnos', verificarToken, pacienteController.getMisTurnos.bind(pacienteController));
+
 /**
  * @swagger
  * /pacientes/{id}/historial:

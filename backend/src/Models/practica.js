@@ -6,11 +6,13 @@ class Practica{
     nombre;
     costo;
     coberturas;
+    tipo;
 
     constructor(nombre, costo) {
         this.nombre = nombre;
         this.costoBase = costo
         this.coberturas = [];
+        this.tipo = "Practica";
     }
 
     agregarCobertura(cobertura) {

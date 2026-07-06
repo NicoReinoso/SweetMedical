@@ -14,6 +14,18 @@ export class TurnoRepo {
         return await this.model.findById(id);
     }
 
+    async findByPacienteSinCompletar(idPaciente) {
+        if (!mongoose.Types.ObjectId.isValid(idPaciente)) {
+            return null;
+        }
+        return await this.model.find({
+            pacienteId: idPaciente,
+            estado: {
+                $ne: EstadoTurno.CANCELADO || EstadoTurno.REALIZADO
+            }
+        }).populate("medicoId")
+    }
+
     async createTurno(turno) {
         const nuevoTurno = new this.model(turno);
         return await nuevoTurno.save();
@@ -37,7 +49,6 @@ export class TurnoRepo {
         if (!mongoose.Types.ObjectId.isValid(medicoId)) {
             return null;
         }
-        console.log(medicoId, fechaHora);
         return await this.model.findOne({
             medicoId: medicoId,
             fechaHora: fechaHora,

@@ -26,19 +26,22 @@ const notificacionService = new NotificacionService({
     notificacionRepo
 });
 
-const pacienteService = new PacienteService({
-    pacienteRepo
-});
-
-const medicoService = new MedicoService({
-    medicoRepo
-});
 
 const turnoService = new TurnoService({
     turnoRepo,
     pacienteRepo,
     medicoRepo,
     notificacionService
+});
+
+const pacienteService = new PacienteService({
+    pacienteRepo,
+    turnoService
+});
+
+const medicoService = new MedicoService({
+    medicoRepo,
+    turnoService
 });
 
 const loginService = new LoginService(

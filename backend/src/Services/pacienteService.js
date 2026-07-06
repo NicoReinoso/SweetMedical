@@ -11,9 +11,11 @@ import {
 export class PacienteService{
     constructor({
         pacienteRepo,
+        turnoService
     } = {}) {
 
         this.pacienteRepo = pacienteRepo;
+        this.turnoService = turnoService
     }
 
     async obtenerPaciente(idPaciente) {
@@ -23,6 +25,16 @@ export class PacienteService{
     async obtenerPorUsuario(usuario) {
         return await this.pacienteRepo.findByUsuario(usuario);
     };
+
+    async obtenerTurnosSinCompletarPaciente(idPaciente) {
+        const paciente = await this.pacienteRepo.findById(idPaciente);
+
+        if (!paciente) {
+            throw new NotFoundError("Paciente no encontrado");
+        }
+
+        return await this.turnoService.obtenerSinCompletarPaciente(idPaciente);
+    }
 
     async obtenerHistorial(idPaciente) {
 

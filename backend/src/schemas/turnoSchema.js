@@ -1,6 +1,16 @@
 import mongoose from "mongoose";
 import { Turno } from "../Models/turno.js";
 
+const consultaSchema = new mongoose.Schema(
+  {
+    nombre: String,
+    costoBase: Number,
+    coberturas: Array,
+    tipo: String
+  },
+  { _id: false }
+);
+
 const turnoSchema = new mongoose.Schema({
 
     medicoId: {
@@ -25,9 +35,8 @@ const turnoSchema = new mongoose.Schema({
         required: true
     },
     
-    consultaSolicitada:{
-        type: String,
-        trim: true,
+    consultaSolicitada: {
+        type: consultaSchema,
         required: true
     },
 

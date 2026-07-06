@@ -6,11 +6,13 @@ class Especialidad{
     nombre;
     costoBase;
     coberturas;
+    tipo;
 
     constructor(nombre, costoConsulta) {
         this.nombre = nombre;
         this.costoBase = costoConsulta;
         this.coberturas = [];
+        this.tipo = "Especialidad";
     }
 
     agregarCobertura(cobertura) {

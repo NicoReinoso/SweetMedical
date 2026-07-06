@@ -11,8 +11,9 @@ import {
 
 export class MedicoService{
 
-    constructor({ medicoRepo } = {}) {
+    constructor({ medicoRepo, turnoService } = {}) {
         this.medicoRepo = medicoRepo;
+        this.turnoService = turnoService
     }
 
     toDTO(medico) {
