@@ -7,6 +7,15 @@ import loginRoutes from "./loginRoutes.js"
 
 const router = express.Router()
 
+router.get('/', (req, res) => {
+    res.status(200).json({
+        status: "OK",
+        message: "Sweet Medical API",
+        health: "/health",
+        docs: "/api-docs"
+    });
+});
+
 //Healthcheck
 router.get('/health', (req, res) => {
     res.status(200).json({
