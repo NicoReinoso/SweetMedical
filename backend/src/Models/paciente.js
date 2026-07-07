@@ -2,6 +2,7 @@ export class Paciente {
     usuario;
     password;
     nombre;
+    dni;
     obraSocial;
     plan;
     notificaciones;

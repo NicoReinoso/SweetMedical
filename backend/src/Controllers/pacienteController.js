@@ -18,6 +18,18 @@ export class PacienteController{
         }
     }
 
+    async getPerfil(req, res, next) {
+        try {
+            const { id } = req.params;
+
+            const perfil = await this.pacienteService.obtenerPaciente(id);
+
+            res.status(200).json(perfil);
+        } catch (error) {
+            next(error);
+        }
+    }
+
     async getHistorial(req, res, next) {
         try {
             const { id } = req.params;

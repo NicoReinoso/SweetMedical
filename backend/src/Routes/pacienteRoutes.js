@@ -6,6 +6,8 @@ const router = express.Router();
 
 router.get('/:id/misTurnos', verificarToken, pacienteController.getMisTurnos.bind(pacienteController));
 
+router.get('/:id', verificarToken, pacienteController.getPerfil.bind(pacienteController));
+
 /**
  * @swagger
  * /pacientes/{id}/historial:

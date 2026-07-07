@@ -9,6 +9,8 @@ const router = express.Router();
 
 router.get('/:id/misTurnos', verificarToken, medicoController.getMisTurnos.bind(medicoController));
 
+router.get('/:id', verificarToken, medicoController.getPerfil.bind(medicoController));
+
 /**
  * @swagger
  * /medicos/{id}/disponibilidad:
@@ -125,6 +127,8 @@ router.post('/:id/disponibilidad', validarDisponibilidad, verificarToken, medico
  *         description: Disponibilidad ocupada
  */
 router.delete('/:id/disponibilidad', validarDisponibilidad, verificarToken, medicoController.deleteDisponibilidad.bind(medicoController));
+
+router.get('/especialidades', verificarToken, medicoController.getEspecialidad.bind(medicoController))
 
 /**
  * @swagger
