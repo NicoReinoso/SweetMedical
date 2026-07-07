@@ -4,23 +4,25 @@ import { Link, useNavigate } from "react-router-dom";
 import { usePreseleccion } from "../../context/PreseleccionContext";
 import "./Navbar.css";
 import { useSession } from "../../context/SessionContext";
+import { useNotificaciones } from "../../context/NotificacionesContext";
 
 function AppNavbar() {
   const navigate = useNavigate();
   const { turnosPreseleccionados } = usePreseleccion();
   const { user, logout } = useSession();
+  const { noLeidasCount, refrescarConteo } = useNotificaciones();
   const rol = user?.rol ?? "publico";
 
   const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
 
   const handleLogout = () => {
-  setMostrarConfirmacion(false);
+    setMostrarConfirmacion(false);
 
-  logout(); // elimina el token y pone user = null
+    logout(); // elimina el token y pone user = null
 
-  localStorage.removeItem("preseleccion");
-  navigate("/");
-};
+    localStorage.removeItem("preseleccion");
+    navigate("/");
+  };
   return (
     <>
       <Navbar bg="light" expand="md" className="mb-0 shadow-sm">
@@ -64,8 +66,24 @@ function AppNavbar() {
                       </Badge>
                     )}
                   </Nav.Link>
-                  <Nav.Link as={Link} to="/paciente/notificaciones" title="Notificaciones" aria-label="Notificaciones">
-                    <i className="bi bi-bell" aria-hidden="true"></i>
+                  <Nav.Link
+                    as={Link}
+                    to="/paciente/notificaciones"
+                    title="Notificaciones"
+                    aria-label="Notificaciones"
+                  >
+                    <span className="position-relative d-inline-block">
+                      <i className="bi bi-bell" aria-hidden="true"></i>
+                      {noLeidasCount > 0 && (
+                        <span
+                          className="position-absolute top-0 start-100 translate-middle p-1 bg-primary border border-light rounded-circle"
+                        >
+                          <span className="visually-hidden">
+                            Tenés notificaciones nuevas sin leer
+                          </span>
+                        </span>
+                      )}
+                    </span>
                   </Nav.Link>
                   <Nav.Link as={Link} to="/paciente/perfil" title="Mi perfil" aria-label="Mi perfil">
                     <i className="bi bi-person-circle" aria-hidden="true"></i>
@@ -79,8 +97,24 @@ function AppNavbar() {
                 <>
                   <Nav.Link as={Link} to="/medico">Inicio</Nav.Link>
                   <Nav.Link as={Link} to="/medico/mis-turnos">Mis Turnos</Nav.Link>
-                  <Nav.Link as={Link} to="/medico/notificaciones" title="Notificaciones" aria-label="Notificaciones">
-                    <i className="bi bi-bell" aria-hidden="true"></i>
+                  <Nav.Link
+                    as={Link}
+                    to="/paciente/notificaciones"
+                    title="Notificaciones"
+                    aria-label="Notificaciones"
+                  >
+                    <span className="position-relative d-inline-block">
+                      <i className="bi bi-bell" aria-hidden="true"></i>
+                      {noLeidasCount > 0 && (
+                        <span
+                          className="position-absolute top-0 start-100 translate-middle p-1 bg-primary border border-light rounded-circle"
+                        >
+                          <span className="visually-hidden">
+                            Tenés notificaciones nuevas sin leer
+                          </span>
+                        </span>
+                      )}
+                    </span>
                   </Nav.Link>
                   <Nav.Link as={Link} to="/medico/perfil" title="Mi perfil" aria-label="Mi perfil">
                     <i className="bi bi-person-circle" aria-hidden="true"></i>

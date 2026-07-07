@@ -9,15 +9,18 @@ import "./styles/global.css";
 import "./styles/headers.css";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { SessionProvider } from './context/SessionContext';
+import { NotificacionesProvider } from './context/NotificacionesContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
       <SessionProvider>
-        <PreseleccionProvider>
-          <App />
-        </PreseleccionProvider>
+        <NotificacionesProvider>
+          <PreseleccionProvider>
+            <App />
+          </PreseleccionProvider>
+        </NotificacionesProvider>
       </SessionProvider>
     </BrowserRouter>
   </React.StrictMode>
