@@ -3,6 +3,7 @@ import { useSession } from "../../context/SessionContext.jsx";
 import { useState, useEffect } from "react";
 import api from "../../api/api.js";
 import ToastNotificacion from "../../components/ToastNotificacion.jsx";
+import ModalReprogramarTurno from "../../components/ModalReprogramarTurno.jsx";
 
 function MisTurnosMedico() {
   const [turnos, setTurnos] = useState([]);
@@ -278,65 +279,14 @@ function MisTurnosMedico() {
 
         )))}
       </Row>
-      <Modal
-
+      <ModalReprogramarTurno
         show={mostrarModal}
         onHide={() => setMostrarModal(false)}
-    >
-        <Modal.Header closeButton>
-            <Modal.Title>
-                Reprogramar turno
-            </Modal.Title>
-        </Modal.Header>
-
-        <Modal.Body>
-
-            <p>Elegí un nuevo horario:</p>
-
-            {opciones.map((opcion) => (
-
-                <div key={opcion.fechaHora}>
-
-                    <input
-                        type="radio"
-                        name="fecha"
-                        value={opcion.fechaHora}
-                        onChange={(e) =>
-                            setFechaSeleccionada(e.target.value)
-                        }
-                    />
-
-                    {" "}
-
-                    {new Date(opcion.fechaHora)
-                        .toLocaleString("es-AR")}
-
-                </div>
-
-            ))}
-
-        </Modal.Body>
-
-        <Modal.Footer>
-
-            <Button
-                variant="secondary"
-                onClick={() => setMostrarModal(false)}
-            >
-                Cancelar
-            </Button>
-
-            <Button
-                variant="primary"
-                disabled={!fechaSeleccionada}
-                onClick={confirmarReprogramacion}
-            >
-                Confirmar
-            </Button>
-
-        </Modal.Footer>
-
-    </Modal>
+        opciones={opciones}
+        fechaSeleccionada={fechaSeleccionada}
+        setFechaSeleccionada={setFechaSeleccionada}
+        onConfirmar={confirmarReprogramacion}
+      />
 
     <Modal
       show={mostrarModalCancelar}
