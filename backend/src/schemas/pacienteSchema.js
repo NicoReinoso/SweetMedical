@@ -19,6 +19,11 @@ const pacienteSchema = new mongoose.Schema({
         required: true
     },
 
+    dni: {
+        type: String,
+        required: true
+    },
+
     obraSocial: {
         type: String,
         required: true

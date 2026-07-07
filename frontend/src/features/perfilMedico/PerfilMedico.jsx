@@ -1,28 +1,57 @@
-import { Card, Button, Badge, ListGroup } from "react-bootstrap";
+import { Card, Button, Badge, ListGroup, Modal } from "react-bootstrap";
+import { useSession } from "../../context/SessionContext";
+import { useState, useEffect } from "react";
+import api from "../../api/api.js";
+
 
 function PerfilMedico() {
 
-  // MOCK
-  const medico = {
-    nombre: "Dra. María Gómez",
-    matricula: "MN 123456",
-    email: "maria.gomez@sweetmedical.com",
-    telefono: "11 4444-5555",
-    especialidades: [
-      "Cardiología",
-      "Clínica Médica"
-    ],
-    practicas: [
-      "Electrocardiograma",
-      "Ergometría"
-    ],
-    disponibilidad: [
-      "Lunes 09:00 - 10:00",
-      "Miércoles 14:00 - 15:00",
-      "Viernes 11:00 - 12:00"
-    ]
-  };
+  const [medico, setMedico] = useState(null);
+  const { user } = useSession();
+  const [mostrarModalEspecialidad, setMostrarModalEspecialidad] = useState(false);
+  const [especialidadesDisponibles, setEspecialidadesDisponibles] = useState([]);
+  const [especialidadSeleccionada, setEspecialidadSeleccionada] = useState("");
 
+  useEffect(() => {
+  if (user?.id) {
+    cargarPerfil();
+  }
+}, [user]);
+
+const cargarPerfil = async () => {
+  try {
+    const { data } = await api.get(`/medicos/${user.id}`);
+    setMedico(data);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+const confirmarEspecialidad = async () => {
+    await api.post(`/medicos/${user.id}/especialidad`, {
+        nombre: especialidadSeleccionada
+    });
+
+    setMostrarModalEspecialidad(false);
+
+    cargarPerfil();
+};
+
+const abrirModalEspecialidad = async () => {
+    const { data } = await api.get("/medicos/especialidades");
+
+    setEspecialidadesDisponibles(data);
+    setMostrarModalEspecialidad(true);
+};
+
+
+  if (!medico) {
+    return (
+      <div className="container py-4">
+        <p>Cargando perfil...</p>
+      </div>
+    );
+  }
   return (
     <div className="container py-4">
 
@@ -44,13 +73,8 @@ function PerfilMedico() {
           </p>
 
           <p>
-            <strong>Email:</strong>{" "}
-            {medico.email}
-          </p>
-
-          <p>
             <strong>Teléfono:</strong>{" "}
-            {medico.telefono}
+            {"1234563223"}
           </p>
 
           <hr />
@@ -64,7 +88,7 @@ function PerfilMedico() {
                 className="me-2 mb-2"
                 key={index}
               >
-                {e}
+                {e.nombre}
               </Badge>
             ))}
           </div>
@@ -73,6 +97,7 @@ function PerfilMedico() {
             variant="outline-primary"
             size="sm"
             className="mb-4"
+            onClick={abrirModalEspecialidad}
           >
             Agregar especialidad
           </Button>
@@ -86,7 +111,7 @@ function PerfilMedico() {
                 className="me-2 mb-2"
                 key={index}
               >
-                {p}
+                {p.nombre}
               </Badge>
             ))}
           </div>
@@ -119,25 +144,19 @@ function PerfilMedico() {
 
           <hr />
 
-          <Button
-            variant="primary"
-            className="me-2"
-          >
-            Editar perfil
-          </Button>
-
-          <Button
-            variant="secondary"
-          >
-            Cambiar contraseña
-          </Button>
 
         </Card.Body>
 
       </Card>
 
+      
+
     </div>
+    
+    
   );
+  
+  
 }
 
 export default PerfilMedico;

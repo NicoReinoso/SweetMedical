@@ -21,6 +21,30 @@ export class MedicoController{
         }
     }
 
+    async getPerfil(req, res, next) {
+        try {
+            const { id } = req.params;
+
+            const perfil = await this.medicoService.obtenerMedico(id);
+
+            res.status(200).json(perfil);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async getEspecialidad(req, res, next) {
+        try {
+            const { id } = req.params;
+
+            const perfil = await this.medicoService.obtenerEspecialidad(id);
+
+            res.status(200).json(perfil);
+        } catch (error) {
+            next(error);
+        }
+    }
+
     async getHistorial(req, res, next) {
         try {
             const { id } = req.params;
