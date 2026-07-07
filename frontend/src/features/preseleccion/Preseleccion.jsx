@@ -112,7 +112,7 @@ function Preseleccion() {
           <Row className="mt-4 g-2">
             <Col xs={12} sm={6}>
               <Button
-                variant="outline-danger"
+                variant="danger"
                 className="w-100"
                 onClick={handleEliminarTodos}
               >
