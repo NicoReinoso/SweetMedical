@@ -76,16 +76,34 @@ export class TurnoRepo {
     });
     }
 
-    async findByPaciente(pacienteId) {
-        if (!mongoose.Types.ObjectId.isValid(pacienteId)) {
+    async findByPaciente(idPaciente) {
+        if (!mongoose.Types.ObjectId.isValid(idPaciente)) {
             return null;
         }
-        return await this.model.find({ pacienteId });
-        return await this.model.findOne({
-            medicoId,
-            fechaHora,
-            estado: { $ne: EstadoTurno.CANCELADO }
-        });
+        return await this.model.find({
+            pacienteId: idPaciente,
+            estado: {
+                $in: [
+                    EstadoTurno.CANCELADO,
+                    EstadoTurno.REALIZADO
+                ]
+            }
+        }).populate("medicoId")
+    }
+
+    async findByMedico(medicoId) {
+        if (!mongoose.Types.ObjectId.isValid(medicoId)) {
+            return null;
+        }
+        return await this.model.find({
+            medicoId: medicoId,
+            estado: {
+                $in: [
+                    EstadoTurno.CANCELADO,
+                    EstadoTurno.REALIZADO
+                ]
+            }
+        }).populate("pacienteId")
     }
 
 

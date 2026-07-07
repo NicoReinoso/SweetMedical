@@ -31,6 +31,8 @@ router.get('/:id/misTurnos', verificarToken, medicoController.getMisTurnos.bind(
  */
 router.get('/:id/disponibilidad', verificarToken, medicoController.getDisponibilidad.bind(medicoController));
 
+router.get('/:id/historialTurnos', verificarToken, medicoController.getHistorial.bind(medicoController))
+
 /**
  * @swagger
  * /medicos/sugerencias:

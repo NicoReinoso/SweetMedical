@@ -46,9 +46,8 @@ export class Medico {
     aceptarTurno(idTurno) {
         const turno = this.turnosSolicitados.find(t => t.id === idTurno);
     
-
         if (!turno) {
-            throw new NotFoundError("Turno no encontrado");
+            throw new NotFoundError("Turno no encontrado en la lista de solicitados");
         }
 
         turno.estado = EstadoTurno.CONFIRMADO;

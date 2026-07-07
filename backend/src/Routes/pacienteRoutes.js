@@ -34,6 +34,6 @@ router.get('/:id/misTurnos', verificarToken, pacienteController.getMisTurnos.bin
  */
 
 // Ruta GET /pacientes/:id/historial
-router.get('/:id/historial', verificarToken, pacienteController.getHistorial.bind(pacienteController));
+router.get('/:id/historialTurnos', verificarToken, pacienteController.getHistorial.bind(pacienteController));
 
 export default router;

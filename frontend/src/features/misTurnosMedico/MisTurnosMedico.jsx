@@ -13,12 +13,23 @@ function MisTurnosMedico() {
   const [opciones, setOpciones] = useState([]);
   const [mostrarModalCancelar, setMostrarModalCancelar] = useState(false);
   const [turnoCancelar, setTurnoCancelar] = useState(null);
+  const [verHistorial, setVerHistorial] = useState(false);
   const [motivoCancelacion, setMotivoCancelacion] = useState("");
   const [toast, setToast] = useState({
     show: false,
     mensaje: "",
     variant: "success",
   });
+
+    useEffect(() => {
+      if (!user?.id) return;
+
+      if (verHistorial) {
+          cargarHistorial();
+      } else {
+          cargarTurnos();
+      }
+  }, [user, verHistorial]);
 
   const mostrarToast = (mensaje, variant = "success") => {
     setToast({
@@ -28,11 +39,18 @@ function MisTurnosMedico() {
     });
   };
 
-  useEffect(() => {
-  if (user?.id) {
-    cargarTurnos();
-  }
-  }, [user]);
+  const cargarHistorial = async () => {
+    try {
+      const { data } = await api.get(
+        `/medicos/${user.id}/historialTurnos`
+      );
+
+      setTurnos(data);
+
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const cargarTurnos = async () => {
     try {
@@ -141,13 +159,27 @@ function MisTurnosMedico() {
         </p>
       </div>
 
+      <Button
+          variant={verHistorial ? "secondary" : "primary"}
+          onClick={() => setVerHistorial(!verHistorial)}
+      >
+          {verHistorial ? "Ver turnos pendientes" : "Ver historial"}
+      </Button>
+
       <Row className="g-3 mt-2">
         {turnos.length === 0 ? (
         <Card className="text-center p-4">
         <Card.Body>
-          <Card.Title>No hay turnos pendientes</Card.Title>
+          <Card.Title>
+            {verHistorial
+              ? "No hay turnos en el historial"
+              : "No hay turnos pendientes"}
+          </Card.Title>
+
           <Card.Text>
-            No tenés turnos pendientes por el momento.
+            {verHistorial
+              ? "Todavía no existen turnos finalizados."
+              : "No tenés turnos pendientes por el momento."}
           </Card.Text>
         </Card.Body>
       </Card>
@@ -167,12 +199,18 @@ function MisTurnosMedico() {
 
                   <Badge
                     bg={
-                      turno.estado === "CONFIRMADO"
-                        ? "success"
-                        : "warning"
-                    }
-                  >
-                    {turno.estado}
+                    turno.estado === "CONFIRMADO"
+                      ? "success"
+                      : turno.estado === "REALIZADO"
+                      ? "primary"
+                      : turno.estado === "CANCELADO"
+                      ? "danger"
+                      : turno.estado === "REPROGRAMADO"
+                      ? "info"
+                      : "warning" // RESERVADO
+                  }
+                >
+                  {turno.estado}
                   </Badge>
                 </div>
 
@@ -188,8 +226,7 @@ function MisTurnosMedico() {
 
                 </Card.Text>
 
-                <div className="mt-3">
-
+                {!verHistorial && (<div className="mt-3">
                   {(turno.estado === "RESERVADO" ||
                     turno.estado === "REPROGRAMADO") && (
                     <Button variant="success" size="sm" className="me-2" onClick={() => confirmarTurno(turno._id)}>
@@ -232,7 +269,7 @@ function MisTurnosMedico() {
                 )}
 
                 </div>
-
+              )}
               </Card.Body>
 
             </Card>

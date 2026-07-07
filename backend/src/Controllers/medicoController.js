@@ -21,6 +21,18 @@ export class MedicoController{
         }
     }
 
+    async getHistorial(req, res, next) {
+        try {
+            const { id } = req.params;
+
+            const historial = await this.medicoService.obtenerHistorial(id);
+
+            res.status(200).json(historial);
+        } catch (error) {
+            next(error);
+        }
+    }
+
     async getDisponibilidad(req, res, next) {
         try {
             const { id } = req.params;

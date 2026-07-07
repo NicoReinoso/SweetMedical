@@ -29,10 +29,6 @@ export class TurnoService {
         return turno;
     }
 
-    async encontrarPorPaciente(pacienteId) {
-        return await this.turnoRepo.findByPaciente(pacienteId);
-    };
-
 async buscarDisponibles(filtros) {
 
     const {
@@ -424,8 +420,12 @@ async buscarDisponibles(filtros) {
         return await this.cancelarTurno(id, motivo);
     }
 
-    async getHistorialPaciente(pacienteId) {
-        return await this.turnoRepo.findByPacienteId(pacienteId);
+    async encontrarPorMedico(medicoId) {
+        return await this.turnoRepo.findByMedico(medicoId);
+    }
+
+    async encontrarPorPaciente(pacienteId) {
+        return await this.turnoRepo.findByPaciente(pacienteId);
     }
 
     async cancelarTurno(id, motivo) {
@@ -466,10 +466,10 @@ async buscarDisponibles(filtros) {
             throw new NotFoundError("Turno no encontrado");
         }
         if (turno.historialEstados.includes(EstadoTurno.REALIZADO)){
-            throw new ConflictError("No se puede realizar un turno realizado");
+            throw new ConflictError("No se puede confirmar un turno realizado");
         }
         if (turno.historialEstados.includes(EstadoTurno.CANCELADO)){
-            throw new ConflictError("No se puede realizar un turno cancelado");
+            throw new ConflictError("No se puede confirmar un turno cancelado");
         }
 
         const medico = await this.medicoRepo.findById(turno.medicoId);
@@ -483,6 +483,10 @@ async buscarDisponibles(filtros) {
 
         // actualizo los datos en el repo
         await this.turnoRepo.updateTurno(id, turno);
+
+        // mando el turno a la lista de aceptados
+        medico.aceptarTurno(id);
+        await this.medicoRepo.updateMedico(medico.id, medico);
 
         return turno;
     }
