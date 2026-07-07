@@ -10,6 +10,7 @@ services:
 
     volumes:
       - mongo-data:/data/db
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
 
   backend:
 

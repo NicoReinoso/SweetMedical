@@ -5,7 +5,7 @@ import { PacienteModel } from "./schemas/pacienteSchema.js";
 
 dotenv.config();
 
-const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/BD-SweetMedical";
+const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27018/BD-SweetMedical";
 
 async function seed() {
     await mongoose.connect(MONGO_URI);
@@ -108,8 +108,8 @@ async function seed() {
 
     await mongoose.disconnect();
     console.log("\n✓ Seed completado.");
-    console.log("  Médicos:   house / octavio / mariano   (password: 123)");
-    console.log("  Pacientes: juanperez / mariagomez      (password: 123)");
+    console.log("  Médicos:   house / octavio / mariano   (password: password)");
+    console.log("  Pacientes: juanperez / mariagomez      (password: password)");
 }
 
 seed().catch((err) => {
