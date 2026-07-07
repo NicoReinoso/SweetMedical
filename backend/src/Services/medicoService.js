@@ -51,6 +51,16 @@ export class MedicoService{
         return await this.medicoRepo.updateMedico(medicoId, medicoActualizado);
     };
 
+    async obtenerTurnosSinCompletarMedico(idMedico) {
+        const medico = await this.medicoRepo.findById(idMedico);
+
+        if (!medico) {
+            throw new NotFoundError("Medico no encontrado");
+        }
+
+        return await this.turnoService.obtenerSinCompletarMedico(idMedico);
+    }
+
     async obtenerDisponibilidad(medicoId) {
         const medico = await this.medicoRepo.findById(medicoId);
 

@@ -9,6 +9,18 @@ export class MedicoController{
         this.medicoService = medicoService;
     }
 
+    async getMisTurnos(req, res, next) {
+        try {
+            const { id } = req.params;
+
+            const turnos = await this.medicoService.obtenerTurnosSinCompletarMedico(id);
+
+            res.status(200).json(turnos);
+        } catch (error) {
+            next(error);
+        }
+    }
+
     async getDisponibilidad(req, res, next) {
         try {
             const { id } = req.params;

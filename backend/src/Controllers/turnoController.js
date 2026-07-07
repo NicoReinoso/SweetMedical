@@ -80,6 +80,17 @@ export class TurnoController {
         }
     }
 
+    async confirmarTurno(req, res, next) {
+        try {
+            const { id } = req.params;
+
+            const turno = await this.turnoService.confirmarTurno(id);
+            res.status(200).json(turno);
+        } catch (error) {
+            return next(error);
+        }
+    }
+
     async modificarTurno(req, res, next) {
         try {
             const { id } = req.params;

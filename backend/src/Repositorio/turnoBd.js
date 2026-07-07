@@ -21,9 +21,27 @@ export class TurnoRepo {
         return await this.model.find({
             pacienteId: idPaciente,
             estado: {
-                $ne: EstadoTurno.CANCELADO || EstadoTurno.REALIZADO
+                $nin: [
+                    EstadoTurno.CANCELADO,
+                    EstadoTurno.REALIZADO
+                ]
             }
         }).populate("medicoId")
+    }
+
+    async findByMedicoSinCompletar(idMedico) {
+        if (!mongoose.Types.ObjectId.isValid(idMedico)) {
+            return null;
+        }
+        return await this.model.find({
+            medicoId: idMedico,
+            estado: {
+                $nin: [
+                    EstadoTurno.CANCELADO,
+                    EstadoTurno.REALIZADO
+                ]
+            }
+        }).populate("pacienteId")
     }
 
     async createTurno(turno) {

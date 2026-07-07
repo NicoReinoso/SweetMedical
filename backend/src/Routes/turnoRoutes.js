@@ -306,7 +306,9 @@ router.delete('/:id', validarCancelacion, verificarToken, turnoController.cancel
  *       409:
  *         description: El turno ya está cancelado o realizado
  */
-router.patch('/:id/estado', verificarToken, turnoController.realizarTurno.bind(turnoController));
+router.patch('/:id/estado-realizado', verificarToken, turnoController.realizarTurno.bind(turnoController));
+
+router.patch('/:id/estado-confirmado', verificarToken, turnoController.confirmarTurno.bind(turnoController));
 
 /**
  * @swagger

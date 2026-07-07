@@ -18,10 +18,10 @@ const turnoSchema = new mongoose.Schema({
         ref: "Medico",
         required: true
     },
-    pacienteId:{
-        type: String,
-        required: true,
-        trim: true
+    pacienteId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Paciente",
+        required: true
     },
 
     fechaHora:{
