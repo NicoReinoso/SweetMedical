@@ -8,6 +8,7 @@ import TurnoCard from "../../mockdata/TurnoCard";
 import { Pagination } from "react-bootstrap";
 import "./BuscarTurnos.css";
 import ToastNotificacion from "../../components/ToastNotificacion";
+import { useSession } from "../../context/SessionContext";
 
 // Helpers de fecha (trabajamos con objetos Date porque react-datepicker los necesita así)
 const hoy = new Date();
@@ -29,6 +30,7 @@ const formatearParaApi = (fecha) => {
 };
 
 function BuscarTurnos() {
+  const { user } = useSession();
   const [filtros, setFiltros] = useState({
     medicoNombre: "",
     especialidad: "",
@@ -98,6 +100,7 @@ function BuscarTurnos() {
         ),
         ...(fechaDesde ? { fechaDesde: formatearParaApi(fechaDesde) } : {}),
         ...(fechaHasta ? { fechaHasta: formatearParaApi(fechaHasta) } : {}),
+        ...(user?.rol === "paciente" ? { pacienteId: user.id } : {}),
         page,
         limit: 10
       };

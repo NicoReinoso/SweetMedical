@@ -46,7 +46,7 @@ function MisTurnosMedico() {
         `/medicos/${user.id}/historialTurnos`
       );
 
-      setTurnos(data);
+      setTurnos(Array.isArray(data) ? data : []);
 
     } catch (err) {
       console.error(err);
@@ -56,7 +56,7 @@ function MisTurnosMedico() {
   const cargarTurnos = async () => {
     try {
       const { data } = await api.get(`/medicos/${user?.id}/misTurnos`);
-      setTurnos(data);
+      setTurnos(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error(err);
     }

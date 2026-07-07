@@ -93,9 +93,9 @@ function Preseleccion() {
 
               <p>
               <strong>Costo:</strong>{" "}
-              {turno.estadoCobertura === "SIN COBERTURA"
-                ? `$${turno.costoEstimado}`
-                : `$${turno.costoEstimado} (${turno.porcentajeCobertura}% cubierto)`}
+              {turno.estadoCobertura === "SIN COBERTURA" || turno.porcentajeCobertura === 0
+                ? `$${turno.costoEstimado ?? "-"}`
+                : `$${turno.costoEstimado ?? "-"} (${turno.porcentajeCobertura}% cubierto)`}
               </p>
 
               <Button

@@ -203,20 +203,28 @@ async buscarDisponibles(filtros) {
 
                 for (const consulta of consultas) {
 
+                    const entidadPlana = consulta.entidad.toObject
+                        ? consulta.entidad.toObject()
+                        : consulta.entidad;
+
                     let infoCosto = {
 
-                        cobertura: "NO_CUBIERTO",
+                        cobertura: "SIN COBERTURA",
 
                         porcentajeCobertura: 0,
 
                         costoFinal:
-                            consulta.entidad.costoBase ??
-                            consulta.entidad.costo
+                            entidadPlana.costoBase ??
+                            entidadPlana.costo ??
+                            0
                     };
 
                     // calcular cobertura
                     if (paciente) {
                         infoCosto = consulta.entidad.calcularCostoFinal(paciente);
+                        if (infoCosto.costoFinal == null) {
+                            infoCosto.costoFinal = entidadPlana.costoBase ?? entidadPlana.costo ?? 0;
+                        }
                     }
 
                     resultados.push({
@@ -354,6 +362,10 @@ async buscarDisponibles(filtros) {
             }
             consultaSolicitada = practica;
             infoCosto = practica.calcularCostoFinal(pacienteSolicitante);
+            const practicaPlana = practica.toObject ? practica.toObject() : practica;
+            if (infoCosto.costoFinal == null) {
+                infoCosto.costoFinal = practicaPlana.costoBase ?? practicaPlana.costo ?? 0;
+            }
         } else {
             const especialidad = medico.especialidades.find(e => e.nombre === data.especialidad);
             if (!especialidad) {
@@ -361,6 +373,10 @@ async buscarDisponibles(filtros) {
             }
             consultaSolicitada = especialidad;
             infoCosto = especialidad.calcularCostoFinal(pacienteSolicitante);
+            const especialidadPlana = especialidad.toObject ? especialidad.toObject() : especialidad;
+            if (infoCosto.costoFinal == null) {
+                infoCosto.costoFinal = especialidadPlana.costoBase ?? especialidadPlana.costo ?? 0;
+            }
         }
 
         const nuevoTurno = new Turno(
