@@ -41,7 +41,7 @@ export class TurnoRepo {
                     EstadoTurno.REALIZADO
                 ]
             }
-        }).populate("pacienteId")
+        }).populate("pacienteId").populate("medicoId")
     }
 
     async createTurno(turno) {
@@ -103,7 +103,7 @@ export class TurnoRepo {
                     EstadoTurno.REALIZADO
                 ]
             }
-        }).populate("pacienteId")
+        }).populate("pacienteId").populate("medicoId")
     }
 
 

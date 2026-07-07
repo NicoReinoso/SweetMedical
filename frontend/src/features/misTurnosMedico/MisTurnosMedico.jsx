@@ -195,7 +195,7 @@ function MisTurnosMedico() {
 
                 <div className="d-flex justify-content-between align-items-center">
                   <Card.Title className="mb-0">
-                    {turno.pacienteId.nombre}
+                    {turno.pacienteId?.nombre ?? "Paciente desconocido"}
                   </Card.Title>
 
                   <Badge
@@ -218,7 +218,7 @@ function MisTurnosMedico() {
                 <Card.Text className="mt-2">
 
                   <strong>Consulta:</strong>{" "}
-                  {turno.consultaSolicitada.nombre}
+                  {turno.consultaSolicitada?.nombre ?? "-"}
 
                   <br />
 
