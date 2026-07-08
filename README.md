@@ -3,6 +3,7 @@
 ## Grupo N° 3
 
 ### Integrantes
+
 - **Nahuel Saez**
 - **Nicolás Reinoso**
 - **Nahuel Darsaut**
@@ -14,18 +15,20 @@
 
 **Sweet Medical** es un sistema web para la gestión de turnos médicos. Permite administrar médicos, pacientes, disponibilidades, prácticas, coberturas y el ciclo de vida de los turnos (reserva, modificación, cancelación y notificaciones).
 
-Acceso: [Sweet-medical](https://frontend-mjx8.onrender.com/)
+Acceso: [sweet-medical]([https://frontend-mjx8.onrender.com/](https://frontend-mjx8.onrender.com/))
 
 ---
 
 ## Tecnologías
 
-| Capa | Tecnologías |
-|------|-------------|
-| **Frontend** | React, Axios, React Router, Bootstrap |
-| **Backend** | Node.js, Express, Mongoose, JWT, Swagger |
-| **Base de datos** | MongoDB |
+
+| Capa                | Tecnologías                                   |
+| ------------------- | --------------------------------------------- |
+| **Frontend**        | React, Axios, React Router, Bootstrap         |
+| **Backend**         | Node.js, Express, Mongoose, JWT, Swagger      |
+| **Base de datos**   | MongoDB                                       |
 | **Infraestructura** | Docker, Docker Compose, Render, MongoDB Atlas |
+
 
 ---
 
@@ -52,11 +55,14 @@ flowchart LR
     BE --> DB
 ```
 
+
+
 **Capas del backend:**
 
 ```
 Routes → Controllers → Services → Repositorio → Models
 ```
+
 ---
 
 ## Despliegue local
@@ -74,7 +80,7 @@ git clone https://github.com/ddsw-man/2026-1c-backend-grupo-03.git
 cd 2026-1c-backend-grupo-03
 ```
 
-2. Verificar las variables de entorno del backend en `backend/.env.docker`:
+1. Verificar las variables de entorno del backend en `backend/.env.docker`:
 
 ```env
 MONGO_URI=mongodb://mongo:27017/BD-SweetMedical
@@ -82,20 +88,22 @@ PORT=3001
 JWT_SECRET=<tu-clave-secreta>
 ```
 
-3. Levantar los servicios:
+1. Levantar los servicios:
 
 ```bash
 docker compose up --build
 ```
 
-4. Acceder a la aplicación:
+1. Acceder a la aplicación:
 
-| Servicio | URL |
-|----------|-----|
-| Frontend | http://localhost:3000 |
-| Backend (API) | http://localhost:3001 |
-| Swagger (docs) | http://localhost:3001/api-docs |
-| Health check | http://localhost:3001/health |
+
+| Servicio       | URL                                                              |
+| -------------- | ---------------------------------------------------------------- |
+| Frontend       | [http://localhost:3000](http://localhost:3000)                   |
+| Backend (API)  | [http://localhost:3001](http://localhost:3001)                   |
+| Swagger (docs) | [http://localhost:3001/api-docs](http://localhost:3001/api-docs) |
+| Health check   | [http://localhost:3001/health](http://localhost:3001/health)     |
+
 
 ### Notas locales
 
@@ -130,21 +138,25 @@ mongodb+srv://<usuario>:<password>@<cluster>.mongodb.net/BD-SweetMedical?appName
 2. Conectar el repositorio de GitHub.
 3. Configurar:
 
-| Campo | Valor |
-|-------|-------|
-| **Root Directory** | `backend/` |
-| **Environment** | Docker |
-| **Docker target** | `production` |
 
-4. Variables de entorno:
+| Campo              | Valor        |
+| ------------------ | ------------ |
+| **Root Directory** | `backend/`   |
+| **Environment**    | Docker       |
+| **Docker target**  | `production` |
 
-| Variable | Descripción |
-|----------|-------------|
-| `PORT` | Puerto de ejecución (`3001`) |
-| `MONGO_URI` | Cadena de conexión a MongoDB Atlas |
+
+1. Variables de entorno:
+
+
+| Variable     | Descripción                                          |
+| ------------ | ---------------------------------------------------- |
+| `PORT`       | Puerto de ejecución (`3001`)                         |
+| `MONGO_URI`  | Cadena de conexión a MongoDB Atlas                   |
 | `JWT_SECRET` | Clave super secreta para la generación de tokens JWT |
 
-5. Esperar a que el servicio quede en estado **Live**.
+
+1. Esperar a que el servicio quede en estado **Live**.
 
 ### 3. Desplegar el Frontend
 
@@ -152,21 +164,25 @@ mongodb+srv://<usuario>:<password>@<cluster>.mongodb.net/BD-SweetMedical?appName
 2. Conectar el repositorio de GitHub.
 3. Configurar:
 
-| Campo | Valor |
-|-------|-------|
-| **Root Directory** | `frontend/` |
-| **Environment** | Docker |
-| **Docker target** | `production` |
 
-4. Variables de entorno:
+| Campo              | Valor        |
+| ------------------ | ------------ |
+| **Root Directory** | `frontend/`  |
+| **Environment**    | Docker       |
+| **Docker target**  | `production` |
 
-| Variable | Descripción |
-|----------|-------------|
+
+1. Variables de entorno:
+
+
+| Variable            | Descripción                                                                               |
+| ------------------- | ----------------------------------------------------------------------------------------- |
 | `REACT_APP_API_URL` | URL pública del backend en Render (ej: `https://two026-1c-backend-grupo-03.onrender.com`) |
+
 
 > **Importante:** `REACT_APP_API_URL` se embebe en el build del frontend. Si cambia la URL del backend, hay que volver a desplegar el frontend.
 
-5. Esperar a que el servicio quede en estado **Live**.
+1. Esperar a que el servicio quede en estado **Live**.
 
 ### Diagrama de arquitectura en la nube [Diagrama](https://app.eraser.io/workspace/kTypJyckF2By9zUU7ltW?origin=share)
 

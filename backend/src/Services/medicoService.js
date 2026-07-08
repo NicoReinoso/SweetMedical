@@ -84,10 +84,16 @@ export class MedicoService{
 
     async obtenerSugerencias(nombre) {
 
+        if (!nombre || nombre.trim().length < 2) {
+            return [];
+        }
+
         const medicos = await this.medicoRepo.findAll();
         const busqueda = normalizarTexto(nombre);
 
-        return medicos.filter(m =>normalizarTexto(m.nombre).includes(busqueda)).map(m => m.nombre);
+        return medicos
+            .filter(m => normalizarTexto(m.nombre).includes(busqueda))
+            .map(m => m.nombre);
     }
 
     async agregarDisponibilidad(medicoId, disponibilidad) {

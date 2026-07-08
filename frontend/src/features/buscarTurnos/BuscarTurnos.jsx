@@ -73,7 +73,7 @@ function BuscarTurnos() {
           params: { nombre: value }
         });
 
-        setSugerencias(data);
+        setSugerencias(Array.isArray(data) ? data : []);
       } catch {
         setSugerencias([]);
       }
