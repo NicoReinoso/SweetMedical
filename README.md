@@ -14,6 +14,8 @@
 
 **Sweet Medical** es un sistema web para la gestión de turnos médicos. Permite administrar médicos, pacientes, disponibilidades, prácticas, coberturas y el ciclo de vida de los turnos (reserva, modificación, cancelación y notificaciones).
 
+Acceso: [Sweet-medical](https://frontend-mjx8.onrender.com/)
+
 ---
 
 ## Tecnologías
