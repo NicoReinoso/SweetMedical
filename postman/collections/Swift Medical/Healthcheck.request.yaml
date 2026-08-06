@@ -1,5 +1,0 @@
-$kind: http-request
-name: Healthcheck
-url: http://localhost:3000/health
-method: GET
-order: 1776304383734

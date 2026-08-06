@@ -1,5 +1,0 @@
-$kind: http-request
-name: Disponibilidad de medicos
-url: http://localhost:3000/medicos/med-1/disponibilidad
-method: GET
-order: 4357965898650337
