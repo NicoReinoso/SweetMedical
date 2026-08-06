@@ -1,0 +1,16 @@
+$kind: http-request
+name: 2.6 Eliminar disponibilidad MIERCOLES del Dr. García (demo de baja)
+description: Los turnos ya reservados en miércoles NO se cancelan — sólo impacta la generación de nuevos turnos.
+url: "{{baseUrl}}/medicos/{{medicoId1}}/disponibilidad"
+method: DELETE
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "diaSemana": "MIERCOLES",
+      "horaDesde": "14:00",
+      "horaHasta": "18:00"
+    }
+order: 6000

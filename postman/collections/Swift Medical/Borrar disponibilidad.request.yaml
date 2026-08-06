@@ -1,0 +1,16 @@
+$kind: http-request
+name: Borrar disponibilidad
+url: http://localhost:3000/medicos/med-1/disponibilidad
+method: DELETE
+body:
+  type: json
+  content: "{\r
+
+    \    \"diaSemana\": \"LUNES\",\r
+
+    \    \"horaDesde\": \"08:00\",\r
+
+    \    \"horaHasta\": \"09:00\" \r
+
+    }"
+order: 4465279785599587

@@ -1,0 +1,11 @@
+$kind: http-request
+name: 3.6 Búsqueda María (PAMI) / Neurología → sin cobertura ($6000)
+description: "No hay cobertura PAMI para Neurología. costoEstimado = $6000. estadoCobertura: SIN COBERTURA."
+url: "{{baseUrl}}/turnos/disponibles?pacienteId={{pacienteId2}}&especialidad=Neurología&fechaDesde=2026-07-01T03:00:00.000Z&fechaHasta=2026-07-31T23:59:59.000Z"
+method: GET
+queryParams:
+  pacienteId: "{{pacienteId2}}"
+  especialidad: Neurología
+  fechaDesde: 2026-07-01T03:00:00.000Z
+  fechaHasta: 2026-07-31T23:59:59.000Z
+order: 6000

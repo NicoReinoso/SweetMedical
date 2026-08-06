@@ -1,0 +1,4 @@
+$kind: http-request
+url: http://localhost:8080/donaciones-service/entidades-beneficiarias
+method: GET
+order: 751261165431

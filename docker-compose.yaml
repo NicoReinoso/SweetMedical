@@ -1,0 +1,59 @@
+version: "3.9"
+
+services:
+
+  mongo:
+    image: mongo:8
+
+    ports:
+      - "27018:27017"
+
+    volumes:
+      - mongo-data:/data/db
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+
+  backend:
+
+    build:
+      context: ./backend
+      target: development
+
+    env_file:
+      - ./backend/.env.docker
+
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
+
+    ports:
+      - "3001:3001"
+
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+
+    depends_on:
+      - mongo
+
+  frontend:
+
+    build:
+      context: ./frontend
+      target: development
+
+    ports:
+      - "3000:3000"
+
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
+      WATCHPACK_POLLING: "true"
+      REACT_APP_API_URL: http://localhost:3001
+
+    depends_on:
+      - backend
+
+volumes:
+  mongo-data:

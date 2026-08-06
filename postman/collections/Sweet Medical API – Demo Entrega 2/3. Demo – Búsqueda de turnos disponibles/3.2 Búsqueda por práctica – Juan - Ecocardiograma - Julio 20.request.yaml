@@ -1,0 +1,11 @@
+$kind: http-request
+name: 3.2 Búsqueda por práctica – Juan / Ecocardiograma / Julio 2026
+description: "Cobertura OSDE 50% → costoEstimado = $4000. estadoCobertura: PARCIAL."
+url: "{{baseUrl}}/turnos/disponibles?pacienteId={{pacienteId1}}&practica=Ecocardiograma&fechaDesde=2026-07-01T03:00:00.000Z&fechaHasta=2026-07-31T23:59:59.000Z"
+method: GET
+queryParams:
+  pacienteId: "{{pacienteId1}}"
+  practica: Ecocardiograma
+  fechaDesde: 2026-07-01T03:00:00.000Z
+  fechaHasta: 2026-07-31T23:59:59.000Z
+order: 2000

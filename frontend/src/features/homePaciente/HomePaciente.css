@@ -1,0 +1,63 @@
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background-image: url('../../assests/images/online-marketing-hIgeoQjS_iE-unsplash.jpg');
+  background-size: contain;
+  background-position: center; 
+  width: 100%; 
+  padding: 0;
+  margin: 0;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  margin: 0;
+  background: rgba(255, 255, 255, 0.603);
+}
+
+.hero-wrapper {
+  padding: 0;
+  margin: 0;
+}
+
+.hero-content {
+  color: #2A65D9;
+  position: relative;
+  z-index: 1;
+  padding: 3rem 3.5rem;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 16px;
+  margin-top: 1.5rem;
+  justify-content: center;
+}
+
+.btn-buscar {
+  background: #ffffff;
+  color: #2A65D9;
+  padding: 13px 26px;
+  border: none;
+  gap: 16px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.btn-mis-turnos {
+  background: #1565c0;
+  color: #ffffff;
+  padding: 13px 26px;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+}

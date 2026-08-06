@@ -1,0 +1,11 @@
+$kind: http-request
+name: 3.3 Búsqueda por profesional – Dr. García / primera semana de julio
+description: Filtra solo por nombre de médico. Retorna todos los slots con todas sus especialidades y prácticas.
+url: "{{baseUrl}}/turnos/disponibles?pacienteId={{pacienteId1}}&medicoNombre=Dr. Ramón García&fechaDesde=2026-07-01T03:00:00.000Z&fechaHasta=2026-07-07T23:59:59.000Z"
+method: GET
+queryParams:
+  pacienteId: "{{pacienteId1}}"
+  medicoNombre: Dr. Ramón García
+  fechaDesde: 2026-07-01T03:00:00.000Z
+  fechaHasta: 2026-07-07T23:59:59.000Z
+order: 3000

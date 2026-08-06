@@ -1,0 +1,135 @@
+/* ============================================
+   LAYOUT GENERAL
+   ============================================ */
+
+.buscar-container {
+  max-width: 1200px;
+  margin: auto;
+}
+
+.buscar-header {
+  background: linear-gradient(135deg, #eaf2fd 0%, #ffffff 100%);
+  border-radius: 15px;
+  padding: 30px 25px;
+  margin-bottom: 25px;
+}
+
+.buscar-header h1 {
+  color: #be0b0b;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.buscar-title {
+  color: #2c7be5;
+  font-weight: bold;
+}
+
+.buscar-form {
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.filtro-label {
+  font-size: 0.8rem;
+  color: #6c757d;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+/*Lista de sujerencias*/
+.autocomplete-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+
+  z-index: 1050;
+
+  max-height: 220px;
+  overflow-y: auto;
+
+  background: white;
+  border: 1px solid #dee2e6;
+  border-top: none;
+
+  box-shadow: 0 4px 10px rgba(0,0,0,.15);
+}
+
+
+/* ============================================
+   BOTÓN DE BÚSQUEDA
+   ============================================ */
+
+.btn-buscar-turnos {
+  padding: 0.35rem 1.1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 20px; /* pill, para diferenciarlo de los inputs rectangulares */
+}
+
+
+/* ============================================
+   REACT-DATEPICKER: colores de días en el calendario
+   ============================================ */
+
+/* Que el input del datepicker se vea igual que los Form.Control de Bootstrap */
+.react-datepicker-wrapper {
+  width: 100%;
+}
+
+/* Fechas fuera del rango permitido (antes de hoy, después de +6 meses, o antes del "Desde") */
+.react-datepicker__day--disabled {
+  color: #adb5bd !important;
+  background-color: #f8f9fa;
+  text-decoration: line-through;
+  cursor: not-allowed;
+}
+
+/* Fecha seleccionada */
+.react-datepicker__day--selected,
+.react-datepicker__day--keyboard-selected {
+  background-color: #198754 !important; /* verde, matching variant="success" */
+  color: #fff !important;
+}
+
+/* Días dentro del rango Desde-Hasta ya elegido */
+.react-datepicker__day--in-range,
+.react-datepicker__day--in-selecting-range {
+  background-color: #d1e7dd !important;
+  color: #0f5132 !important;
+}
+
+/* Hover en día habilitado */
+.react-datepicker__day:not(.react-datepicker__day--disabled):hover {
+  background-color: #e2e6ea;
+}
+
+
+/* ============================================
+   FECHA INPUT: ícono de calendario custom
+   ============================================ */
+
+.fecha-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.fecha-input-wrapper input {
+  padding-right: 2.25rem; /* deja lugar para el ícono a la derecha */
+}
+
+.fecha-input-icono {
+  position: absolute;
+  top: 50%;
+  right: 0.75rem;
+  transform: translateY(-50%);
+  color: #6c757d; /* gris, igual al ícono nativo de Bootstrap/Chrome */
+  pointer-events: none; /* que el click pase al input de abajo y abra el calendario */
+}
+
+.fecha-input-wrapper input:disabled + .fecha-input-icono {
+  opacity: 0.5;
+}

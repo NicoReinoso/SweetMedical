@@ -1,0 +1,15 @@
+$kind: http-request
+name: "❌ 1.10 Error: especialidad duplicada (409)"
+description: El médico ya tiene Cardiología. Debe retornar 409 ConflictError.
+url: "{{baseUrl}}/medicos/{{medicoId1}}/especialidad"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "nombre": "Cardiología",
+      "costo": 5500
+    }
+order: 11000

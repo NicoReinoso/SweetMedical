@@ -1,0 +1,5 @@
+$kind: http-request
+name: Borrar necesidad
+url: http://localhost:8080/donaciones-service/necesidades-materiales/3
+method: DELETE
+order: 3951941900648074

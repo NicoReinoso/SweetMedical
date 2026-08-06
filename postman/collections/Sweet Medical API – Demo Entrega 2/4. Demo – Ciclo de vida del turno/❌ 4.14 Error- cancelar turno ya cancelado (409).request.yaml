@@ -1,0 +1,14 @@
+$kind: http-request
+name: "❌ 4.14 Error: cancelar turno ya cancelado (409)"
+description: Turno 2 ya está CANCELADO. Debe retornar 409 ConflictError.
+url: "{{baseUrl}}/turnos/{{turnoId2}}"
+method: DELETE
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "motivo": "Cancelar de nuevo"
+    }
+order: 14000

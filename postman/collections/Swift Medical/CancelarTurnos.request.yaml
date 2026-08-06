@@ -1,0 +1,5 @@
+$kind: http-request
+name: CancelarTurnos
+url: http://localhost:3000/turnos/1
+method: DELETE
+order: 4500588148276885

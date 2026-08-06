@@ -1,0 +1,84 @@
+import mongoose from "mongoose";
+import { Turno } from "../Models/turno.js";
+
+const consultaSchema = new mongoose.Schema(
+  {
+    nombre: String,
+    costoBase: Number,
+    coberturas: Array,
+    tipo: String
+  },
+  { _id: false }
+);
+
+const turnoSchema = new mongoose.Schema({
+
+    medicoId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Medico",
+        required: true
+    },
+    pacienteId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Paciente",
+        required: true
+    },
+
+    fechaHora:{
+        type: Date,
+        required: true
+    },
+    
+    sede:{
+        type: String,
+        trim: true,
+        required: true
+    },
+    
+    consultaSolicitada: {
+        type: consultaSchema,
+        required: true
+    },
+
+    estado:{
+        type: String,
+        enum: [
+        "RESERVADO",
+        "CONFIRMADO",
+        "CANCELADO",
+        "REALIZADO",
+        "REPROGRAMADO"
+        ],
+        required: true
+    },
+
+    historialEstados:{
+        type:[{type: String,
+        enum: [
+        "RESERVADO",
+        "CONFIRMADO",
+        "CANCELADO",
+        "REALIZADO",
+        "REPROGRAMADO"
+        ],
+        trim: true
+        }],
+        required: true
+    },
+
+    costo:{
+        type: Number,
+        required: true,
+        min: 0
+    },
+
+    motivoCancelacion: {
+        type: String,
+        trim: true,
+        default: null
+    }
+});
+
+turnoSchema.loadClass(Turno);
+
+export const TurnoModel = mongoose.model("Turno", turnoSchema);

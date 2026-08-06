@@ -1,0 +1,5 @@
+$kind: http-request
+description: "Devuelve todos los turnos de Juan: REALIZADO (turno1), CANCELADO (turno2) + cualquier activo. Ordenados por fecha descendente."
+url: "{{baseUrl}}/pacientes/{{pacienteId1}}/historial"
+method: GET
+order: 1000

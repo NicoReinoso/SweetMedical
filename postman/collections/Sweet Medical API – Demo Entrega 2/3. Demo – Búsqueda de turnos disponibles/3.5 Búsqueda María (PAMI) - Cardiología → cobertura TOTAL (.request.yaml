@@ -1,0 +1,11 @@
+$kind: http-request
+name: 3.5 Búsqueda María (PAMI) / Cardiología → cobertura TOTAL ($0)
+description: "PAMI Plan Básico cubre Cardiología al 100%. costoEstimado = $0. estadoCobertura: TOTAL."
+url: "{{baseUrl}}/turnos/disponibles?pacienteId={{pacienteId2}}&especialidad=Cardiología&fechaDesde=2026-07-01T03:00:00.000Z&fechaHasta=2026-07-31T23:59:59.000Z"
+method: GET
+queryParams:
+  pacienteId: "{{pacienteId2}}"
+  especialidad: Cardiología
+  fechaDesde: 2026-07-01T03:00:00.000Z
+  fechaHasta: 2026-07-31T23:59:59.000Z
+order: 5000

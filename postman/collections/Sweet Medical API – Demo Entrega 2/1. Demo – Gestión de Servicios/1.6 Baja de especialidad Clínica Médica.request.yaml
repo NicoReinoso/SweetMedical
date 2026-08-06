@@ -1,0 +1,5 @@
+$kind: http-request
+description: Baja de servicio. Especialidad removida del médico.
+url: "{{baseUrl}}/medicos/{{medicoId1}}/especialidad/Clínica Médica"
+method: DELETE
+order: 7000

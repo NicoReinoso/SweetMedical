@@ -1,0 +1,16 @@
+$kind: http-request
+name: Agregar disponibilidad
+url: http://localhost:3000/medicos/med-3/disponibilidad
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"diaSemana\": \"DOMINGO\",\r
+
+    \    \"horaDesde\": \"08:00\",\r
+
+    \    \"horaHasta\": \"09:00\" \r
+
+    }"
+order: 4459340448537076

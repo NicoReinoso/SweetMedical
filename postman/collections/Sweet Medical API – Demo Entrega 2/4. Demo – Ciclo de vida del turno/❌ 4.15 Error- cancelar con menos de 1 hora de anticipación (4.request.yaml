@@ -1,0 +1,19 @@
+$kind: http-request
+name: "❌ 4.15 Error: cancelar con menos de 1 hora de anticipación (400)"
+description: |-
+  SIMULACIÓN: Reservar un turno con fechaHora dentro de los próximos 30 minutos, luego intentar cancelarlo. El sistema debe retornar 400 con 'Se requiere al menos 1 hora de anticipación'.
+
+  Pasos:
+  1. POST /turnos con fechaHora = ahora + 30 min (en un día con disponibilidad)
+  2. DELETE /turnos/:id con cualquier motivo → espera 400
+url: "{{baseUrl}}/turnos/TURNO_ID_PRÓXIMO"
+method: DELETE
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "motivo": "Quiero cancelar con poca anticipación"
+    }
+order: 15000

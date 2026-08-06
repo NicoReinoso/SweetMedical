@@ -1,0 +1,14 @@
+$kind: http-request
+description: Alta de Cardiología con costo base $5000.
+url: "{{baseUrl}}/medicos/{{medicoId1}}/especialidad"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "nombre": "Cardiología",
+      "costo": 5000
+    }
+order: 1000

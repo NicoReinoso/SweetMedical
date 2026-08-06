@@ -1,0 +1,13 @@
+$kind: http-request
+description: El paciente cancela su turno con al menos 1 hora de anticipación. Se notifica al médico.
+url: "{{baseUrl}}/turnos/{{turnoId2}}"
+method: DELETE
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "motivo": "El paciente no puede asistir por viaje de trabajo"
+    }
+order: 8000

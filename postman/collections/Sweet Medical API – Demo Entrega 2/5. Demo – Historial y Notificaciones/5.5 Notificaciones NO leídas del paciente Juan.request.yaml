@@ -1,0 +1,5 @@
+$kind: http-request
+description: "Juan recibió notificaciones: cuando se reservó su turno y cuando el médico canceló el turno3 (aunque era de María)."
+url: "{{baseUrl}}/notificaciones/{{pacienteId1}}/no-leidas"
+method: GET
+order: 5000
