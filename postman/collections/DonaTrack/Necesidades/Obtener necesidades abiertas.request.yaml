@@ -1,5 +1,0 @@
-$kind: http-request
-name: Obtener necesidades abiertas
-url: http://localhost:8080/donaciones-service/necesidades-materiales/abiertas
-method: GET
-order: 2775928577606268
